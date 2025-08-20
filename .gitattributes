@@ -1,6 +1,6 @@
 ## Unity ##
 
-*.cs eol=lf
+
 *.cginc eol=lf
 *.shader eol=lf
 
