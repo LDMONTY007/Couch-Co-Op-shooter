@@ -8,12 +8,16 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInputManager))]
 public class PlayerManager : MonoBehaviour
 {
-    PlayerInputManager inputManager;
+    public static PlayerManager instance;
+
+    public PlayerInputManager inputManager;
 
     public Material[] materials;
 
     private void Awake()
     {
+        instance = this;
+
         inputManager = GetComponent<PlayerInputManager>();
     }
 
@@ -28,5 +32,18 @@ public class PlayerManager : MonoBehaviour
         player.transform.position = new Vector3(curPlayerIndex, 1, 0);
 
         player.GetComponent<PlayerController>().init(id, curPlayerIndex, materials[curPlayerIndex]);
+    }
+
+    public void OnPlayerLeave(PlayerInput input)
+    {
+        //Destroy this player.
+        Destroy(input.gameObject);
+        Debug.Log("Player " + input.playerIndex + " Left!");
+
+        if (inputManager.playerCount <= 0)
+        {
+            Debug.Log("All players have left, return to title screen!");
+            CustomSceneManager.LoadSceneAsync("Title Scene");
+        }
     }
 }
