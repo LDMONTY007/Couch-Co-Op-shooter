@@ -30,12 +30,31 @@ public class PlayerUIController : MonoBehaviour
         Destroy(playerObject);
     }
 
+    //used for the "back" input in the control scheme.
+    public void OnPauseResumeKeyPressed(InputAction.CallbackContext context)
+    {
+        //only when the key is initially pressed, not when it is held.
+        if (context.started)
+        {
+            //resume when paused
+            if (paused)
+            {
+                OnResumeButtonPressed();
+            }
+            //pause otherwise.
+            else
+            {
+                OnPauseButtonPressed();
+            }
+        }
+    }
+
     public void OnPauseButtonPressed()
     {
         paused = true;
         pauseUI.SetActive(paused);
         //Switch to the UI controls.
-        playerInput.SwitchCurrentControlScheme("UI", playerInput.devices[0]);
+        playerInput.SwitchCurrentActionMap("UI");
     }
 
     public void OnResumeButtonPressed()
@@ -43,7 +62,7 @@ public class PlayerUIController : MonoBehaviour
         paused = false;
         pauseUI.SetActive(paused);
         //Switch the current control scheme back to the normal game controls.
-        playerInput.SwitchCurrentControlScheme(GetCorrespondingControlScheme(playerInput.devices[0]), playerInput.devices[0]);
+        playerInput.SwitchCurrentActionMap("Player");
     }
 
     private string GetCorrespondingControlScheme(InputDevice device)
