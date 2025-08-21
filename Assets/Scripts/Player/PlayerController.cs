@@ -333,7 +333,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         cam.transform.localRotation = Quaternion.Euler(curLook.y, 0f, 0f);
 
         //set rotation for the body.
-        transform.localRotation = Quaternion.Euler(0f, curLook.x, 0f);
+        //transform.localRotation = Quaternion.Euler(0f, curLook.x, 0f);
     }
    
     public void HandleAttack()
@@ -622,6 +622,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleMovement();
         
         HandleJumping();
+
+        //set rotation for the body.
+        rb.MoveRotation(Quaternion.Euler(0f, curLook.x, 0f));
 
         ApplyFinalMovements();
     }
