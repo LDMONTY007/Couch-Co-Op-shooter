@@ -24,9 +24,12 @@ public class PlayerController : MonoBehaviour
 
     public Camera cam;
 
+    public Weapon curWeapon;
+
     private PlayerInput playerInput;
     private InputAction jumpAction;
     private InputAction lookAction;
+    private InputAction attackAction;
 
     float yVel = 0f;
 
@@ -46,6 +49,7 @@ public class PlayerController : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         jumpAction = playerInput.actions["Jump"];
         lookAction = playerInput.actions["Look"];
+        attackAction = playerInput.actions["Attack"];
     }
 
     public void OnMove(InputAction.CallbackContext callback)
@@ -71,11 +75,32 @@ public class PlayerController : MonoBehaviour
         transform.localRotation = Quaternion.Euler(0f, curLook.x, 0f);
     }
    
+    public void HandleAttack()
+    {
+        if (attackAction.GetButtonDown())
+        {
+            if (curWeapon != null)
+            {
+                //call attack.
+                curWeapon.Attack(cam);
+            }
+            else
+            {
+                //Throw error to console if there was no weapon assigned yet.
+                Debug.LogError("No weapon has been assigned to this player. Player " + guid.ToString());
+            }
+        }
+
+        
+        
+    }
 
 
     private void Update()
     {
         HandleLook();
+
+        HandleAttack();
 
         grounded = controller.isGrounded;
 
