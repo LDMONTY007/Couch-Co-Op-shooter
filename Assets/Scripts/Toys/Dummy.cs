@@ -31,7 +31,7 @@ public class Dummy : MonoBehaviour, IDamageable
         
     }
 
-    public void TakeDamage(int d, GameObject other)
+    public void TakeDamage(float d, GameObject other)
     {
         //if we're invincible, 
         //then exit this method.

@@ -1,46 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using static Enemy;
 
-//This is what we should use for decision making in our system:
-//https://www.reddit.com/r/godot/comments/xgrk0g/goap_goaloriented_action_planning_is_absolutely/
-//Goal-Oriented Action Planning (GOAP) is a great way to make an extendable system for AI it seems.
-//It'll exhibit complex behaviors and be able to have extensions made to it quite easily.
-//I want to do this because our enemies will have very specific conditions and these should help 
-//us get those. 
-//Like Ghosts need to slowly approach towards the player which is a simple behavior.
-//But if a player is using a light based weapon we should have the ghost get nervous and decide
-//how beneficial it would be to approach a player and when to back away from a player.
-//Stuff like that.
-//https://web.archive.org/web/20230912145018/https://alumni.media.mit.edu/~jorkin/goap.html
-//But Remember LD, let's not overcomplicate this.
-//You could easily make a specific class for each different enemy in the game
-//and instead later make more complex behavior.
-//This is the way to go, make the different classes for each different AI
-//and code them the way you need, then when you have working stuff make something more complex.
-//But for now, seriously, stick with more basic stuff.
-
-public class Enemy : MonoBehaviour, IDamageable
+public class Zombie : MonoBehaviour, IDamageable
 {
-    //https://www.youtube.com/watch?v=Zjlg9F3FRJs
-
-    //used to check if we are playing twice in a row.
-    public static AudioClip lastCivilianClipPlayed = null;
-
-    public static AudioClip lastBirdClipPlayed = null;
-
-    public enum EnemyType
-    {
-        Civilian,
-        Bird
-    }
+    public float chaseSpeed = 5f;
+    public float walkSpeed = 3f;
 
     public enum EnemyState
     {
-        Flee,
-        Patrol
+        Chase,
+        Patrol,
+        Attack
     }
 
     public EnemyState currentState = EnemyState.Patrol;
@@ -49,7 +21,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     //Distance from player
     //to start fleeing.
-    public float fleeDistance;
+    public float attackDistance = 3f;
 
     public float patrolRange = 50;
 
@@ -59,7 +31,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public Animator animator;
 
-    private float timeBetweenFleeChecks = 0.5f;
+    private float timeBetweenFleeChecks = 0.1f;
 
     private float curTimeSinceLastFlee = 0f;
 
@@ -133,11 +105,14 @@ public class Enemy : MonoBehaviour, IDamageable
         Destroy(gameObject);
     }
 
+    public bool canAttack = true;
+
+    public float attackCooldownTime = 0.67f;
 
     // Start is called before the first frame update
     void Start()
     {
-        layerMask = ~LayerMask.GetMask("Enemy", "Ground");
+        layerMask = ~LayerMask.GetMask("Enemy");
 
         /*//Get the audio clip holders.
         AudioClipHolder[] audioClipHolders = FindObjectsOfType(typeof(AudioClipHolder)) as AudioClipHolder[];
@@ -161,7 +136,7 @@ public class Enemy : MonoBehaviour, IDamageable
         _agent = GetComponent<NavMeshAgent>();
         PlayerController controller = FindFirstObjectByType<PlayerController>();
         if (controller != null)
-        playerObj = controller.gameObject;
+            playerObj = controller.gameObject;
         animator = GetComponent<Animator>();
     }
 
@@ -180,14 +155,30 @@ public class Enemy : MonoBehaviour, IDamageable
 
         float distance = Vector3.Distance(transform.position, playerObj.transform.position);
 
+        //If chasing and outside 1.5* the attack distance
+        //then use the chase speed.
+        if (currentState == EnemyState.Chase && distance > attackDistance * 1.5f)
+        {
+            _agent.speed = chaseSpeed;
+        }
+        //use walk speed otherwise. 
+        else if (currentState == EnemyState.Chase && distance < attackDistance * 1.5f)
+        {
+            _agent.speed = walkSpeed;
+        }
+        else if (currentState != EnemyState.Chase)
+        {
+            _agent.speed = walkSpeed;
+        }
+
         //Flee
-        if (distance < fleeDistance && ((currentState == EnemyState.Flee && curTimeSinceLastFlee >= timeBetweenFleeChecks) || (currentState != EnemyState.Flee)))
+        if (distance > attackDistance/* && ((currentState == EnemyState.Chase && curTimeSinceLastFlee >= timeBetweenFleeChecks) || (currentState != EnemyState.Chase))*/)
         {
 
             //if we aren't fleeing 
             //but we're about to,
             //scream.
-            if (currentState != EnemyState.Flee)
+            if (currentState != EnemyState.Chase)
             {
                 //Remove this random scream for now.
                 //PlayRandomScream();
@@ -198,7 +189,7 @@ public class Enemy : MonoBehaviour, IDamageable
             //Vector from player to us
             Vector3 dirAwayPlayer = transform.position - playerObj.transform.position;
 
-            Vector3 target = transform.position + dirAwayPlayer;
+            Vector3 target = playerObj.transform.position + (dirAwayPlayer.normalized * attackDistance / 2f);
 
 
             /*            float radius = 1f;
@@ -224,21 +215,21 @@ public class Enemy : MonoBehaviour, IDamageable
 
             //set to fleeing so we don't
             //patrol
-            currentState = EnemyState.Flee;
+            currentState = EnemyState.Chase;
         }
 
-        //if we reached our destination and we are fleeing,
-        //say we are no longer fleeing.
-        if (currentState == EnemyState.Flee && DestinationReached(_agent, transform.position) && distance > fleeDistance)
+        //if we reached our destination and we are chasing,
+        //say we are now attacking.
+        if (currentState == EnemyState.Chase && DestinationReached(_agent, transform.position) && distance < attackDistance)
         {
             curTimeSinceLastFlee = 0f;
             //for now just go back to patrolling.
-            currentState = EnemyState.Patrol;
+            currentState = EnemyState.Attack;
         }
-        //start fleeing again
+       /* //start fleeing again
         //if we are still to close to the 
         //player and we're about to stop and switch into patrolling.
-        else if (currentState == EnemyState.Flee && distance <= fleeDistance && Vector3.Distance(transform.position, _agent.pathEndPosition) <= 2f)
+        else if (currentState == EnemyState.Chase && distance <= attackDistance && Vector3.Distance(transform.position, _agent.pathEndPosition) <= 2f)
         {
             curTimeSinceLastFlee = 0f;
 
@@ -251,7 +242,29 @@ public class Enemy : MonoBehaviour, IDamageable
 
             //set to fleeing so we don't
             //patrol
-            currentState = EnemyState.Flee;
+            currentState = EnemyState.Chase;
+        }*/
+
+        if (currentState == EnemyState.Attack)
+        {
+            Debug.Log("HERE!!");
+            Attack();
+
+            //if we are still to close to the 
+            //player and we're about to stop and switch into patrolling.
+
+/*            curTimeSinceLastFlee = 0f;
+
+            //Vector from player to us
+            Vector3 dirAwayPlayer = transform.position - playerObj.transform.position;
+
+            Vector3 target = transform.position + dirAwayPlayer;
+
+            _agent.SetDestination(target);
+
+            //set to fleeing so we don't
+            //patrol
+            currentState = EnemyState.Chase;*/
         }
 
         //only patrol
@@ -340,56 +353,6 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
-    /*public void PlayRandomScream()
-    {
-        if (type == EnemyType.Civilian)
-        {
-            //Play eating audio
-            if (civilianScreamingAudioClips.Length > 0)
-            {
-                var index = Random.Range(0, civilianScreamingAudioClips.Length);
-
-                //make sure we don't play the same clip twice in a row.
-                while (index == lastScreamingAudioClipIndex || lastCivilianClipPlayed == civilianScreamingAudioClips[index] || (Player.instance.memeScream != null && civilianScreamingAudioClips[index] == Player.instance.memeScream))
-                {
-                    index = Random.Range(0, civilianScreamingAudioClips.Length);
-                }
-
-                //just used so we don't play memeScream more than once
-                if (civilianScreamingAudioClips[index].name == "MemeScream")
-                {
-                    Debug.LogWarning("MEME SCREAM USED ONCE");
-                    Player.instance.memeScream = civilianScreamingAudioClips[index];
-                }
-
-                audioSource.PlayOneShot(civilianScreamingAudioClips[index]);
-                lastScreamingAudioClipIndex = index;
-                lastCivilianClipPlayed = civilianScreamingAudioClips[index];
-                //AudioSource.PlayClipAtPoint(screamingAudioClips[index], transform.TransformPoint(_rb.centerOfMass), FootstepAudioVolume);
-            }
-        }
-        else if (type == EnemyType.Bird)
-        {
-            //Play eating audio
-            if (birdScreamingAudioClips.Length > 0)
-            {
-                var index = Random.Range(0, birdScreamingAudioClips.Length);
-
-                //make sure we don't play the same clip twice in a row.
-                while (index == lastScreamingAudioClipIndex || lastBirdClipPlayed == birdScreamingAudioClips[index])
-                {
-                    index = Random.Range(0, birdScreamingAudioClips.Length);
-                }
-                audioSource.PlayOneShot(birdScreamingAudioClips[index]);
-                lastScreamingAudioClipIndex = index;
-                lastBirdClipPlayed = birdScreamingAudioClips[index];
-                //AudioSource.PlayClipAtPoint(screamingAudioClips[index], transform.TransformPoint(_rb.centerOfMass), FootstepAudioVolume);
-            }
-        }
-
-
-    }*/
-
     public void TakeDamage(float damage, GameObject other)
     {
         //if we're invincible, 
@@ -406,5 +369,38 @@ public class Enemy : MonoBehaviour, IDamageable
         //Add some screen shake
 
         //Add some knockback to the player from the hit.
+    }
+
+    float attackDamage = 5f;
+
+    public void Attack()
+    {
+        //Exit this method if we can't attack.
+        if (!canAttack)
+        {
+            return;
+        }
+
+        Debug.Log("HERE!!");
+        if (Physics.Raycast(transform.position, transform.forward, out var hitInfo, attackDistance, layerMask))
+        {
+            Debug.Log("HERE!!");
+            IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
+
+            //if we actually hit a damageable.
+            if (damageable != null)
+                damageable.TakeDamage(attackDamage, gameObject);
+        }
+
+        //Start the cooldown.
+        StartCoroutine(CooldownCoroutine());
+    }
+
+    private IEnumerator CooldownCoroutine()
+    {
+        //Don't allow attacks until cooldown is over.
+        canAttack = false;
+        yield return new WaitForSeconds(attackCooldownTime);
+        canAttack = true;
     }
 }

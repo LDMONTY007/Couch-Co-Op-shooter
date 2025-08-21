@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7371796333402482502}
   - component: {fileID: 8008133526644325646}
   - component: {fileID: 8128711190707987402}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1041062259185607100}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand Transform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 5107730192156573712}
   - component: {fileID: 5179676059896972612}
   - component: {fileID: 5855211771221852801}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -482,7 +482,7 @@ GameObject:
   - component: {fileID: 7756197049422668306}
   - component: {fileID: 5420020465258303078}
   - component: {fileID: 8945600692140703755}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -581,6 +581,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1544279016615536831, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2444570381452448913, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2992646659632341695, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3001566241119423630, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -597,6 +609,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3325325605095600927, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3578529727506610299, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -612,6 +628,10 @@ PrefabInstance:
     - target: {fileID: 3578529727506610299, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893891882805570024, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3983268891042196920, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_fontColor.b
@@ -625,13 +645,41 @@ PrefabInstance:
       propertyPath: m_fontColor.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4322489327330808313, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4560731297980348377, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4811819733880549125, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 4811819733880549125, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5388226147349064277, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5503171201118963097, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5552599649311668485, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5618804005823822849, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_UseSpriteMesh
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5698856473238875179, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6199408077917269226, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Transition
@@ -773,6 +821,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8084027748965831715, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8370379260062690977, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: playerInput
       value: 
@@ -788,6 +840,10 @@ PrefabInstance:
     - target: {fileID: 8578282350130901058, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8597800968256455710, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9070840867315876597, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_fontColor.b
