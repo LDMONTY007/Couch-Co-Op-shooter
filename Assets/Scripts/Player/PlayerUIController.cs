@@ -1,10 +1,12 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerUIController : MonoBehaviour
 {
     public GameObject playerObject;
+    public PlayerController playerController;
     public PlayerInput playerInput;
 
     private bool _paused;
@@ -12,13 +14,23 @@ public class PlayerUIController : MonoBehaviour
 
     public GameObject pauseUI;
 
+    public Slider healthBarSlider;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         paused = false;
         pauseUI.SetActive(paused);
 
+        playerController = playerObject.GetComponent<PlayerController>();
+
+        //assign UI controller.
+        playerController.uiController = this;
+
         OnPauseStateSwitched();
+
+        healthBarSlider.maxValue = PlayerController.maxHealth;
+        healthBarSlider.value = playerController.curHealth;
     }
 
     // Update is called once per frame
@@ -80,6 +92,11 @@ public class PlayerUIController : MonoBehaviour
         pauseUI.SetActive(paused);
         //Switch the current control scheme back to the normal game controls.
         playerInput.SwitchCurrentActionMap("Player");
+    }
+
+    public void UpdateHealthBar()
+    {
+        healthBarSlider.value = playerController.curHealth;
     }
 
     private string GetCorrespondingControlScheme(InputDevice device)

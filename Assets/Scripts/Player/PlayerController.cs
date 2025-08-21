@@ -1,13 +1,13 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements.Experimental;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     public float moveSpeed = 5f;
-    public float jumpHeight = 5f;
-    public float gravity = -9.81f;
 
     public TMP_Text idLabel;
     Guid guid;
@@ -35,6 +35,129 @@ public class PlayerController : MonoBehaviour
 
     bool grounded = false;
 
+    [HideInInspector]
+    public PlayerUIController uiController;
+
+    Rigidbody rb;
+
+    #region health vars
+    [Header("Health Variables")]
+
+    //This has to be a const so we can init the field with it properly.
+    public const float maxHealth = 100;
+
+    private float _curHealth = maxHealth;
+
+    public float curHealth
+    {
+        get
+        {
+            return _curHealth;
+        }
+
+        set
+        {
+            _curHealth = Mathf.Max(value, 0);
+            //LD Montello
+            //Update the current health in the UI for the player.
+            UpdateUI();
+            if (curHealth <= 0)
+            {
+                Die();
+            }
+        }
+    }
+
+    #endregion
+
+    public bool invincible = false;
+
+    private bool _stunned = false;
+
+    //used after being hit to prevent the player from attacking immediately.
+    private bool stunned
+    {
+        get
+        {
+            return _stunned;
+
+        }
+        set
+        {
+            //Update the UI for the stunned popup.
+            //UIManager.Instance.playerUIManager.UpdateStunnedPopup(value);
+            _stunned = value;
+        }
+    }
+
+    [Header("Jump Parameters")]
+    //this is just a rule to see if the player is allowed to jump.
+    //that way during certain attacks we can disable it.
+    public bool canJump = true;
+    public float groundCheckDist = 0.1f;
+    public int jumpCount = 1;
+    public int jumpTotal = 1;
+    [SerializeField] private bool jumpCanceled;
+    [SerializeField] private bool jumping;
+    public float jumpHeight = 5f;
+    [SerializeField] private float buttonTime;
+    [SerializeField] private float jumpTime;
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
+    public float multiplier = 100f;
+    public float timeToApex = 0.01f;
+    public float timeToFall = 0.5f;
+
+    //was the player launched?
+    public bool didLaunch = false;
+
+    //The gravity we return to 
+    //after modifying gravity.
+    float baseGravity = 9.81f;
+    float gravity = 9.81f;
+    float fallGravity = 9.81f;
+
+    public bool useGravity = true;
+
+    public bool doJump;
+
+    /* private Coroutine jumpCoroutine;
+
+     public bool jumpPressed = false;
+
+     public bool isJumping = false;*/
+
+    public Collider playerCollider;
+
+    public bool isGrounded = false;
+
+    public bool inAir => !jumping && !isGrounded;
+
+    public Vector3 desiredMoveDirection;
+
+    public Vector2 accumulatedVelocity = Vector2.zero;
+
+    bool isOnWall = false;
+
+    bool didLand = true;
+
+    public float groundCheckScale = 0.8f;
+
+    int playerMask;
+
+    //coroutine references for ensuring no duplicates
+    Coroutine iFramesRoutine = null;
+
+    //terraria uses this number for iframes as do most games.
+    public float iFrameTime = 0.67f;
+
+    public void Die()
+    {
+        //TODO: Code dying.
+        Debug.Log("DEAD");
+        Destroy(gameObject);
+    }
+
     public void init(Guid id, int index, Material mat)
     {
         idLabel.text = "Player " + index;
@@ -45,6 +168,9 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        playerMask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
+
+        rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
         jumpAction = playerInput.actions["Jump"];
@@ -52,9 +178,143 @@ public class PlayerController : MonoBehaviour
         attackAction = playerInput.actions["Attack"];
     }
 
+    public void UpdateUI()
+    {
+        //Update the health bar.
+        uiController.UpdateHealthBar();
+    }
+
     public void OnMove(InputAction.CallbackContext callback)
     {
         moveInput = callback.ReadValue<Vector2>();
+    }
+
+    private void GroundedCheck()
+    {
+        #region isGroundedCheck
+        //isGrounded = Physics.BoxCast(transform.position, this.GetComponent<Collider>().bounds.size, -transform.up, Quaternion.identity, groundCheckDist, playerMask);
+        //isGrounded = Physics.Raycast(transform.position, -transform.up, this.GetComponent<Collider>().bounds.extents.y + groundCheckDist, playerMask);
+        Collider[] colliders = Physics.OverlapBox(transform.position + (-transform.up * this.GetComponent<Collider>().bounds.size.y / 2) + (-transform.up * groundCheckDist), new Vector3(GetComponent<Collider>().bounds.size.x * groundCheckScale, 0.1f, GetComponent<Collider>().bounds.size.z * groundCheckScale), transform.rotation, playerMask);
+        if (colliders.Length > 0)
+        {
+            //if we were jumping or in the air,
+            //then we landed.
+            if (!didLand)
+            {
+                didLand = true;
+                OnLanded();
+            }
+
+            isGrounded = true;
+            //Debug.DrawRay(hitInfo.point, hitInfo.normal, Color.red, 1f);
+
+            //Call on landed.
+
+        }
+        else
+        {
+            //when we are no longer grounded,
+            //say that we didn't land.
+            if (didLand == true)
+            {
+                didLand = false;
+            }
+
+            isGrounded = false;
+        }
+        /*isGrounded = Physics.BoxCast(transform.position, this.GetComponent<Collider>().bounds.size, -transform.up, out RaycastHit hitInfo, Quaternion.identity, this.GetComponent<Collider>().bounds.extents.y + groundCheckDist, playerMask);*/
+
+        //Ray ray = new Ray(transform.position, -transform.up);
+        //isGrounded = GetComponent<Collider>().Raycast(ray, out RaycastHit hitinfo, groundCheckDist);
+        #endregion
+    }
+
+    private void JumpUpdateLogic()
+    {
+        doJump |= (jumpAction.WasPressedThisFrame() && jumpCount > 0 && !jumping && !stunned && canJump);
+
+        if (isGrounded)
+        {
+            //if we were launched, say we are no longer launched.
+            if (didLaunch)
+            {
+                didLaunch = false;
+            }
+
+            //reset jump count and jump canceled, and gravity
+            //when not jumping and grounded.
+            if (!jumping && didLand)
+            {
+                jumpCount = jumpTotal;
+                jumpCanceled = false;
+                //set gravity back to base.
+                gravity = baseGravity;
+                //Debug.Log("BACK TO BASE".Color("Green"));
+                //animator.SetTrigger("landing");
+
+
+            }
+            //reset dash count when grounded, and not dashing.
+/*            if (!dashing)
+            {
+                dashCount = dashTotal;
+            }*/
+        }
+
+        //increase jump time while jumping
+        if (jumping)
+        {
+            jumpTime += Time.deltaTime;
+        }
+
+        if (jumping && !jumpCanceled)
+        {
+            //If we stop giving input for jump cancel jump so we can have a variable jump.
+            //Also if we were launched, ignore this check.
+            if (!jumpAction.IsPressed() && !didLaunch)
+            {
+                jumpCanceled = true;
+                Debug.Log("JUMP CANCELED".Color("Orange"));
+                //gravity = fallGravity;
+            }
+
+            //This check should execute even when launched because
+            //it handles knowing when we've reached the "apex" of our jump/arc. 
+            //When we reach our projected time stop jumping and begin falling.
+            if (jumpTime >= buttonTime)
+            {
+                Debug.Log("JUMP CANCELED BY BUTTON TIME".Color("Green"));
+                //pause the editor
+                //Debug.Break();
+                jumpCanceled = true;
+                Debug.Log("JUMP CANCELED".Color("Orange"));
+                //set gravity back to fall gravity
+                gravity = fallGravity;
+                //gravity = baseGravity;
+
+                //if we were launched, say we are no longer launched.
+                if (didLaunch)
+                {
+                    didLaunch = false;
+                }
+
+                //jumpDist = Vector2.Distance(transform.position, ogJump); //Not needed, just calculates distance from where we started jumping to our highest point in the jump.
+                //jumpDist = transform.position.y - ogJump.y;
+            }
+        }
+
+        if (jumpCanceled)
+        {
+            jumping = false;
+            Debug.Log("JUMP CANCELED".Color("Red"));
+        }
+    }
+
+    public void OnLanded()
+    {
+        Debug.Log("Landed");
+        //TODO:
+        //Play landing particles.
     }
 
     private void HandleLook()
@@ -95,6 +355,122 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    public void HandleJumping()
+    {
+/*        if (dashing)
+        {
+            return;
+        }*/
+
+        if (doJump)
+        {
+            //if we were launched, say we are no longer launched,
+            //this lets us start a jump right after being launched.
+            if (didLaunch)
+            {
+                didLaunch = false;
+            }
+
+            //say we didn't yet land.
+            didLand = false;
+
+            //I did the work out and 2 * h / t = gravity so I'm going to do that.
+            gravity = 2 * jumpHeight / timeToApex;
+            fallGravity = 2 * jumpHeight / timeToFall;
+
+            float projectedHeight = timeToApex * gravity / 2f;
+            Debug.Log(timeToApex + " " + projectedHeight + " " + gravity);
+            Debug.Log(("Projected Height " + projectedHeight).ToString().Color("Cyan"));
+
+            doJump = false;
+            jumpCount--;
+            float jumpForce;
+
+            jumpForce = Mathf.Sqrt(2f * gravity * jumpHeight) * rb.mass; //multiply by mass at the
+            //end so that it reaches the height regardless of weight.
+
+            //divide by 2 so we get the amount of time to reach the apex of the jump.
+            buttonTime = (jumpForce / (rb.mass * gravity));
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            jumpTime = 0;
+            jumping = true;
+            jumpCanceled = false;
+
+            //invoke OnJump if methods are subscribed to it.
+            //OnJump?.Invoke();
+        }
+
+        //Where I learned this https://www.youtube.com/watch?v=7KiK0Aqtmzc
+        //This is what gives us consistent fall velocity so that jumping has the correct arc.
+        Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
+
+        if (localVel.y < 0 && inAir) //If we are in the air and at the top of the arc then apply our fall speed to make falling more game-like
+        {
+            //animator.SetBool("falling", true);
+            //we don't multiply by mass because forceMode2D.Force includes that in it's calculation.
+            //set gravity to be fallGravity.
+            gravity = fallGravity;
+            Vector3 jumpVec = -transform.up * (fallMultiplier - 1)/* * 100f * Time.deltaTime*/;
+            rb.AddForce(jumpVec, ForceMode.Force);
+        }
+    }
+
+
+    //this is used when we want to forcefully stop
+    //jumping.
+    public void StopJumping()
+    {
+
+        jumping = false;
+
+
+        jumpCanceled = false;
+
+        //set gravity back to fall gravity
+        gravity = fallGravity;
+
+        //set player y velocity to 0
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+    }
+
+    //used when doing heavy attacks which will propel the player,
+    //for example a heavy downward slash from the sword will push the player
+    //up into the air without counting as a jump.
+    //TODO: Make this more configureable than it is with the time code from the jump function
+    public void LaunchPlayer(Vector3 direction, float height = 30f, float timeToApex = 1, float timeToFall = 2)
+    {
+
+        //I did the work out and 2 * h / t = gravity so I'm going to do that.
+        gravity = 2 * height / timeToApex;
+        fallGravity = 2 * height / timeToFall;
+
+        float projectedHeight = timeToApex * gravity / 2f;
+        Debug.Log(timeToApex + " " + projectedHeight + " " + gravity);
+        Debug.Log(("Projected Height " + projectedHeight).ToString().Color("Cyan"));
+
+        doJump = false;
+        //jumpCount--;
+        float launchForce;
+
+        launchForce = Mathf.Sqrt(2f * gravity * jumpHeight) * rb.mass; //multiply by mass at the
+                                                                       //end so that it reaches the height regardless of weight.
+
+        //divide by 2 so we get the amount of time to reach the apex of the jump.
+        buttonTime = (launchForce / (rb.mass * gravity));
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        rb.AddForce(direction * launchForce, ForceMode.Impulse);
+        jumpTime = 0;
+        jumping = true;
+        jumpCanceled = false;
+        didLand = false;
+
+        //Say we launched the player
+        didLaunch = true;
+
+        //rb.AddForce(direction.normalized * force, ForceMode.Impulse);
+    }
+
 
     private void Update()
     {
@@ -102,37 +478,29 @@ public class PlayerController : MonoBehaviour
 
         HandleAttack();
 
-        grounded = controller.isGrounded;
+        GroundedCheck();
 
-        //if the player is grounded zero out their y velocity.
-        if (grounded && yVel < 0)
-        {
-            yVel = 0f;
-        }
+        JumpUpdateLogic();
 
-        //Jump code ripped from Unity Manual
-        //https://docs.unity3d.com/ScriptReference/CharacterController.Move.html
-        //If the button is held, let the player jump.
-        //This allows the player to hold space and jump the moment they are grounded again,
-        //making bunny hopping easy.
-        if (jumpAction.GetButton() && grounded)
-        {
-            yVel = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
-        }
 
-        //apply gravity.
-        yVel += gravity * Time.deltaTime;
+
+        //Move the character controller.
+        //controller.Move(finalMove * Time.deltaTime);
+
+        
+    }
+
+    private void FixedUpdate()
+    {
+        HandleJumping();
 
         //Axis aligned move, aligned with body axes via projection.
         Vector3 aaMove = (transform.forward.normalized * moveInput.y) + (transform.right.normalized * moveInput.x);
 
         //Add the y velocity for jumping to the movement.
-        Vector3 finalMove = transform.up * yVel + aaMove.normalized * moveSpeed;
+        Vector3 finalMove = /*transform.up * yVel + */aaMove.normalized * moveSpeed;
 
-        //Move the character controller.
-        controller.Move(finalMove * Time.deltaTime);
-
-        
+        rb.linearVelocity = new Vector3(finalMove.x, rb.linearVelocity.y, finalMove.z);
     }
 
     private float GetCorrespondingLookSensitivity(InputDevice device)
@@ -150,5 +518,108 @@ public class PlayerController : MonoBehaviour
             return mouseLookSpeed;
         }
         return mouseLookSpeed;
+    }
+
+    public void TakeDamage(int damage, GameObject other)
+    {
+        //if we're invincible, 
+        //then exit this method.
+        if (invincible)
+        {
+            return;
+        }
+
+        // Apply the damage
+        curHealth -= damage;
+
+        //TODO:
+        //Add some screen shake
+
+        //Add some knockback to the player from the hit.
+    }
+
+    public void StartIFrames()
+    {
+        //say the player is stunned.
+        stunned = true;
+
+        //if we're already invincible and
+        //the iframes coroutine is currently
+        //going, stop it, and create a new one.
+        //Debug an error that this should never occur.
+        if (invincible == true && iFramesRoutine != null)
+        {
+            StopCoroutine(iFramesRoutine);
+            invincible = false;
+            Debug.LogError("Player was damaged when in I-Frames, please check that enemies obey the rules of damage and only deal damage by calling TakeDamage.");
+        }
+
+        //start iframes coroutine
+        iFramesRoutine = StartCoroutine(IFramesCoroutine());
+
+    }
+
+    public IEnumerator IFramesCoroutine()
+    {
+        stunned = true;
+
+        invincible = true;
+        float total = iFrameTime;
+        float curTime = 0f;
+
+        // Make modifications to IFrameTime as needed
+/*        foreach (StatModifier mod in modifiers.Where(m => m.stat == StatModified.iFrameTime).ToList())
+        {
+            total = mod.makeModifications(total);
+        }*/
+
+        //cooldown for the sprite flickering.
+        float flickerCooldown = 0.2f;
+
+
+        //wait for the total iFrame time before
+        //leaving invincibility.
+        //Also flicker the 3D model while we do this.
+        while (curTime < total)
+        {
+            curTime += Time.deltaTime;
+
+            playerModel.gameObject.SetActive(!playerModel.gameObject.activeSelf);
+            //wait until the cooldown to do the sprite flicker again.
+            yield return new WaitForSeconds(flickerCooldown);
+            //add the flicker cooldown to account for the time
+            //we waited.
+            curTime += flickerCooldown;
+
+            /*//If we died, stop blinking.
+            if (isDead)
+            {
+                break;
+            }*/
+
+            //Debug.LogWarning("FLICKER: " + curTime);
+
+            //wait until the cooldown to do the sprite flicker again.
+            yield return null;
+        }
+
+        //always make the animated model
+        //visible after we finish flickering.
+        playerModel.gameObject.SetActive(true);
+
+        //after hitframes become hittable again.
+        invincible = false;
+
+        //we are no longer stunned
+        stunned = false;
+
+
+        //set iframes routine to null 
+        //to indicate we have finished
+        //as this will not happen automatically.
+        iFramesRoutine = null;
+
+        //exit coroutine.
+        yield break;
     }
 }
