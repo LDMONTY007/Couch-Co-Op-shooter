@@ -219,8 +219,9 @@ public class Zombie : MonoBehaviour, IDamageable
         }
 
         //if we reached our destination and we are chasing,
+        //or we are close enough to the player and we are chasing,
         //say we are now attacking.
-        if (currentState == EnemyState.Chase && DestinationReached(_agent, transform.position) && distance < attackDistance)
+        if (currentState == EnemyState.Chase && DestinationReached(_agent, transform.position) || currentState == EnemyState.Chase && distance < attackDistance)
         {
             curTimeSinceLastFlee = 0f;
             //for now just go back to patrolling.
