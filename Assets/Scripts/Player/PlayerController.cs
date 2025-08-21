@@ -14,6 +14,10 @@ public class PlayerController : MonoBehaviour
 
     Vector2 moveInput;
 
+    float mouseLookSpeed = 10f;
+    float controllerLookSpeed = 100f;
+    Vector2 curLook;
+
     public Renderer playerModel;
 
     private CharacterController controller;
@@ -22,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput playerInput;
     private InputAction jumpAction;
+    private InputAction lookAction;
 
     float yVel = 0f;
 
@@ -40,6 +45,7 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
         jumpAction = playerInput.actions["Jump"];
+        lookAction = playerInput.actions["Look"];
     }
 
     public void OnMove(InputAction.CallbackContext callback)
@@ -47,11 +53,30 @@ public class PlayerController : MonoBehaviour
         moveInput = callback.ReadValue<Vector2>();
     }
 
+    private void HandleLook()
+    {
+        var mouseInput = lookAction.ReadValue<Vector2>();
+
+        //apply mouse input to our current look vector using deltaTime and look speed.
+        curLook.y -= mouseInput.y * GetCorrespondingLookSensitivity(playerInput.devices[0]) * Time.deltaTime;
+        curLook.x += mouseInput.x * GetCorrespondingLookSensitivity(playerInput.devices[0]) * Time.deltaTime;
+
+        //clamp to max and min look angle.
+        curLook.y = Mathf.Clamp(curLook.y, -80f, 80f);
+
+        //rotate the camera up and down
+        cam.transform.localRotation = Quaternion.Euler(curLook.y, 0f, 0f);
+
+        //set rotation for the body.
+        transform.localRotation = Quaternion.Euler(0f, curLook.x, 0f);
+    }
    
 
 
     private void Update()
     {
+        HandleLook();
+
         grounded = controller.isGrounded;
 
         //if the player is grounded zero out their y velocity.
@@ -81,6 +106,24 @@ public class PlayerController : MonoBehaviour
 
         //Move the character controller.
         controller.Move(finalMove * Time.deltaTime);
+
         
+    }
+
+    private float GetCorrespondingLookSensitivity(InputDevice device)
+    {
+        if (device is Gamepad)
+        {
+            return controllerLookSpeed;
+        }
+        if (device is Keyboard)
+        {
+            return mouseLookSpeed;
+        }
+        if (device is Mouse)
+        {
+            return mouseLookSpeed;
+        }
+        return mouseLookSpeed;
     }
 }

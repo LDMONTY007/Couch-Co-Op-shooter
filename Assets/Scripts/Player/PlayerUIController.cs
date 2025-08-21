@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,8 +7,8 @@ public class PlayerUIController : MonoBehaviour
     public GameObject playerObject;
     public PlayerInput playerInput;
 
-    [HideInInspector]
-    public bool paused = false;
+    private bool _paused;
+    public bool paused { get { return _paused; } set { _paused = value; OnPauseStateSwitched(); } }
 
     public GameObject pauseUI;
 
@@ -16,6 +17,8 @@ public class PlayerUIController : MonoBehaviour
     {
         paused = false;
         pauseUI.SetActive(paused);
+
+        OnPauseStateSwitched();
     }
 
     // Update is called once per frame
@@ -28,6 +31,20 @@ public class PlayerUIController : MonoBehaviour
     {
         //playerObject.GetComponent<PlayerInput>().
         Destroy(playerObject);
+    }
+
+    public void OnPauseStateSwitched()
+    {
+        //turn cursor off or on depending on if the game is paused.
+        if (!paused) { 
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else 
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     //used for the "back" input in the control scheme.
