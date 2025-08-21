@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class Revolver : Weapon
 {
-    
+    //base damage, no damage type bonus applied here.
+    int damage = 5;
     int mask;
+    float attackDist = 50f;
 
     private void Awake()
     {
@@ -13,9 +15,14 @@ public class Revolver : Weapon
 
     public override void Attack(Camera c)
     {
-        if (Physics.Raycast(c.transform.position, c.transform.forward, out var hitInfo, 5f, mask))
+        if (Physics.Raycast(c.transform.position, c.transform.forward, out var hitInfo, attackDist, mask))
         {
             Debug.Log("HIT!!");
+            IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
+
+            //if we actually hit a damageable.
+            if (damageable != null)
+            damageable.TakeDamage(damage, gameObject);
         }
     }
 }
