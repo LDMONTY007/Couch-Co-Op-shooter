@@ -848,7 +848,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
 
     public void OnInteract()
     {
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, 10f, playerMask))
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, 5f, playerMask))
         {
             Weapon temp = hitInfo.transform.gameObject.GetComponent<Weapon>();
             //if the interacted object is a weapon, pick it up.
