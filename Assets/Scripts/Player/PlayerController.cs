@@ -8,6 +8,7 @@ using UnityEngine.UIElements.Experimental;
 public class PlayerController : MonoBehaviour, IDamageable
 {
     public float moveSpeed = 5f;
+    public float maxSpeed = 20f;
 
     public TMP_Text idLabel;
     Guid guid;
@@ -471,6 +472,132 @@ public class PlayerController : MonoBehaviour, IDamageable
         //rb.AddForce(direction.normalized * force, ForceMode.Impulse);
     }
 
+    public void HandleMovement()
+    {
+/*        if (dashing)
+        {
+            return;
+        }*/
+
+        //We need to store the accumulated velocity and just take that and use vector projection on the normalized input to 
+        //get some sort of accumulation going where we can just have the actual speed be moving in the direction of our input.
+        //moveVector = (transform.forward * moveInput.y * lastVel.z) + (transform.right * moveInput.x * lastVel.x);
+
+        //remove the player's addtion from the current velocity. We want the player's input to be constant, not a part of the force.
+        //this means we have to remove it before doing anything else. 
+        //if (moveInput.sqrMagnitude > 0) //only decrease if we want to move again. 
+        //rb.linearVelocity -= lastMoveVector;
+
+        //if (moveInput.sqrMagnitude > 0) //only decrease if we want to move again. 
+        //Set last Move Vector so we can use it later. 
+        //lastMoveVector = moveVector;
+
+        //rb.linearVelocity += moveVector;
+
+        //when stunned don't override x and y values
+        //because the player is stunned so they can't move.
+        if (!stunned)
+        {
+            //Axis aligned move, aligned with body axes via projection.
+            Vector3 aaMove = (transform.forward.normalized * moveInput.y) + (transform.right.normalized * moveInput.x);
+
+            //Add the y velocity for jumping to the movement.
+            Vector3 finalMove = /*transform.up * yVel + */aaMove.normalized * moveSpeed;
+
+            #region constant movement
+            //Store yVelocity
+            float yVel = rb.linearVelocity.y;
+            rb.linearVelocity = finalMove;
+            //Restore yVelocity
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, yVel, rb.linearVelocity.z);
+            #endregion
+        }
+
+
+
+        ////The dot product check is for when we are
+        ////turning on a dime and our velocity is the opposite direction
+        ////of our desired velocity. 
+        //if (Vector3.Dot(desiredMoveDirection, rb.linearVelocity) < 0 || moveInput.magnitude == 0 && /*!grappling.IsGrappling() &&*/ !isJumping && isGrounded && /*!dashPressed &&*/ !jumpPressed)
+        //{
+        //    //rb.linearVelocity *= 0;
+        //    //Slow down very quickly but still make it look like it was gradual.
+        //    if (slowToStopCoroutine == null)
+        //    {
+        //        slowToStopCoroutine = StartCoroutine(slowToStop());
+        //    }
+        //}
+        ////Instant velocity changes depending on speed.
+        ////When we start moving we want to immediately go 
+        ////to our base walking speed so velocity change.
+        ////Then from there on out we slowly approach running.
+        //else if (isGrounded && /*!grappling.IsGrappling() &&*/ !isJumping && !jumpPressed)
+        //{
+        //    // Calculate normalized time for acceleration and deceleration
+        //    // float accelerationTime = currentSpeed / maxSpeed;
+        //    // float decelerationTime = 1f - accelerationTime;
+        //    float accelerationTime = currentInputMoveTime / timeToMaxSpeed;
+        //    float decelerationTime = 1f - accelerationTime;
+
+        //    // Apply custom acceleration curve
+        //    currentSpeed = accelerationCurve.Evaluate(rb.linearVelocity.magnitude/*accelerationTime*/);
+
+        //    // Apply custom speed curve
+        //    // currentSpeed = speedCurve.Evaluate(accelerationTime);
+
+        //    Debug.DrawRay(transform.position, transform.TransformDirection(rb.linearVelocity), Color.blue);
+
+        //    //Vector3 targetVelocity = desiredMoveDirection.normalized * maxSpeed;
+
+        //    // Evaluate speed using animation curve, they highest value in the curve is 1 so 1 * maxspeed = maxspeed. 
+        //    // This is how we gradually approach our maxSpeed.
+        //    //float targetSpeed = speedCurve.Evaluate(rb.linearVelocity.magnitude / maxSpeed) * maxSpeed;
+        //    Vector3 targetVelocity = desiredMoveDirection.normalized * currentSpeed;
+        //    //Vector3 targetVelocity = desiredMoveDirection.normalized * maxSpeed;
+
+        //    //AccelerateToward(targetVelocity);
+        //    // Determine current acceleration based on current speed
+        //    //float acceleration = Mathf.Lerp(initialAcceleration, maxAcceleration, rb.linearVelocity.magnitude / maxSpeed);
+
+        //    // Calculate current velocity in desired direction
+        //    //Vector3 currentVelocity = Vector3.Project(rb.linearVelocity, new Vector3(moveInput.x, 0f, moveInput.y));
+
+        //    //CounterVelocity();
+        //    //Doing targetVelocity - rb.linearVelocity * rb.mass / Time.fixedDeltaTime gives us an acceleration of sorts.
+        //    //This is what makes it so no matter how fast you turn the velocity isn't decreased.
+        //    //The LateUpdate() call is what sets the direction of velocity to always face the direction we are wanting
+        //    //to move. 
+
+        //    //The only problem here is doing targetVelocity - rb.linearVelocity basically gets rid of any speed generated
+        //    //by doing a grapple or dash. We want to perserve it somehow.
+        //    //targetVelocity = targetVelocity.normalized * (targetVelocity.magnitude + (rb.linearVelocity.magnitude));
+        //    Vector3 force = (targetVelocity/* - rb.linearVelocity*/)/* * rb.mass / Time.fixedDeltaTime*/;
+        //    //force *= acceleration;
+        //    //force = Vector3.ClampMagnitude(force, maxSpeed);
+        //    //rb.AddForce(force, ForceMode.VelocityChange);
+        //    if (slowToStopCoroutine == null)
+        //        rb.AddForce(force, ForceMode.Force);
+
+
+
+        //    //rb.AddForce(movement, ForceMode.VelocityChange);
+        //    //rb.AddForce(moveVector * movementMultiplier, ForceMode.Force);
+        //    //rb.AddForce(AccumulatedVelocity, ForceMode.VelocityChange);
+        //}
+        //else
+        //{
+        //    if (slowToStopCoroutine == null)
+        //        rb.AddForce(moveVector);
+        //}
+
+        //rb.AddForce(moveVector - GetComponent<Rigidbody>().velocity, ForceMode.VelocityChange);
+        //rb.AddForce(moveVector);
+
+        //rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
+
+
+    }
+
 
     private void Update()
     {
@@ -492,15 +619,82 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void FixedUpdate()
     {
+        HandleMovement();
+        
         HandleJumping();
 
-        //Axis aligned move, aligned with body axes via projection.
-        Vector3 aaMove = (transform.forward.normalized * moveInput.y) + (transform.right.normalized * moveInput.x);
+        ApplyFinalMovements();
+    }
 
-        //Add the y velocity for jumping to the movement.
-        Vector3 finalMove = /*transform.up * yVel + */aaMove.normalized * moveSpeed;
+    public void HandleGravity()
+    {
+        if (useGravity)
+        {
+            //Apply gravity, because gravity is not affected by mass and 
+            //we can't use ForceMode.acceleration with 2D just multiply
+            //by mass at the end. It's basically the same.
+            //In unity it factors in mass for this calculation so 
+            //multiplying by mass cancels out mass entirely.
+            rb.AddForce(-transform.up * gravity * rb.mass);
+        }
 
-        rb.linearVelocity = new Vector3(finalMove.x, rb.linearVelocity.y, finalMove.z);
+    }
+
+    /// <summary>
+    /// Called in late update, should only contain applications that occur after we are done calculating physics. 
+    /// I.E. if we ended up doing custom gravity, call it here.
+    /// </summary>
+    public void ApplyFinalMovements()
+    {
+        //We need to check that the desiredMoveDirection vector isn't zero because otherwise it can zero out our velocity.
+        if (isGrounded && /*!dashing &&*/ !jumping && /*!grappling.IsGrappling() && */desiredMoveDirection.normalized.sqrMagnitude > 0 && !stunned)
+        {
+            // Set the velocity directly to match the desired direction
+            // Don't clamp the speed anymore as there isn't a good reason to do so.
+            // Don't override the Y velocity.
+
+            //store the current y velocity
+            float tempY = rb.linearVelocity.y;
+            //remove the Y value from velocity before we apply that to the forward momentum so we don't "steal" values from the vertical
+            //momentum and add them to the forward momentum.
+            Vector3 velWithoutY = rb.linearVelocity - new Vector3(0f, tempY, 0f);
+
+            //Clamp without y to not prevent jump speed from slowing down,
+            //just clamp xz plane movement.
+            velWithoutY = Vector3.ClampMagnitude(velWithoutY, maxSpeed);
+
+            //when turning on a dime instantly stop moving before continuing.
+            if (Vector3.Dot(desiredMoveDirection, rb.linearVelocity) < 0)
+            {
+                rb.linearVelocity = new Vector3(0f, tempY, 0f);
+            }
+            else
+            {
+                rb.linearVelocity = desiredMoveDirection.normalized * velWithoutY.magnitude/*Mathf.Clamp(rb.linearVelocity.magnitude, 0f, maxSpeed)*/;
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, tempY, rb.linearVelocity.z);
+            }
+
+
+
+            //if (Vector3.Dot(desiredMoveDirection, rb.linearVelocity) < 0)
+            //{
+            //    //currentSpeed = accelerationCurve.Evaluate(0f);//rb.linearVelocity.magnitude/*accelerationTime*/);
+            //    //rb.linearVelocity -= rb.linearVelocity + desiredMoveDirection * 0.1f;
+
+            //    /*rb.linearVelocity -= velWithoutY;
+            //    rb.linearVelocity += velWithoutY * 0.01f;*/
+
+            //    //Slow down very quickly but still make it look like it was gradual.
+            //    if (slowToStopCoroutine == null)
+            //    {
+            //        slowToStopCoroutine = StartCoroutine(slowToStop());
+            //    }
+
+            //}
+
+        }
+
+        HandleGravity();
     }
 
     private float GetCorrespondingLookSensitivity(InputDevice device)
