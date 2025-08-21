@@ -4,6 +4,24 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
+//This is what we should use for decision making in our system:
+//https://www.reddit.com/r/godot/comments/xgrk0g/goap_goaloriented_action_planning_is_absolutely/
+//Goal-Oriented Action Planning (GOAP) is a great way to make an extendable system for AI it seems.
+//It'll exhibit complex behaviors and be able to have extensions made to it quite easily.
+//I want to do this because our enemies will have very specific conditions and these should help 
+//us get those. 
+//Like Ghosts need to slowly approach towards the player which is a simple behavior.
+//But if a player is using a light based weapon we should have the ghost get nervous and decide
+//how beneficial it would be to approach a player and when to back away from a player.
+//Stuff like that.
+//https://web.archive.org/web/20230912145018/https://alumni.media.mit.edu/~jorkin/goap.html
+//But Remember LD, let's not overcomplicate this.
+//You could easily make a specific class for each different enemy in the game
+//and instead later make more complex behavior.
+//This is the way to go, make the different classes for each different AI
+//and code them the way you need, then when you have working stuff make something more complex.
+//But for now, seriously, stick with more basic stuff.
+
 public class Enemy : MonoBehaviour, IDamageable
 {
     //https://www.youtube.com/watch?v=Zjlg9F3FRJs
