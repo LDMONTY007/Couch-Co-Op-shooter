@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1883613499147099308
+--- !u!1 &114487269847698131
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,39 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7728127304311141518}
-  - component: {fileID: 419904554654731933}
+  - component: {fileID: 9031432696801472014}
+  - component: {fileID: 6736668802989074683}
   m_Layer: 0
-  m_Name: Revolver
+  m_Name: DataPersistenceManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7728127304311141518
+--- !u!4 &9031432696801472014
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883613499147099308}
+  m_GameObject: {fileID: 114487269847698131}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.75738, y: -0.12894237, z: 2.4380794}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &419904554654731933
+--- !u!114 &6736668802989074683
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883613499147099308}
+  m_GameObject: {fileID: 114487269847698131}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 284db394b763ff949bd3c380c08a5c7c, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f05f8c5c5a6fa14e98b14eef2e7d479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableDataPersistence: 0
+  initializeDataIfNull: 0
+  overrideSelectedProfileID: 0
+  testSelectedProfileID: test
+  fileName: data.game
+  useEncryption: 0
+  weaponDataList: {fileID: 11400000, guid: 1784d8f8e859d074e8743da8de9dae45, type: 2}

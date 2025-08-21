@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DataPersistenceManager : MonoBehaviour
@@ -15,6 +15,8 @@ public class DataPersistenceManager : MonoBehaviour
     [Header("File Storage Config")]
     [SerializeField] private string fileName;
     [SerializeField] private bool useEncryption;
+
+    public ScriptableObjectList weaponDataList;
 
     private GameData gameData;
     private List<IDataPersistence> dataPersistenceObjects;
@@ -70,15 +72,29 @@ public class DataPersistenceManager : MonoBehaviour
         LoadGame();
     }
 
+    //find the prefab stored in a dropData in our global dropData scriptable object list.
+    public GameObject FindWeaponPrefab(string key)
+    {
+        PrefabData temp = (weaponDataList.soList.Find(d => (d as PrefabData).key == key) as PrefabData);
+        if (temp == null)
+        {
+            Debug.LogError("DROP DATA WAS NULL FOR THIS SEARCH: " + key);
+        }
+        GameObject temp1 = temp.prefab;
+        //return the dropped object specifically.
+        //return (dropDataList.soList.Find(d => d.name == key) as DropData).droppedObject;
+        return temp1;
+    }
+
     //Didn't work
     //correctly if saving
     //referenced a object in the current
     //scene as this would only call
     //after loading into the new scene.
-/*    public void OnSceneUnloaded(Scene scene)
-    {
-        SaveGame();
-    }*/
+    /*    public void OnSceneUnloaded(Scene scene)
+        {
+            SaveGame();
+        }*/
 
     //Called right before we load a scene
     public void OnBeforeSceneUnload()

@@ -3,9 +3,10 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements.Experimental;
+using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour, IDamageable
+
+public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
 {
     public float moveSpeed = 5f;
     public float maxSpeed = 20f;
@@ -27,10 +28,13 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public Weapon curWeapon;
 
+    public Transform handTransform;
+
     private PlayerInput playerInput;
     private InputAction jumpAction;
     private InputAction lookAction;
     private InputAction attackAction;
+    private InputAction interactAction;
 
     float yVel = 0f;
 
@@ -167,8 +171,17 @@ public class PlayerController : MonoBehaviour, IDamageable
         playerModel.material = mat;
     }
 
+    bool didLoad = false;
+
     private void Awake()
     {
+        //because players are created after game start,
+        //Forcefully load data on awake only if we didn't load data yet.
+        if (!didLoad)
+        {
+            LoadData(DataPersistenceManager.instance.GetGameData());
+        }
+
         playerMask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
 
         rb = GetComponent<Rigidbody>();
@@ -177,6 +190,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         jumpAction = playerInput.actions["Jump"];
         lookAction = playerInput.actions["Look"];
         attackAction = playerInput.actions["Attack"];
+        interactAction = playerInput.actions["Interact"];
     }
 
     public void UpdateUI()
@@ -348,7 +362,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             else
             {
                 //Throw error to console if there was no weapon assigned yet.
-                Debug.LogError("No weapon has been assigned to this player. Player " + guid.ToString());
+                Debug.LogWarning("No weapon has been assigned to this player. Player " + guid.ToString());
             }
         }
 
@@ -598,6 +612,16 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     }
 
+    public void HandleInteract()
+    {
+        //call when the interactAction is pressed down this frame (Not continuously held)
+        if (interactAction.GetButtonDown())
+        {
+            Debug.Log("INTERACT!!!");
+            OnInteract();
+        }
+
+    }
 
     private void Update()
     {
@@ -605,6 +629,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         HandleAttack();
 
+        HandleInteract();
+        
         GroundedCheck();
 
         JumpUpdateLogic();
@@ -818,5 +844,96 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         //exit coroutine.
         yield break;
+    }
+
+    public void OnInteract()
+    {
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, 10f, playerMask))
+        {
+            Weapon temp = hitInfo.transform.gameObject.GetComponent<Weapon>();
+            //if the interacted object is a weapon, pick it up.
+            if (temp != null)
+            { 
+                //Swap the current weapon with the one the player interacted with.
+                SwapCurrentWeapon(temp);
+            }
+            //otherwise check if we interacted with an interactible.
+            else
+            {
+                
+                IInteractible interactible = hitInfo.transform.gameObject.GetComponent<IInteractible>();
+
+                //if we actually hit an interactible.
+                if (interactible != null)
+                    interactible.Activate();
+            }
+
+                
+        }
+    }
+
+    public void CreateNewWeapon(GameObject g)
+    {
+        GameObject temp = Instantiate(g);
+
+        //set the weapons parent transform to be this player.
+        temp.transform.SetParent(handTransform, false);
+        //Set to zero position so the transform is exactly where the hand is.
+        temp.transform.localPosition = Vector3.zero;
+        //set to no rotation (0, 0, 0);
+        temp.transform.localRotation = Quaternion.identity;
+
+        //assign the new current weapon.
+        curWeapon = temp.GetComponent<Weapon>();
+    }
+
+    public void SwapCurrentWeapon(Weapon w)
+    {
+        DropCurrentWeapon(w.transform.position, w.transform.rotation);
+        //set the weapons parent transform to be this player.
+        w.transform.SetParent(handTransform, false);
+        //Set to zero position so the transform is exactly where the hand is.
+        w.transform.localPosition = Vector3.zero;
+        //set to no rotation (0, 0, 0);
+        w.transform.localRotation = Quaternion.identity;
+
+        //assign the new current weapon.
+        curWeapon = w;
+
+        //invoke OnPickup if methods are subscribed to it.
+        //OnPickup?.Invoke();
+    }
+
+    void DropCurrentWeapon(Vector3 dropPos, Quaternion rot)
+    {
+        if (curWeapon != null)
+        {
+            //set parent to be null
+            //so that we can disconnect it from the player.
+            curWeapon.transform.parent = null;
+            //put the old weapon at the position given.
+            curWeapon.transform.position = dropPos;
+            //set to the same rotation as the prev weapon.
+            curWeapon.transform.localRotation = rot;
+        }
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        //only set this once per scene to indicate we already loaded data.
+        didLoad = true;
+
+        Debug.Log("LOAD DATA");
+
+        //TODO: Add a null check for this player.
+        //if the weapon is null, creat and load the default weapon.
+        CreateNewWeapon(DataPersistenceManager.instance.FindWeaponPrefab("Revolver"));
+
+        
+    }
+
+    public void SaveData(ref GameData gameData)
+    {
+        //TODO: Add code for saving!!!
     }
 }
