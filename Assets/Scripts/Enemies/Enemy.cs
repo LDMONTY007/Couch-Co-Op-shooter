@@ -390,7 +390,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     }*/
 
-    public void TakeDamage(float damage, GameObject other)
+    public void TakeDamage(float damage, float stunTime, GameObject other)
     {
         //if we're invincible, 
         //then exit this method.

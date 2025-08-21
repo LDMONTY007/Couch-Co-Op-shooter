@@ -743,7 +743,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
         return mouseLookSpeed;
     }
 
-    public void TakeDamage(float damage, GameObject other)
+    public void TakeDamage(float damage, float stunTime, GameObject other)
     {
         //if we're invincible, 
         //then exit this method.

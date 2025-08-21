@@ -10,6 +10,7 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public enum EnemyState
     {
+        Stun,
         Chase,
         Patrol,
         Attack
@@ -96,6 +97,8 @@ public class Zombie : MonoBehaviour, IDamageable
             _stunned = value;
         }
     }
+
+    Coroutine curStunCoroutine;
 
     public void Die()
     {
@@ -248,7 +251,7 @@ public class Zombie : MonoBehaviour, IDamageable
 
         if (currentState == EnemyState.Attack)
         {
-            Debug.Log("HERE!!");
+            
             Attack();
 
             //if we are still to close to the 
@@ -354,7 +357,7 @@ public class Zombie : MonoBehaviour, IDamageable
         }
     }
 
-    public void TakeDamage(float damage, GameObject other)
+    public void TakeDamage(float damage, float stunTime, GameObject other)
     {
         //if we're invincible, 
         //then exit this method.
@@ -365,6 +368,13 @@ public class Zombie : MonoBehaviour, IDamageable
 
         // Apply the damage
         curHealth -= damage;
+
+        if (curStunCoroutine != null)
+        StopCoroutine(curStunCoroutine);
+        //Stun this zombie using the given weapon's stun time.
+        curStunCoroutine = StartCoroutine(StunCoroutine(stunTime));
+
+
 
         //TODO:
         //Add some screen shake
@@ -390,7 +400,7 @@ public class Zombie : MonoBehaviour, IDamageable
 
             //if we actually hit a damageable.
             if (damageable != null)
-                damageable.TakeDamage(attackDamage, gameObject);
+                damageable.TakeDamage(attackDamage, 0.3f, gameObject);
         }
 
         //Start the cooldown.
@@ -403,5 +413,36 @@ public class Zombie : MonoBehaviour, IDamageable
         canAttack = false;
         yield return new WaitForSeconds(attackCooldownTime);
         canAttack = true;
+    }
+
+    private IEnumerator StunCoroutine(float stunTime)
+    {
+        currentState = EnemyState.Stun;
+        stunned = true;
+        
+        if (_agent.isActiveAndEnabled)
+        //Stop the agent's movement.
+        _agent.isStopped = true;
+
+
+        yield return new WaitForSeconds(stunTime);
+        stunned = false;
+        currentState = EnemyState.Patrol;
+        //Reset the agent's path so it can move again.
+        _agent.ResetPath();
+
+        //Set current stun coroutine back to null.
+        curStunCoroutine = null;
+
+    }
+
+    private void OnDestroy()
+    {
+        //TODO:
+        //Do some death animations.
+
+        //Stop the stun coroutine in case it is still active.
+        if (curStunCoroutine != null)
+            StopCoroutine(curStunCoroutine);
     }
 }

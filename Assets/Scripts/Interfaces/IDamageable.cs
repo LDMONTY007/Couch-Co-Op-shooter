@@ -4,5 +4,5 @@ using UnityEngine;
 //to recieve damage.
 public interface IDamageable
 {
-    public void TakeDamage(float damage, GameObject other);
+    public void TakeDamage(float damage, float stunTime, GameObject other);
 }

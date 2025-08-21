@@ -7,6 +7,8 @@ public class Stake : Weapon
     int mask;
     float attackDist = 50f;
 
+    float stunTime = 0.5f;
+
     private void Awake()
     {
         //Get everything except player and ignore raycast.
@@ -22,7 +24,7 @@ public class Stake : Weapon
 
             //if we actually hit a damageable.
             if (damageable != null)
-            damageable.TakeDamage(damage, gameObject);
+            damageable.TakeDamage(damage, stunTime, gameObject);
         }
     }
 }

@@ -28,7 +28,7 @@ public class Spike : MonoBehaviour
         {
             //make the damageable take damage.
             //and tell it we gave it damage.
-            damageable.TakeDamage(1, gameObject);
+            damageable.TakeDamage(1, 0.3f, gameObject);
 
             //if we aren't currently changing our color,
             //then change our color to match that we did damage.
