@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 //I have an idea, I think I need to make a serializable wrapper
@@ -22,6 +23,10 @@ public class GameData
     public List<CharacterType> unlockedCharacters = new List<CharacterType>();
     public bool shouldDisableNewGameButton = false;
     public bool souseDidPossessedDialogue = false;
+
+    //Used to store each player's guid and 
+    //other data about their stats. 
+    public List<PlayerInfo> playerInfos = new List<PlayerInfo>();
 
     //Audio settings
     public float masterVol = -1f;
@@ -107,6 +112,28 @@ public class GameData
         int percentageCompleted = (total * 100 / curAmount);
         return percentageCompleted;
     }
+
+    public void UpdateOrAdd(PlayerInfo playerInfo)
+    {
+        PlayerInfo oldInfo = playerInfos.First(p => p.guid == playerInfo.guid);
+
+        //if oldInfo doesn't contain any actual data,
+        //then this playerInfo hasn't been added to 
+        //our list yet. 
+        if (oldInfo.guid == string.Empty)
+        {
+            //Add the playerInfo to our list.
+            playerInfos.Add(playerInfo);
+        }
+        else
+        {
+            //Remove the old info before
+            //adding the new info, Effectively
+            //updating it.
+            playerInfos.Remove(oldInfo);
+            playerInfos.Add(playerInfo);
+        }
+    }
 }
 
 public enum CharacterType
@@ -114,4 +141,18 @@ public enum CharacterType
     Snake,
     Souse,
     None
+}
+
+public struct PlayerInfo
+{
+    public string guid;
+    //Store the number of zombies killed by this player.
+    public int zombieKillCount;
+    //Store the score of this player.
+    //This is a per-level score and will 
+    //be set to zero when a level starts
+    //so we'll need to implement some logic for
+    //selecting a character, then a level,
+    //and so on. 
+    public int score;
 }

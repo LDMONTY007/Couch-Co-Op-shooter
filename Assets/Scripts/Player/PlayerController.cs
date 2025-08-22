@@ -8,6 +8,22 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
 {
+    #region score tracking
+    private int _score = 0;
+
+    //Make getters and setters in case we need
+    //to subscribe to when this is modified. 
+    public int score { get { return _score; } set { _score = value; } }
+
+    private int _zombieKillCount = 0;
+
+    //Make getters and setters in case we need
+    //to subscribe to when this is modified. 
+    public int zombieKillCount { get { return _zombieKillCount; } set { _zombieKillCount = value; } }
+
+
+    #endregion
+
     public float moveSpeed = 5f;
     public float maxSpeed = 20f;
 
@@ -920,6 +936,14 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
 
     public void LoadData(GameData gameData)
     {
+        //TODO: We need to figure out how to,
+        //when loading data create a new player
+        //automatically and match it's controller
+        //to the player's data so when they load into the scene
+        //they get the correct data matched with their controller.
+        //Look at Niner-Knockout for how you coded that the first
+        //time and reference it for your script.
+
         //only set this once per scene to indicate we already loaded data.
         didLoad = true;
 
@@ -934,6 +958,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
 
     public void SaveData(ref GameData gameData)
     {
-        //TODO: Add code for saving!!!
+        //Update the player's individual data in the game. 
+        gameData.UpdateOrAdd(new PlayerInfo(){ guid = guid.ToString(), score = score, zombieKillCount = zombieKillCount }) ;
     }
 }
