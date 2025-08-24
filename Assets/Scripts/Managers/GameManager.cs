@@ -15,6 +15,11 @@ public class GameManager : IDataPersistence
     //in this singleton.
     //These may not be updated correctly rn.
     public PlayerInfo[] playerInfos = new PlayerInfo[4];
+    //Used to store the 4 input devices for the game.
+    //updated when a player joins in the character select screen.
+    //These 4 indexes represent the index of each display/player
+    //and the device that should be used.
+    public InputDevice[] inputDevices = new InputDevice[4];
 
     public string sceneToLoadOnStart = "Title Scene";
     public bool shouldDisableNewGameAndLoadGameButtons = false;
