@@ -1,8 +1,10 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 
 //https://discussions.unity.com/t/is-there-an-event-for-before-a-scene-is-unloaded/899365/3
@@ -10,6 +12,8 @@ public class CustomSceneManager
 {
     public static event UnityAction beforeSceneUnload;
 
+
+    
 
     //Research on async:
     //Great unity example:https://stackoverflow.com/questions/69282112/how-to-do-waituntil-in-async
@@ -22,43 +26,80 @@ public class CustomSceneManager
     //and it'll start.
     public static async Task LoadSceneAsync(string sceneName, UnityEngine.SceneManagement.LoadSceneMode mode = LoadSceneMode.Single)
     {
-        //If we exit the SnakeWakeupAsHero scene,
-        //we should instead save the scene we should load in at
-        //as the WorldStartInHouse Scene,
-        //This is just in case the player happens to exit to the menu
-        //and loads back in, just to prevent them from sequence breaking.
-        //Basically, only load into the scene where they can't unlock this
-        //character again if they've already unlocked the souse. 
-        //otherwise, load into the scene with the souse to allow them to unlock it.
-/*        if (SceneManager.GetActiveScene().name.Contains("SnakeWakeupAsHero") && (DataPersistenceManager.instance.GetGameData().unlockedCharacters.Contains(CharacterType.Souse) || Player.Instance != null && Player.Instance.availableCharacters.Exists(c => c.characterType == CharacterType.Souse)))
+        try
         {
-            GameManager.Instance.sceneToLoadOnStart = "WorldStartInHouse";
-        }*/
 
-        var lst = new List<GameObject>();
-        for (int i = 0; i < SceneManager.sceneCount; i++)
-        {
-            var sc = SceneManager.GetSceneAt(i);
-            lst.Clear();
-            sc.GetRootGameObjects(lst);
-            //If any MonoBehavior has a method
-            //called "OnBeforeSceneUnloaded"
-            //it will be called here.
-            foreach (var go in lst) go.BroadcastMessage("OnBeforeSceneUnloaded", null, SendMessageOptions.DontRequireReceiver);
+
+
+            //If we exit the SnakeWakeupAsHero scene,
+            //we should instead save the scene we should load in at
+            //as the WorldStartInHouse Scene,
+            //This is just in case the player happens to exit to the menu
+            //and loads back in, just to prevent them from sequence breaking.
+            //Basically, only load into the scene where they can't unlock this
+            //character again if they've already unlocked the souse. 
+            //otherwise, load into the scene with the souse to allow them to unlock it.
+            /*        if (SceneManager.GetActiveScene().name.Contains("SnakeWakeupAsHero") && (DataPersistenceManager.instance.GetGameData().unlockedCharacters.Contains(CharacterType.Souse) || Player.Instance != null && Player.Instance.availableCharacters.Exists(c => c.characterType == CharacterType.Souse)))
+                    {
+                        GameManager.Instance.sceneToLoadOnStart = "WorldStartInHouse";
+                    }*/
+
+
+
+            var lst = new List<GameObject>();
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var sc = SceneManager.GetSceneAt(i);
+                lst.Clear();
+                sc.GetRootGameObjects(lst);
+                //If any MonoBehavior has a method
+                //called "OnBeforeSceneUnloaded"
+                //it will be called here.
+                foreach (var go in lst) go.BroadcastMessage("OnBeforeSceneUnloaded", null, SendMessageOptions.DontRequireReceiver);
+            }
+
+            Debug.LogWarning("BEGIN WAITING 1");
+            //call the event if anything is subscribed to it before we load.
+            beforeSceneUnload?.Invoke();
+
+            Debug.LogWarning("BEGIN WAITING 2");
+
+
+            //Wait and make sure we aren't in a cutscene
+            //this is because fading in/out counts
+            //as a cut scene.
+            await WaitTillNotCutscene();
+
+            Debug.LogWarning("STOP WAITING");
+
+            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, mode);
+            asyncOperation.allowSceneActivation = false; // Prevent immediate activation
+
+            while (!asyncOperation.isDone)
+            {
+                // Update loading progress UI
+                float progress = Mathf.Clamp01(asyncOperation.progress / 0.9f);
+                Debug.LogWarning(progress);
+                // ... update UI with 'progress'
+
+                if (asyncOperation.progress >= 0.9f)
+                {
+                    // When ready, allow scene activation
+                    asyncOperation.allowSceneActivation = true;
+                }
+                await Task.Delay(1);
+            }
+
+            //Actually load the scene asynchronously.
+            //await SceneManager.LoadSceneAsync(sceneName, mode);
         }
-
-
-        //call the event if anything is subscribed to it before we load.
-        beforeSceneUnload?.Invoke();
-
-        //Wait and make sure we aren't in a cutscene
-        //this is because fading in/out counts
-        //as a cut scene.
-        await WaitTillNotCutscene();
-
-        //Actually load the scene asynchronously.
-        SceneManager.LoadSceneAsync(sceneName, mode);
+        catch (Exception e)
+        {
+            Debug.LogError($"LoadSceneAsync failed for {sceneName}: {e}");
+        }
     }
+
+
 
 
     //Because we can't use coroutines we're

@@ -90,7 +90,7 @@ public class SaveSlotsMenu : Menu
 
         //Load the scene which will in turn save the game because of OnSceneUnloaded() in DataPersistenceManager.
 
-        CustomSceneManager.LoadSceneAsync(GameManager.Instance.sceneToLoadOnStart);
+        DataPersistenceManager.instance.LoadSceneAsync(GameManager.Instance.sceneToLoadOnStart);
     }
 
     public void OnBackClicked()

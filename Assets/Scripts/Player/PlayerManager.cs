@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -15,7 +16,11 @@ public class PlayerManager : MonoBehaviour
 
     public PlayerInputManager inputManager;
 
+    //Is this a level? if so we should auto-join the players
+    //based on their saved data.
+    public bool isLevel = false;
 
+    public bool isCharacterSelectScene = false;
 
     public Material[] materials;
 
@@ -25,25 +30,27 @@ public class PlayerManager : MonoBehaviour
 
         inputManager = GetComponent<PlayerInputManager>();
 
+
+    }
+
+    private void Start()
+    {
+        if (isLevel)
         SpawnAllPlayers();
     }
 
-   
+
 
     //TODO: Only allow players to join in the Character Select screen.
     public void OnPlayerJoined(PlayerInput input)
     {
         //Don't allow joining unless we're in the character select scene.
-        if (SceneManager.GetActiveScene().name != "Character Select Scene")
+        if (!isCharacterSelectScene)
         {
             return;
         }
 
-        if (GameManager.Instance.playerExists(input.GetDevice<InputDevice>()))
-        {
-            Debug.LogError("A duplicate Player was added when one already exists for this device!!!");
-            return;
-        }
+      
 
         Guid id = Guid.NewGuid();
         GameObject player = input.gameObject;
@@ -60,7 +67,7 @@ public class PlayerManager : MonoBehaviour
     public void OnPlayerLeave(PlayerInput input)
     {
         //Don't allow leaving unless we're in the character select scene.
-        if (SceneManager.GetActiveScene().name != "Character Select Scene")
+        if (!isCharacterSelectScene)
         {
             return;
         }
@@ -69,34 +76,46 @@ public class PlayerManager : MonoBehaviour
         Destroy(input.gameObject);
         Debug.Log("Player " + input.playerIndex + " Left!");
 
-        if (inputManager.playerCount <= 0)
+        //TODO:
+        //We need to manually code a specific option for players actually leaving and redo this system quite a bit.
+        //Right now it'll think a player leaves when scenes load which is a problem.
+        //Say this player doesn't have a device.
+        //DataPersistenceManager.instance.GetGameData().playerInfos[input.playerIndex].hasDevice = false;
+
+
+/*        if (inputManager.playerCount <= 0)
         {
             Debug.Log("All players have left, return to title screen!");
             CustomSceneManager.LoadSceneAsync("Title Scene");
-        }
-    }
-
-
-
-    //Called before our scene unloads.
-    public void OnBeforeSceneUnloaded()
-    {
-
+        }*/
     }
 
     public void SpawnAllPlayers()
     {
+        Debug.LogWarning("SPAWNING ALL PLAYERS");
+
+        Debug.LogWarning(GameManager.Instance.playerInfos.ToString());
+        Debug.LogWarning(DataPersistenceManager.instance.GetGameData().playerInfos.ToString());
+
         //Spawn all players.
-        for (int i = 0; i < GameManager.Instance.playerInfos.Count; i++)
+        for (int i = 0; i < DataPersistenceManager.instance.GetGameData().playerInfos.Length; i++)
         {
+            //Skip if there is no device assigned for this player.
+            if (!DataPersistenceManager.instance.GetGameData().playerInfos[i].hasDevice)
+                continue;
+
+            Debug.LogWarning("SPAWN");
             //Spawn the player.
-            SpawnPlayer(GameManager.Instance.playerInfos[i]);
+            SpawnPlayer(DataPersistenceManager.instance.GetGameData().playerInfos[i]);
         }
     }
 
     public void SpawnPlayer(PlayerInfo p)
     {
         //Create the player input object.
-        PlayerInput pi = PlayerInput.Instantiate(playerPrefab, p.playerIndex, p.controlScheme, p.splitScreenIndex);
+        //PlayerInput pi = PlayerInput.Instantiate(playerPrefab, p.playerIndex, p.controlScheme, p.splitScreenIndex);
+        //Join the player and let the system auto-assign the screen.
+        inputManager.JoinPlayer(playerIndex: p.playerIndex, controlScheme: p.controlScheme, pairWithDevice: InputSystem.devices.First<InputDevice>(d => d.deviceId == p.deviceID));
+        Debug.LogWarning("Player " + p.playerIndex + " Spawned!");
     }
 }

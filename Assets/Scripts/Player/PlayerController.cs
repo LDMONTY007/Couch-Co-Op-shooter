@@ -353,8 +353,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
         var mouseInput = lookAction.ReadValue<Vector2>();
 
         //apply mouse input to our current look vector using deltaTime and look speed.
-        curLook.y -= mouseInput.y * GetCorrespondingLookSensitivity(playerInput.devices[0]) * Time.deltaTime;
-        curLook.x += mouseInput.x * GetCorrespondingLookSensitivity(playerInput.devices[0]) * Time.deltaTime;
+        curLook.y -= mouseInput.y * GetCorrespondingLookSensitivity(playerInput.GetDevice<InputDevice>()) * Time.deltaTime;
+        curLook.x += mouseInput.x * GetCorrespondingLookSensitivity(playerInput.GetDevice<InputDevice>()) * Time.deltaTime;
 
         //clamp to max and min look angle.
         curLook.y = Mathf.Clamp(curLook.y, -80f, 80f);
@@ -958,7 +958,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
 
     public void SaveData(ref GameData gameData)
     {
+        Debug.LogWarning("SAVE PLAYER DATA!");
         //Update the player's individual data in the game. 
-        gameData.UpdateOrAdd(new PlayerInfo() { guid = guid.ToString(), score = score, zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, device=playerInput.GetDevice<InputDevice>(), playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex });
+        gameData.UpdatePlayerInfo(new PlayerInfo() { guid = guid.ToString(), score = score, zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, deviceID=playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
     }
 }

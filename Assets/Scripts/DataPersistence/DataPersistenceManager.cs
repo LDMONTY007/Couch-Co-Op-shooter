@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -99,6 +100,7 @@ public class DataPersistenceManager : MonoBehaviour
     //Called right before we load a scene
     public void OnBeforeSceneUnload()
     {
+        Debug.LogWarning("SAVE GAME BEFORE UNLOAD");
         //we do this as 
         //sometimes the game doesn't pick up
         //all of them when we load into a scene.
@@ -187,11 +189,15 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void SaveGame()
     {
+        Debug.Log("Save step 1");
+
         //Return right away if data persistence is disabled
         if (disableDataPersistence)
         {
             return;
         }
+
+        Debug.Log("Save step 2");
 
         //If we don't have any data to save, Log a warning here.
         if (this.gameData == null)
@@ -200,17 +206,25 @@ public class DataPersistenceManager : MonoBehaviour
             return;
         }
 
+        Debug.Log("Save step 3");
+
         // pass the data to other scripts so they can update it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
         {
             dataPersistenceObj.SaveData(ref gameData);
         }
 
+        Debug.Log("Save step 4");
+
         //timestamp the data so we know when it was last saved
         gameData.lastUpdated = System.DateTime.Now.ToBinary();
 
+        Debug.Log("Save step 5");
+
         // save that data to a file using the data handler
         dataHandler.Save(gameData, selectedProfileID);
+
+        Debug.LogWarning("Saved Game File!");
     }
 
     private void OnApplicationQuit()
@@ -244,5 +258,22 @@ public class DataPersistenceManager : MonoBehaviour
     public Dictionary<string, GameData> GetAllProfilesGameData()
     {
         return dataHandler.LoadAllProfiles();
+    }
+
+    public void LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+    {
+        StartCoroutine(LoadSceneCoroutine(sceneName, mode));
+        //CustomSceneManager.LoadSceneAsync(sceneName, mode);
+    }
+
+    public IEnumerator LoadSceneCoroutine(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+    {
+        Task load = CustomSceneManager.LoadSceneAsync(sceneName, mode);
+        while (!load.IsCompleted)
+        {
+            yield return null;
+        }
+
+        Debug.Log("FINISHED LOADING!!!");
     }
 }

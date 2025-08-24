@@ -76,7 +76,7 @@ public class MainMenu : Menu
         //Load the desired scene, the OnSceneLoaded() 
         //in DataPersistenceManager
         //will load the pre-existing data.
-        CustomSceneManager.LoadSceneAsync(GameManager.Instance.sceneToLoadOnStart);
+        DataPersistenceManager.instance.LoadSceneAsync(GameManager.Instance.sceneToLoadOnStart);
     }
 
     private void DisableMenuButtons()

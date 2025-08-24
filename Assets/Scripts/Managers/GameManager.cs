@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
-using UnityEngine.Audio;
-using UnityEngine.UI;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : IDataPersistence
 {
@@ -12,7 +13,8 @@ public class GameManager : IDataPersistence
     //Save this data on scene end,
     //but we still want to persist it here
     //in this singleton.
-    public List<PlayerInfo> playerInfos = new List<PlayerInfo>();
+    //These may not be updated correctly rn.
+    public PlayerInfo[] playerInfos = new PlayerInfo[4];
 
     public string sceneToLoadOnStart = "Title Scene";
     public bool shouldDisableNewGameAndLoadGameButtons = false;
@@ -110,12 +112,5 @@ public class GameManager : IDataPersistence
     public AudioMixer GetAudioMixer()
     {
         return audioMasterMixer;
-    }
-
-    public bool playerExists(InputDevice device)
-    {
-        //if the player exists return true.
-        if (playerInfos.Exists(p => p.device == device)) return true;
-        return false;
     }
 }

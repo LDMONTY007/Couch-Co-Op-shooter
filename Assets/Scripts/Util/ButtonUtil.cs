@@ -20,8 +20,9 @@ public class ButtonUtil : MonoBehaviour
     public void LoadScene(string sceneName)
     {
         Debug.LogWarning("LOADING SCENE!!!");
+        DataPersistenceManager.instance.LoadSceneAsync(sceneName);
         //CustomSceneManager.LoadSceneAsync(sceneName);
-        SceneManager.LoadScene(sceneName);
+        //SceneManager.LoadScene(sceneName);
     }
 
     public void QuitGame()

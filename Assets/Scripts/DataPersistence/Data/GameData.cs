@@ -25,7 +25,7 @@ public class GameData
 
     //Used to store each player's guid and 
     //other data about their stats. 
-    public List<PlayerInfo> playerInfos = new List<PlayerInfo>();
+    public PlayerInfo[] playerInfos = new PlayerInfo[4];
 
     //Audio settings
     public float masterVol = -1f;
@@ -112,26 +112,9 @@ public class GameData
         return percentageCompleted;
     }
 
-    public void UpdateOrAdd(PlayerInfo playerInfo)
+    public void UpdatePlayerInfo(PlayerInfo playerInfo)
     {
-        PlayerInfo oldInfo = playerInfos.First(p => p.guid == playerInfo.guid);
-
-        //if oldInfo doesn't contain any actual data,
-        //then this playerInfo hasn't been added to 
-        //our list yet. 
-        if (oldInfo.guid == string.Empty)
-        {
-            //Add the playerInfo to our list.
-            playerInfos.Add(playerInfo);
-        }
-        else
-        {
-            //Remove the old info before
-            //adding the new info, Effectively
-            //updating it.
-            playerInfos.Remove(oldInfo);
-            playerInfos.Add(playerInfo);
-        }
+        playerInfos[playerInfo.playerIndex] = playerInfo;
     }
 }
 
@@ -142,6 +125,7 @@ public enum CharacterType
     None
 }
 
+[Serializable]
 public struct PlayerInfo
 {
     public string guid;
@@ -155,10 +139,12 @@ public struct PlayerInfo
     //and so on. 
     public int score;
 
-    public InputDevice device;
+    public int deviceID;
 
     public string controlScheme;
 
     public int playerIndex;
     public int splitScreenIndex;
+
+    public bool hasDevice;
 }
