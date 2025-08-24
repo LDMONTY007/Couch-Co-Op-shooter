@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ButtonUtil : MonoBehaviour
 {
@@ -18,7 +19,9 @@ public class ButtonUtil : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        CustomSceneManager.LoadSceneAsync(sceneName);
+        Debug.LogWarning("LOADING SCENE!!!");
+        //CustomSceneManager.LoadSceneAsync(sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 
     public void QuitGame()

@@ -959,6 +959,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
     public void SaveData(ref GameData gameData)
     {
         //Update the player's individual data in the game. 
-        gameData.UpdateOrAdd(new PlayerInfo(){ guid = guid.ToString(), score = score, zombieKillCount = zombieKillCount }) ;
+        gameData.UpdateOrAdd(new PlayerInfo() { guid = guid.ToString(), score = score, zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, device=playerInput.GetDevice<InputDevice>(), playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex });
     }
 }

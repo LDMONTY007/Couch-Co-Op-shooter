@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 //I have an idea, I think I need to make a serializable wrapper
 //that does Serialization for every object with IDataPersistence
@@ -16,9 +17,7 @@ public class GameData
     public int deathCount;
     public Vector3 playerPos;
     public bool shouldLoadInAsVillain;
-    public string sceneToLoadOnStart = "Title Scene";
-    public bool shouldLoadInAtStairs = false;
-    public bool shouldLoadInAtEntrance = false;
+    public string sceneToLoadOnStart = "Character Select Scene";
     public CharacterType currentCharacter;
     public List<CharacterType> unlockedCharacters = new List<CharacterType>();
     public bool shouldDisableNewGameButton = false;
@@ -65,12 +64,12 @@ public class GameData
 
     //the bool is just determining if
     //the player collected them or not.
-    public SerializableDictionary<string, bool> chests;
+    //public SerializableDictionary<string, bool> chests;
 
 
     //Stores the positions of 
     //the characters
-    public SerializableDictionary<string, Vector2> characterPositions;
+    //public SerializableDictionary<string, Vector2> characterPositions;
 
     //dictionary storing data for objects
     //which contain 1 dictionary within themselves 
@@ -87,8 +86,8 @@ public class GameData
     {
         deathCount = 0;
         playerPos = Vector3.zero;
-        chests = new SerializableDictionary<string, bool>();
-        characterPositions = new SerializableDictionary<string, Vector2>();
+        //chests = new SerializableDictionary<string, bool>();
+        //characterPositions = new SerializableDictionary<string, Vector2>();
         //collectibles = new SerializableDictionary<string, bool>();
         //collectibles = new SerializableDictionary<string, Collectible>();
         //characters = new SerializableDictionary<string, SerializableDictionary<string, bool>>();
@@ -155,4 +154,11 @@ public struct PlayerInfo
     //selecting a character, then a level,
     //and so on. 
     public int score;
+
+    public InputDevice device;
+
+    public string controlScheme;
+
+    public int playerIndex;
+    public int splitScreenIndex;
 }

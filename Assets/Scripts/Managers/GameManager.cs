@@ -4,9 +4,16 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : IDataPersistence
 {
+    //The players in the game.
+    //Save this data on scene end,
+    //but we still want to persist it here
+    //in this singleton.
+    public List<PlayerInfo> playerInfos = new List<PlayerInfo>();
+
     public string sceneToLoadOnStart = "Title Scene";
     public bool shouldDisableNewGameAndLoadGameButtons = false;
 
@@ -53,6 +60,13 @@ public class GameManager : IDataPersistence
     {
         sceneToLoadOnStart = gameData.sceneToLoadOnStart;
         shouldDisableNewGameAndLoadGameButtons = gameData.shouldDisableNewGameButton;
+        playerInfos = gameData.playerInfos;
+
+        //If this scene has a player input manager spawn all players.
+        if (PlayerInputManager.instance != null)
+        {
+
+        }
     }
 
     public void SaveData(ref GameData gameData)
@@ -62,6 +76,7 @@ public class GameManager : IDataPersistence
         Debug.Log("Saving GameManager!");
         gameData.sceneToLoadOnStart = sceneToLoadOnStart;
         gameData.shouldDisableNewGameButton = shouldDisableNewGameAndLoadGameButtons;
+        gameData.playerInfos = playerInfos;
     }
 
 
@@ -95,5 +110,12 @@ public class GameManager : IDataPersistence
     public AudioMixer GetAudioMixer()
     {
         return audioMasterMixer;
+    }
+
+    public bool playerExists(InputDevice device)
+    {
+        //if the player exists return true.
+        if (playerInfos.Exists(p => p.device == device)) return true;
+        return false;
     }
 }
