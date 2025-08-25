@@ -19,9 +19,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     //Make getters and setters in case we need
     //to subscribe to when this is modified. 
-    public int zombieKillCount { get { return _zombieKillCount; } set { _zombieKillCount = value; 
+    public int zombieKillCount { get { return _zombieKillCount; } set { _zombieKillCount = value;
             //Update the visual label for the zombie kill count.
-            zombieKillsLabel.text = "Zombies Killed: " + value; } }
+            uiController.UpdateZombieKills(value); } }
 
 
     #endregion
@@ -29,8 +29,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float moveSpeed = 5f;
     public float maxSpeed = 20f;
 
-    public TMP_Text zombieKillsLabel;
-    public TMP_Text idLabel;
     Guid guid;
 
     Vector2 moveInput;
@@ -59,7 +57,6 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     bool grounded = false;
 
-    [HideInInspector]
     public PlayerUIController uiController;
 
     Rigidbody rb;
@@ -184,7 +181,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void init(Guid id, int index, Material mat, PlayerInfo p)
     {
-        idLabel.text = "Player " + index;
+        //Update UI label.
+        uiController.UpdateIDLabel(index);
 
         guid = id;
         playerModel.material = mat;

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,19 @@ public class PlayerUIController : MonoBehaviour
     public GameObject pauseUI;
 
     public Slider healthBarSlider;
+
+    public TMP_Text zombieKillsLabel;
+    public TMP_Text idLabel;
+
+    public void UpdateZombieKills(int kills)
+    {
+        zombieKillsLabel.text = "Zombies Killed: " + kills;
+    }
+
+    public void UpdateIDLabel(int index)
+    {
+        idLabel.text = "Player " + index;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

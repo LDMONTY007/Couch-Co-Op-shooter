@@ -740,7 +740,9 @@ MonoBehaviour:
   playerController: {fileID: 0}
   playerInput: {fileID: 0}
   pauseUI: {fileID: 3325325605095600927}
-  healthBarSlider: {fileID: 0}
+  healthBarSlider: {fileID: 6199408077917269226}
+  zombieKillsLabel: {fileID: 8444317263175516251}
+  idLabel: {fileID: 2633935188393769894}
 --- !u!1 &5388226147349064277
 GameObject:
   m_ObjectHideFlags: 0

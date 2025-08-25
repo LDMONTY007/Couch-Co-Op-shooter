@@ -399,13 +399,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   maxSpeed: 20
-  zombieKillsLabel: {fileID: 1573221892050544626}
-  idLabel: {fileID: 4929356022009584655}
   playerModel: {fileID: 8945600692140703755}
   cam: {fileID: 7371796333402482502}
   curWeapon: {fileID: 0}
   handTransform: {fileID: 1041062259185607100}
-  uiController: {fileID: 0}
+  uiController: {fileID: 1498720800337398024}
   invincible: 0
   canJump: 1
   groundCheckDist: 0.1
@@ -842,10 +840,6 @@ PrefabInstance:
       propertyPath: playerObject
       value: 
       objectReference: {fileID: 5336900089535494830}
-    - target: {fileID: 8370379260062690977, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
-      propertyPath: healthBarSlider
-      value: 
-      objectReference: {fileID: 3958015339848977219}
     - target: {fileID: 8578282350130901058, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -882,41 +876,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f1ddeae23c306a4eb0792643b6e5c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1573221892050544626 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8444317263175516251, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
-  m_PrefabInstance: {fileID: 6981996925491668905}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3958015339848977219 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6199408077917269226, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
-  m_PrefabInstance: {fileID: 6981996925491668905}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &4105307620921623531 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6349497895450846274, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
   m_PrefabInstance: {fileID: 6981996925491668905}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4929356022009584655 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2633935188393769894, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
-  m_PrefabInstance: {fileID: 6981996925491668905}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
