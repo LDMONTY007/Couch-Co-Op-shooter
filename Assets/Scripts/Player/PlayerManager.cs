@@ -41,7 +41,7 @@ public class PlayerManager : MonoBehaviour
 
 
 
-    //TODO: Only allow players to join in the Character Select screen.
+   /* //TODO: Only allow players to join in the Character Select screen.
     public void OnPlayerJoined(PlayerInput input)
     {
         //Don't allow joining unless we're in the character select scene.
@@ -83,12 +83,12 @@ public class PlayerManager : MonoBehaviour
         //DataPersistenceManager.instance.GetGameData().playerInfos[input.playerIndex].hasDevice = false;
 
 
-/*        if (inputManager.playerCount <= 0)
+*//*        if (inputManager.playerCount <= 0)
         {
             Debug.Log("All players have left, return to title screen!");
             CustomSceneManager.LoadSceneAsync("Title Scene");
-        }*/
-    }
+        }*//*
+    }*/
 
     public void SpawnAllPlayers()
     {
@@ -115,7 +115,9 @@ public class PlayerManager : MonoBehaviour
         //Create the player input object.
         //PlayerInput pi = PlayerInput.Instantiate(playerPrefab, p.playerIndex, p.controlScheme, p.splitScreenIndex);
         //Join the player and let the system auto-assign the screen.
-        inputManager.JoinPlayer(playerIndex: p.playerIndex, controlScheme: p.controlScheme, pairWithDevice: InputSystem.devices.First<InputDevice>(d => d.deviceId == p.deviceID));
+        PlayerInput pi = inputManager.JoinPlayer(playerIndex: p.playerIndex, controlScheme: p.controlScheme, pairWithDevice: InputSystem.devices.First<InputDevice>(d => d.deviceId == p.deviceID));
         Debug.LogWarning("Player " + p.playerIndex + " Spawned!");
+
+        pi.GetComponent<PlayerController>().init(Guid.Parse(p.guid), p.playerIndex, materials[p.playerIndex], p);
     }
 }

@@ -179,12 +179,19 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
         Destroy(gameObject);
     }
 
-    public void init(Guid id, int index, Material mat)
+    public void init(Guid id, int index, Material mat, PlayerInfo p)
     {
         idLabel.text = "Player " + index;
 
         guid = id;
         playerModel.material = mat;
+
+        //Now assign the data we have for
+        //the player scores and such.
+        score = p.score;
+        zombieKillCount = p.zombieKillCount;
+
+
     }
 
     bool didLoad = false;
