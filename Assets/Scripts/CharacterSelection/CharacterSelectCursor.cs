@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -5,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 //I stole a lot of the code from the VirtualMouseInput script
@@ -43,6 +45,8 @@ public class CharacterSelectCursor : MonoBehaviour
     //if the user already selected a character.
     public bool didSelect;
     private GameObject coinInstance;
+
+    private int curSelectedDisplay = -1;
 
     //public PlayerUIIcon playerUIIcon;
 
@@ -138,15 +142,26 @@ public class CharacterSelectCursor : MonoBehaviour
         List<RaycastResult> results = new List<RaycastResult>();
         //gr.Raycast(pointerEventData, results);
         EventSystem.current.RaycastAll(pointerEventData, results);
-        Debug.Log("HERE 1!");
+
         if (results.Count > 0)
         {
+            //Only activate a button if it is the topmost
+            //object in the raycast.
+
             //Check all layers for the display to select.
             foreach (var result in results)
             {
+                if (result.gameObject.TryGetComponent(out Button button))
+                {
+                    //tell the button we clicked it with our cursor.
+                    button.onClick.Invoke();
+                    Debug.Log("PRESS BUTTON");
+                    break;
+                }
+
                 if (result.gameObject.TryGetComponent(out DisplayIdentifier display))
                 {
-                   
+
                     //assign the device controlling this player and the character prefab they selected to the GameManager before we load the 
                     //next scene.
                     //PlayerInfo playerInfo = new PlayerInfo(playerInput.GetDevice<InputDevice>(), playerInput.currentControlScheme, selectIcon.characterIcon, GameManager.instance.stockTotal);
@@ -163,6 +178,12 @@ public class CharacterSelectCursor : MonoBehaviour
                         if (coinInstance)
                             Destroy(coinInstance.gameObject);
                         coinInstance = createCoin(coinPrefab, cursorTransform.position, Quaternion.identity, canvas.transform, characterIndex);
+
+                        GameData gameData = DataPersistenceManager.instance.GetGameData();
+                        //Create new player info with defaults to delete the one we placed for the previously
+                        //selected display.
+                        gameData.playerInfos[curSelectedDisplay] = new PlayerInfo();
+
                         //replace the reference so that 
                         //the old character they chose is 
                         //removed and we assign the new 
@@ -171,6 +192,11 @@ public class CharacterSelectCursor : MonoBehaviour
 
                         //Assign the input device to it's new slot.
                         GameManager.Instance.inputDevices[display.index] = playerInput.GetDevice<InputDevice>();
+                       
+                        gameData.playerInfos[display.index] = (new PlayerInfo() { guid = Guid.NewGuid().ToString(), score = 0, zombieKillCount = 0, controlScheme = playerInput.currentControlScheme, deviceID = playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
+
+                        //set which display we selected.
+                        curSelectedDisplay = display.index;
 
                         //Exit the loop as we found the display.
                         break;
@@ -193,7 +219,10 @@ public class CharacterSelectCursor : MonoBehaviour
                         //print(results[0].gameObject.name);
 
                         //Assign the input device to it's new slot.
-                        GameManager.Instance.inputDevices[display.index] = playerInput.GetDevice<InputDevice>();
+                        GameData gameData = DataPersistenceManager.instance.GetGameData();
+                        gameData.playerInfos[display.index] = (new PlayerInfo() { guid = Guid.NewGuid().ToString(), score = 0, zombieKillCount = 0, controlScheme = playerInput.currentControlScheme, deviceID = playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
+
+
 
                         //Play the audio of the selection
                         //AudioManager.instance.globalSource.PlayOneShot(playerInfo.characterIcon.characterAnnouncement);
@@ -201,20 +230,18 @@ public class CharacterSelectCursor : MonoBehaviour
                         //Call to reassign the character we've selected.
                         //playerUIIcon.ReassignCharacterIcon(selectIcon);
 
+                        //set which display we selected.
+                        curSelectedDisplay = display.index;
+
                         //Exit the loop as we found the display.
                         break;
                     }
                 }
             }
-            
 
-            //Only activate a button if it is the topmost
-            //object in the raycast.
-            if (results[0].gameObject.TryGetComponent(out Button button))
-            {
-                //tell the button we clicked it with our cursor.
-                button.onClick.Invoke();
-            }
+
+
+
 
 
         }

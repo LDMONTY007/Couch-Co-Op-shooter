@@ -15,18 +15,68 @@ public class CharacterSelectManager : MonoBehaviour
 
     List<PlayerInput> inputList = new List<PlayerInput>();
 
-    private void Awake()
+    private void OnInputDeviceChange(InputDevice device, InputDeviceChange change)
     {
+        switch (change)
+        {
+            case InputDeviceChange.Added:
+                // New Device.
+                Debug.Log(device + " was Added!");
+                break;
+            case InputDeviceChange.Disconnected:
+                //On disconnect we want to delete the cursor and their playerInfo
+                //BUT ONLY IN THE SELECTION SCENE
+                //If a controller is disconnected during gameplay it should auto pause
+                //and then let the user reconnect it. THIS IS REALLY IMPORTANT.
+
+                //if this device exists in our input array, remove it when it disconnects.
+                //remove this device from our 4 input array.
+                for (int i = 0; i < GameManager.Instance.inputDevices.Length; i++)
+                {
+                    if (GameManager.Instance.inputDevices[i] == device)
+                    {
+                        GameManager.Instance.inputDevices[i] = null;
+                        break;
+                    }
+                }
+
+                int index = inputList.FindIndex(0, inputList.Count, p => p.GetDevice<InputDevice>() == device);
+
+                //Destroy this cursor.
+                Destroy(inputList[index].gameObject);
+
+                //Remove the input device from our list.
+                inputList.RemoveAt(index);
 
 
 
-        // Wait for first button press on a gamepad.
-        /*InputSystem.onEvent
-            .ForDevice<Keyboard>()
-            .Where(e => e.HasButtonPress())
-            .CallOnce(ctrl => Debug.Log($"Button {ctrl} pressed"));*/
+                // Debug the disconnect.
+                Debug.Log(device + " was Disconnected!");
+                break;
+            case InputDeviceChange.Reconnected:
+                // Plugged back in.
+                Debug.Log(device + " was Reconnected!");
+                break;
+            case InputDeviceChange.Removed:
+                // Remove from Input System entirely; by default, Devices stay in the system once discovered.
+                Debug.Log(device + " was Removed!");
+                break;
+            default:
+                // See InputDeviceChange reference for other event types.
+                break;
+        }
+    }
 
-        InputSystem.onEvent.Where(e => e.HasButtonPress()).Call(eventPtr =>
+    System.IDisposable playerJoinDisposable;
+
+    private void OnEnable()
+    {
+        //Setup input device change check
+        InputSystem.onDeviceChange += OnInputDeviceChange;
+
+        //Setup the check for a player input device pressing any button.
+        //use a disposeable so it can be disposed before this scene ends.
+        playerJoinDisposable = InputSystem.onEvent.Where(e => e.HasButtonPress()).Call(eventPtr =>
         {
             if (!eventPtr.IsA<StateEvent>() && !eventPtr.IsA<DeltaStateEvent>())
                 return;
@@ -58,66 +108,29 @@ public class CharacterSelectManager : MonoBehaviour
                         }
                     }
 
-                    
 
-                    
+
+
                 }
             }
         });
+    }
 
-        InputSystem.onDeviceChange +=
-        (device, change) =>
-        {
-            switch (change)
-            {
-                case InputDeviceChange.Added:
-                    // New Device.
-                    Debug.Log(device + " was Added!");
-                    break;
-                case InputDeviceChange.Disconnected:
-                    //On disconnect we want to delete the cursor and their playerInfo
-                    //BUT ONLY IN THE SELECTION SCENE
-                    //If a controller is disconnected during gameplay it should auto pause
-                    //and then let the user reconnect it. THIS IS REALLY IMPORTANT.
+    private void OnDisable()
+    {
+        //dispose any subscribed methods
+        //or disposeables
+        //so they don't get called after this scene unloads.
+        InputSystem.onDeviceChange -= OnInputDeviceChange;
+        playerJoinDisposable.Dispose();
+    }
 
-                    //if this device exists in our input array, remove it when it disconnects.
-                    //remove this device from our 4 input array.
-                    for (int i = 0; i < GameManager.Instance.inputDevices.Length; i++)
-                    {
-                        if (GameManager.Instance.inputDevices[i] == device)
-                        {
-                            GameManager.Instance.inputDevices[i] = null;
-                            break;
-                        }
-                    }
-
-                    int index = inputList.FindIndex(0, inputList.Count, p => p.GetDevice<InputDevice>() == device);
-
-                    //Destroy this cursor.
-                    Destroy(inputList[index].gameObject);
-
-                    //Remove the input device from our list.
-                    inputList.RemoveAt(index);
+    private void Awake()
+    {
 
 
 
-                    // Debug the disconnect.
-                    Debug.Log(device + " was Disconnected!");
-                    break;
-                case InputDeviceChange.Reconnected:
-                    // Plugged back in.
-                    Debug.Log(device + " was Reconnected!");
-                    break;
-                case InputDeviceChange.Removed:
-                    // Remove from Input System entirely; by default, Devices stay in the system once discovered.
-                    Debug.Log(device + " was Removed!");
-                    break;
-                default:
-                    // See InputDeviceChange reference for other event types.
-                    break;
-            }
-        };
-        //GameManager.instance.characterManager = this;
+      
     }
 
 /*    public void OnPlayerJoined(PlayerInput input)
