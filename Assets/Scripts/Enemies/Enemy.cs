@@ -326,25 +326,27 @@ public class Enemy : MonoBehaviour, IDamageable
     #region boid flocking behavior
 
     float maxVelocity = 2.5f;
-    float maxForce = 2.5f;
+    float maxForce = 5f;
     float mass = 1f;
     float slowingRadius = 3f;
     float wanderAngle = 0f;
     float angleChange = 5f;
     float circleDistance = 0.5f;
     float circleRadius = 0.1f;
-    float separationRadius = 1.1f;
-    float maxSeparation = 5f;
-    float neighbourHoodRadius = 10f;
+    float separationRadius = 1.5f;
+    float maxSeparation = 15f;
+    float neighbourHoodRadius = 3f;
     float matchingFactor = 0.2f;
-    float centeringFactor = 0.2f;
+    float centeringFactor = 0.1f;
+    float leaderBehindDist = 5f;
 
     private void HandleBehaviors()
     {
         UnityEngine.Object[] enemies = FindObjectsByType(typeof(Enemy), FindObjectsSortMode.None);
 
         Vector3 steering = Wander();
-        steering += Pursuit(playerRb);
+        //steering += Pursuit(playerRb);
+        steering += followLeader(playerRb);
         steering += Separation(enemies);
         steering += Alignment(enemies);
         steering += Cohesion(enemies);
@@ -576,6 +578,18 @@ public class Enemy : MonoBehaviour, IDamageable
         Vector3 centerDisplacement = (averagePos - transform.position) * centeringFactor;
 
         return centerDisplacement;
+    }
+
+    public Vector3 followLeader(Rigidbody leader)
+    {
+        //Calculate behind point.
+        Vector3 tv = leader.linearVelocity.normalized * -1 * leaderBehindDist;
+        Vector3 behind = leader.position + tv;
+
+        //Seek the behind position.
+        Vector3 force = Seek(behind);
+
+        return force;
     }
 
     #endregion
