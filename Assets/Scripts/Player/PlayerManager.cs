@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,7 +10,7 @@ using UnityEngine.SceneManagement;
 //This code was adopted from the following tutorial:
 //https://www.youtube.com/watch?app=desktop&v=fyC8I0DaGgs&t=0s
 [RequireComponent(typeof(PlayerInputManager))]
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviour, IDataPersistence
 {
     public static PlayerManager instance;
 
@@ -24,6 +26,8 @@ public class PlayerManager : MonoBehaviour
 
     public Material[] materials;
 
+    List<PlayerController> playerList = new List<PlayerController>();
+
     private void Awake()
     {
         instance = this;
@@ -35,8 +39,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        if (isLevel)
-        SpawnAllPlayers();
+
     }
 
 
@@ -90,27 +93,26 @@ public class PlayerManager : MonoBehaviour
         }*//*
     }*/
 
-    public void SpawnAllPlayers()
+    public void SpawnAllPlayers(GameData gameData)
     {
         Debug.LogWarning("SPAWNING ALL PLAYERS");
 
-        Debug.LogWarning(GameManager.Instance.playerInfos.ToString());
-        Debug.LogWarning(DataPersistenceManager.instance.GetGameData().playerInfos.ToString());
+       
 
         //Spawn all players.
-        for (int i = 0; i < DataPersistenceManager.instance.GetGameData().playerInfos.Length; i++)
+        for (int i = 0; i < gameData.playerInfos.Length; i++)
         {
             //Skip if there is no device assigned for this player.
-            if (!DataPersistenceManager.instance.GetGameData().playerInfos[i].hasDevice)
+            if (!gameData.playerInfos[i].hasDevice)
                 continue;
 
             Debug.LogWarning("SPAWN");
             //Spawn the player.
-            SpawnPlayer(DataPersistenceManager.instance.GetGameData().playerInfos[i]);
+            SpawnPlayer(gameData.playerInfos[i], gameData);
         }
     }
 
-    public void SpawnPlayer(PlayerInfo p)
+    public void SpawnPlayer(PlayerInfo p, GameData gameData)
     {
         //Create the player input object.
         //PlayerInput pi = PlayerInput.Instantiate(playerPrefab, p.playerIndex, p.controlScheme, p.splitScreenIndex);
@@ -118,6 +120,35 @@ public class PlayerManager : MonoBehaviour
         PlayerInput pi = inputManager.JoinPlayer(playerIndex: p.playerIndex, controlScheme: p.controlScheme, pairWithDevice: InputSystem.devices.First<InputDevice>(d => d.deviceId == p.deviceID));
         Debug.LogWarning("Player " + p.playerIndex + " Spawned!");
 
-        pi.GetComponent<PlayerController>().init(Guid.Parse(p.guid), p.playerIndex, materials[p.playerIndex], p);
+        //Get player controller.
+        PlayerController controller = pi.GetComponent<PlayerController>();
+
+        //Call init on the player.
+        controller.init(Guid.Parse(p.guid), p.playerIndex, materials[p.playerIndex], p);
+
+        //Add to our player list.
+        playerList.Add(controller);
+
+        //Call load data manually so that the player knows
+        //it has been loaded and will instantiate
+        //the weapon in it's game data.
+        controller.LoadDataManually(gameData);
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        //Spawn all players with their loaded data.
+        SpawnAllPlayers(gameData);
+    }
+
+    public void SaveData(ref GameData gameData)
+    {
+        //Call save data manually on players
+        //so any private variables are properly
+        //saved and we don't need to change access modifiers.
+        foreach(var player in playerList)
+        {
+            player.SaveDataManually(ref gameData);
+        }
     }
 }

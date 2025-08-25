@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 
-public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
+public class PlayerController : MonoBehaviour, IDamageable
 {
     #region score tracking
     private int _score = 0;
@@ -19,7 +19,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
 
     //Make getters and setters in case we need
     //to subscribe to when this is modified. 
-    public int zombieKillCount { get { return _zombieKillCount; } set { _zombieKillCount = value; } }
+    public int zombieKillCount { get { return _zombieKillCount; } set { _zombieKillCount = value; 
+            //Update the visual label for the zombie kill count.
+            zombieKillsLabel.text = "Zombies Killed: " + value; } }
 
 
     #endregion
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
     public float moveSpeed = 5f;
     public float maxSpeed = 20f;
 
+    public TMP_Text zombieKillsLabel;
     public TMP_Text idLabel;
     Guid guid;
 
@@ -198,12 +201,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
 
     private void Awake()
     {
-        //because players are created after game start,
-        //Forcefully load data on awake only if we didn't load data yet.
-        if (!didLoad)
-        {
-            LoadData(DataPersistenceManager.instance.GetGameData());
-        }
 
         playerMask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
 
@@ -380,7 +377,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
             if (curWeapon != null)
             {
                 //call attack.
-                curWeapon.Attack(cam);
+                curWeapon.Attack(cam, this);
             }
             else
             {
@@ -941,7 +938,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
         }
     }
 
-    public void LoadData(GameData gameData)
+    public void LoadDataManually(GameData gameData)
     {
         //TODO: We need to figure out how to,
         //when loading data create a new player
@@ -963,7 +960,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDataPersistence
         
     }
 
-    public void SaveData(ref GameData gameData)
+    public void SaveDataManually(ref GameData gameData)
     {
         Debug.LogWarning("SAVE PLAYER DATA!");
         //Update the player's individual data in the game. 

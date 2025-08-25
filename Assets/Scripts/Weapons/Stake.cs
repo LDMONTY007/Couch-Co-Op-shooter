@@ -15,7 +15,7 @@ public class Stake : Weapon
         mask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
     }
 
-    public override void Attack(Camera c)
+    public override void Attack(Camera c, PlayerController player)
     {
         if (Physics.Raycast(c.transform.position, c.transform.forward, out var hitInfo, attackDist, mask))
         {
@@ -23,8 +23,9 @@ public class Stake : Weapon
             IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
 
             //if we actually hit a damageable.
+            //Also pass the player as the other gameobject rather than this weapon.
             if (damageable != null)
-            damageable.TakeDamage(damage, stunTime, gameObject);
+            damageable.TakeDamage(damage, stunTime, player.gameObject);
         }
     }
 }

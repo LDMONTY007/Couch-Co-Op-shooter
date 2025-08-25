@@ -22,7 +22,7 @@ public class Revolver : Weapon
         mask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
     }
 
-    public override void Attack(Camera c)
+    public override void Attack(Camera c, PlayerController player)
     {
         //if this weapon is on cooldown, then
         //don't execute this method.
@@ -40,8 +40,9 @@ public class Revolver : Weapon
             IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
 
             //if we actually hit a damageable.
+            //Also pass the player as the other gameobject rather than this weapon.
             if (damageable != null)
-            damageable.TakeDamage(damage, stunTime, gameObject);
+            damageable.TakeDamage(damage, stunTime, player.gameObject);
         }
 
         //Start the cooldown.

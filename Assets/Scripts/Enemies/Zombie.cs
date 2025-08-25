@@ -102,11 +102,20 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        if (lastAttacker != null)
+        {
+            //Increment the last attacker's 
+            //zombie kill count.
+            lastAttacker.zombieKillCount++;
+        }
+
         //TODO: Code dying.
         //Spawn a blood splatter where this enemy was or the corresponding death effect.
         Debug.Log("DEAD");
         Destroy(gameObject);
     }
+
+    private PlayerController lastAttacker = null;
 
     public bool canAttack = true;
 
@@ -365,6 +374,14 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             return;
         }
+
+        //Say what the last attacker was
+        //if it was a player.
+        //this helps us identify who gets credit
+        //for kills.
+        PlayerController p = other.GetComponent<PlayerController>();
+        if (p != null) 
+        lastAttacker = p;
 
         // Apply the damage
         curHealth -= damage;

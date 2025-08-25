@@ -372,6 +372,14 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 9327a481-8ae4-4081-9464-1ba6a113a12b
     m_ActionName: 'Player/Back[/Keyboard/escape,/XInputControllerWindows/select]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d1d5e272-ee45-4466-97a8-8a2bee53d148
+    m_ActionName: 'UI/Select[/Mouse/leftButton,/Pen/tip,/XInputControllerWindows/buttonSouth]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6043ef8f-3f16-489a-b7f4-25f904bf622a
+    m_ActionName: 'UI/Back[/Keyboard/escape,/XInputControllerWindows/select]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -391,6 +399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   maxSpeed: 20
+  zombieKillsLabel: {fileID: 1573221892050544626}
   idLabel: {fileID: 4929356022009584655}
   playerModel: {fileID: 8945600692140703755}
   cam: {fileID: 7371796333402482502}
@@ -871,6 +880,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3f1ddeae23c306a4eb0792643b6e5c64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1573221892050544626 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8444317263175516251, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+  m_PrefabInstance: {fileID: 6981996925491668905}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &3958015339848977219 stripped

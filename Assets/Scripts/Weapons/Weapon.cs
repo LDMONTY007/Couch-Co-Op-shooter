@@ -2,5 +2,5 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
 {
-    public abstract void Attack(Camera cam);
+    public abstract void Attack(Camera cam, PlayerController player);
 }

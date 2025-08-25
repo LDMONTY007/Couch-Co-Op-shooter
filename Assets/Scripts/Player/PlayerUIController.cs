@@ -42,7 +42,9 @@ public class PlayerUIController : MonoBehaviour
     public void OnLeaveButtonPressed()
     {
         //playerObject.GetComponent<PlayerInput>().
-        Destroy(playerObject);
+        //Destroy(playerObject);
+        //Exit back to the title screen.
+        DataPersistenceManager.instance.LoadSceneAsync("Title Screen");
     }
 
     public void OnPauseStateSwitched()
