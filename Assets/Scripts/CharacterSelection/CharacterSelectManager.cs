@@ -49,6 +49,8 @@ public class CharacterSelectManager : MonoBehaviour
                                 inputList.Add(PlayerInput.Instantiate(cursorPrefab, playerIndex: i, pairWithDevice: control.device));
                                 //Set the parent to be the canvas.
                                 inputList[inputList.Count - 1].gameObject.transform.SetParent(characterSelectCanvas.transform);
+                                inputList[inputList.Count - 1].GetComponent<CharacterSelectCursor>().canvas = characterSelectCanvas;
+
 
                                 Debug.Log("PLAYER JOINED!!!");
                                 break;

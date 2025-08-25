@@ -25,7 +25,7 @@ public class CharacterSelectCursor : MonoBehaviour
 
     public RectTransform cursorTransform;
 
-    private Canvas canvas; // Canvas that gives the motion range for the software cursor.
+    public Canvas canvas; // Canvas that gives the motion range for the software cursor.
     private double lastTime;
     private Vector2 lastStickValue;
 
@@ -56,16 +56,20 @@ public class CharacterSelectCursor : MonoBehaviour
                 curCharacterIndex++;
                 //End of area we need to change.*/
 
-        canvas = FindObjectOfType<Canvas>();
+        //canvas = FindObjectOfType<Canvas>();
 
         if (canvas == null)
             Debug.LogError("CURSORS SHOULD ONLY BE SPAWNED IN SCENES WITH A CANVAS");
 
         cursorTransform.SetParent(canvas.transform);
-        gr = GetComponentInParent<GraphicRaycaster>();
+        gr = canvas.GetComponent<GraphicRaycaster>();
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["point"];
-        selectAction = playerInput.actions["click"];
+        selectAction = playerInput.actions["Select"];
+
+        //Switch to the UI controls.
+        playerInput.SwitchCurrentActionMap("UI");
+        
 
         //playerUIIcon = GameManager.instance.characterManager.AddPlayerIcon(null);
         //Set the icon's character index.
@@ -81,8 +85,9 @@ public class CharacterSelectCursor : MonoBehaviour
 
     private void Update()
     {
-        if (selectAction.WasPressedThisFrame())
+        if (selectAction.GetButtonDown())
         {
+            Debug.Log("HERE");
             Select();
         }
 
@@ -129,61 +134,82 @@ public class CharacterSelectCursor : MonoBehaviour
 
     private void Select()
     {
-        pointerEventData.position = transform.position;
+        pointerEventData.position = cursorTransform.position;
         List<RaycastResult> results = new List<RaycastResult>();
         //gr.Raycast(pointerEventData, results);
         EventSystem.current.RaycastAll(pointerEventData, results);
+        Debug.Log("HERE 1!");
         if (results.Count > 0)
         {
-            /*if (results[0].gameObject.TryGetComponent(out CharacterSelectIcon selectIcon))
+            //Check all layers for the display to select.
+            foreach (var result in results)
             {
-                //assign the device controlling this player and the character prefab they selected to the GameManager before we load the 
-                //next scene.
-                PlayerInfo playerInfo = new PlayerInfo(playerInput.GetDevice<InputDevice>(), playerInput.currentControlScheme, selectIcon.characterIcon, GameManager.instance.stockTotal);
-                //if we already placed our coin, 
-                //then when they click again it 
-                //means they are trying to 
-                //select a different character.
-                if (didSelect)
+                if (result.gameObject.TryGetComponent(out DisplayIdentifier display))
                 {
-                    //Don't change did select because we are still selecting a character here.
+                   
+                    //assign the device controlling this player and the character prefab they selected to the GameManager before we load the 
+                    //next scene.
+                    //PlayerInfo playerInfo = new PlayerInfo(playerInput.GetDevice<InputDevice>(), playerInput.currentControlScheme, selectIcon.characterIcon, GameManager.instance.stockTotal);
+                    //if we already placed our coin, 
+                    //then when they click again it 
+                    //means they are trying to 
+                    //select a different character.
+                    if (didSelect)
+                    {
+                        //Don't change did select because we are still selecting a character here.
 
-                    //Destroy the coin that was placed before 
-                    //and place a new one. 
-                    if (coinInstance)
-                        Destroy(coinInstance.gameObject);
-                    coinInstance = createCoin(coinPrefab, cursorTransform.position, Quaternion.identity, canvas.transform, characterIndex);
-                    //replace the reference so that 
-                    //the old character they chose is 
-                    //removed and we assign the new 
-                    //character. 
-                    GameManager.instance.players[characterIndex] = playerInfo;
+                        //Destroy the coin that was placed before 
+                        //and place a new one. 
+                        if (coinInstance)
+                            Destroy(coinInstance.gameObject);
+                        coinInstance = createCoin(coinPrefab, cursorTransform.position, Quaternion.identity, canvas.transform, characterIndex);
+                        //replace the reference so that 
+                        //the old character they chose is 
+                        //removed and we assign the new 
+                        //character. 
+                        //GameManager.instance.players[characterIndex] = playerInfo;
 
-                    //Play the audio of the selection
-                    AudioManager.instance.globalSource.PlayOneShot(playerInfo.characterIcon.characterAnnouncement);
+                        //Assign the input device to it's new slot.
+                        GameManager.Instance.inputDevices[display.index] = playerInput.GetDevice<InputDevice>();
 
-                    //Call to reassign the character we've selected.
-                    playerUIIcon.ReassignCharacterIcon(selectIcon);
+                        //Exit the loop as we found the display.
+                        break;
+                        //Play the audio of the selection
+                        //AudioManager.instance.globalSource.PlayOneShot(playerInfo.characterIcon.characterAnnouncement);
+
+                        //Call to reassign the character we've selected.
+                        //playerUIIcon.ReassignCharacterIcon(selectIcon);
+                    }
+                    else
+                    {
+                        //add the playerInfo to the GameManager player list.
+                        //GameManager.instance.players.Add(playerInfo);
+                        //GameManager.instance.players[characterIndex] = playerInfo;
+                        //set the character index in case we need to remove it.
+                        //characterIndex = GameManager.instance.players.Count - 1;
+                        //create the coin where the cursor currently is.
+                        coinInstance = createCoin(coinPrefab, cursorTransform.position, Quaternion.identity, canvas.transform, characterIndex);
+                        didSelect = true;
+                        //print(results[0].gameObject.name);
+
+                        //Assign the input device to it's new slot.
+                        GameManager.Instance.inputDevices[display.index] = playerInput.GetDevice<InputDevice>();
+
+                        //Play the audio of the selection
+                        //AudioManager.instance.globalSource.PlayOneShot(playerInfo.characterIcon.characterAnnouncement);
+
+                        //Call to reassign the character we've selected.
+                        //playerUIIcon.ReassignCharacterIcon(selectIcon);
+
+                        //Exit the loop as we found the display.
+                        break;
+                    }
                 }
-                else
-                {
-                    //add the playerInfo to the GameManager player list.
-                    //GameManager.instance.players.Add(playerInfo);
-                    GameManager.instance.players[characterIndex] = playerInfo;
-                    //set the character index in case we need to remove it.
-                    //characterIndex = GameManager.instance.players.Count - 1;
-                    //create the coin where the cursor currently is.
-                    coinInstance = createCoin(coinPrefab, cursorTransform.position, Quaternion.identity, canvas.transform, characterIndex);
-                    didSelect = true;
-                    //print(results[0].gameObject.name);
+            }
+            
 
-                    //Play the audio of the selection
-                    AudioManager.instance.globalSource.PlayOneShot(playerInfo.characterIcon.characterAnnouncement);
-
-                    //Call to reassign the character we've selected.
-                    playerUIIcon.ReassignCharacterIcon(selectIcon);
-                }
-            }*/
+            //Only activate a button if it is the topmost
+            //object in the raycast.
             if (results[0].gameObject.TryGetComponent(out Button button))
             {
                 //tell the button we clicked it with our cursor.
@@ -194,15 +220,15 @@ public class CharacterSelectCursor : MonoBehaviour
         }
     }
 
-/*    public GameObject createCoin(GameObject gameObject, Vector3 position, Quaternion rotation, Transform parent, int playerIndex)
+    public GameObject createCoin(GameObject gameObject, Vector3 position, Quaternion rotation, Transform parent, int playerIndex)
     {
         GameObject temp = Instantiate(coinPrefab, cursorTransform.position, Quaternion.identity, canvas.transform);
         //Set the color of the coin.
-        temp.GetComponent<Image>().color = playerUIIcon.backgroundGradient.Evaluate(playerIndex);
+        //temp.GetComponent<Image>().color = playerUIIcon.backgroundGradient.Evaluate(playerIndex);
         //Set the number on the coin.
         temp.GetComponentInChildren<TextMeshProUGUI>().text = "P" + playerIndex;
         return temp;
-    }*/
+    }
 
 
     private void UpdateMotion()
