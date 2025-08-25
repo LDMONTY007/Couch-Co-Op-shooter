@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 //This is what we should use for decision making in our system:
 //https://www.reddit.com/r/godot/comments/xgrk0g/goap_goaloriented_action_planning_is_absolutely/
@@ -30,6 +33,8 @@ public class Enemy : MonoBehaviour, IDamageable
     public static AudioClip lastCivilianClipPlayed = null;
 
     public static AudioClip lastBirdClipPlayed = null;
+
+    public Transform targetTransform;
 
     public enum EnemyType
     {
@@ -125,6 +130,8 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
+    Vector3 velocity = Vector3.zero;
+
     public void Die()
     {
         //TODO: Code dying.
@@ -163,109 +170,14 @@ public class Enemy : MonoBehaviour, IDamageable
         if (controller != null)
         playerObj = controller.gameObject;
         animator = GetComponent<Animator>();
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        //don't do anything when the player isn't here.
-        if (playerObj == null)
-        {
-            //try to get any players.
-            PlayerController controller = FindFirstObjectByType<PlayerController>();
-            if (controller != null)
-                playerObj = controller.gameObject;
-            return;
-        }
-
-        float distance = Vector3.Distance(transform.position, playerObj.transform.position);
-
-        //Flee
-        if (distance < fleeDistance && ((currentState == EnemyState.Flee && curTimeSinceLastFlee >= timeBetweenFleeChecks) || (currentState != EnemyState.Flee)))
-        {
-
-            //if we aren't fleeing 
-            //but we're about to,
-            //scream.
-            if (currentState != EnemyState.Flee)
-            {
-                //Remove this random scream for now.
-                //PlayRandomScream();
-            }
-
-            curTimeSinceLastFlee = 0f;
-
-            //Vector from player to us
-            Vector3 dirAwayPlayer = transform.position - playerObj.transform.position;
-
-            Vector3 target = transform.position + dirAwayPlayer;
-
-
-            /*            float radius = 1f;
-
-                        Vector3 randOffset = Random.insideUnitSphere.normalized * radius;
-                        randOffset.y = 0;
-
-                        Vector3 newTarget = transform.position + randOffset;
-
-                        Collider[] colliders = Physics.OverlapSphere(newTarget*//*target + transform.transform.up * radius / 2f*//*, radius, layerMask);
-
-                        //find a place that isn't colliding with anything and go there.
-                        while (colliders.Length > 0)
-                        {
-                            randOffset = Random.insideUnitSphere.normalized * radius;
-                            randOffset.y = 0;
-
-                            newTarget = transform.position + randOffset;
-                            newTarget.y = 0;
-                        }*/
-
-            _agent.SetDestination(target);
-
-            //set to fleeing so we don't
-            //patrol
-            currentState = EnemyState.Flee;
-        }
-
-        //if we reached our destination and we are fleeing,
-        //say we are no longer fleeing.
-        if (currentState == EnemyState.Flee && DestinationReached(_agent, transform.position) && distance > fleeDistance)
-        {
-            curTimeSinceLastFlee = 0f;
-            //for now just go back to patrolling.
-            currentState = EnemyState.Patrol;
-        }
-        //start fleeing again
-        //if we are still to close to the 
-        //player and we're about to stop and switch into patrolling.
-        else if (currentState == EnemyState.Flee && distance <= fleeDistance && Vector3.Distance(transform.position, _agent.pathEndPosition) <= 2f)
-        {
-            curTimeSinceLastFlee = 0f;
-
-            //Vector from player to us
-            Vector3 dirAwayPlayer = transform.position - playerObj.transform.position;
-
-            Vector3 target = transform.position + dirAwayPlayer;
-
-            _agent.SetDestination(target);
-
-            //set to fleeing so we don't
-            //patrol
-            currentState = EnemyState.Flee;
-        }
-
-        //only patrol
-        //if our state is patrolling
-        //and we've already reached our destination.
-        if (currentState == EnemyState.Patrol && DestinationReached(_agent, transform.position))
-        {
-            HandlePatrol();
-        }
-
-        if (animator != null)
-        {
-            HandleAnimation();
-        }
+        HandleBehaviors();
     }
 
     public void HandlePatrol()
@@ -308,7 +220,7 @@ public class Enemy : MonoBehaviour, IDamageable
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
 
-        Vector3 randomPoint = center + Random.insideUnitSphere * range; //random point in a sphere 
+        Vector3 randomPoint = center + UnityEngine.Random.insideUnitSphere * range; //random point in a sphere 
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas)) //documentation: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
         {
@@ -407,4 +319,83 @@ public class Enemy : MonoBehaviour, IDamageable
 
         //Add some knockback to the player from the hit.
     }
+
+    #region boid flocking behavior
+
+    float maxVelocity = 5f;
+    float maxForce = 5f;
+    float mass = 1f;
+    float slowingRadius = 3f;
+    float wanderAngle = 0f;
+    float angleChange = 5f;
+    float circleDistance = 0.5f;
+    float circleRadius = 0.1f;
+
+    //A lot of my code for boids typically
+    //references these blog posts:
+    //https://code.tutsplus.com/understanding-steering-behaviors-flee-and-arrival--gamedev-1303t
+
+    private Vector3 Seek(Vector3 target)
+    {
+        target = targetTransform.position;
+
+        Vector3 desiredVelocity = (target - transform.position) * maxVelocity;
+        float distance = desiredVelocity.magnitude;
+
+        // Check the distance to detect whether the character 
+        // is inside the slowing area 
+        if (distance < slowingRadius)
+        {
+            // Inside the slowing area 
+            desiredVelocity = desiredVelocity.normalized * maxVelocity * (distance / slowingRadius);
+        }
+        else
+        {
+            // Outside the slowing area. 
+            desiredVelocity = desiredVelocity.normalized * maxVelocity;
+        }
+
+
+        return desiredVelocity - velocity;
+
+        
+    }
+
+    private Vector3 Wander()
+    {
+        // Apply small random jitter to angle
+        wanderAngle += (UnityEngine.Random.Range(0f, 1f) * angleChange) - (angleChange * 0.5f);
+
+        // Final wander force calculation
+        // Set the circle center pos to be our velocity direction
+        // so our wander is applied like a displacement and creates that random movement.
+        Vector2 circleCenter = velocity.normalized * circleDistance;
+        //calculate the displacement vector.
+        Vector2 displacement = LDUtil.AngleToDir2D(wanderAngle).normalized * circleRadius;
+
+        //calculate the displacement force using the circle center and displacement.
+        Vector2 wanderForce = circleCenter + displacement;
+        //don't modify the y position, instead use the z position.
+        //This means we only wander on a 2D plane.
+        return new Vector3(wanderForce.x, 0f, wanderForce.y);
+    }
+
+    private void HandleBehaviors()
+    {
+        Vector3 steering = Wander();
+
+        steering = Vector3.ClampMagnitude(steering, maxForce);
+        steering = steering / mass;
+        velocity = Vector3.ClampMagnitude(velocity + steering, maxVelocity);
+        
+        
+
+        transform.Translate(velocity * Time.deltaTime); //Same as position = position + velocity; but takes into account physics.
+
+        
+    }
+
+    
+
+    #endregion
 }
