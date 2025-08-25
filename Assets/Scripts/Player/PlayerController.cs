@@ -19,9 +19,17 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     //Make getters and setters in case we need
     //to subscribe to when this is modified. 
-    public int zombieKillCount { get { return _zombieKillCount; } set { _zombieKillCount = value;
+    public int zombieKillCount { get { return _zombieKillCount; }
+        set 
+        {
+            //Update the score with the newly added zombies as part of it.
+            score += (value - _zombieKillCount) * 5;
+
+            _zombieKillCount = value;
             //Update the visual label for the zombie kill count.
-            uiController.UpdateZombieKills(value); } }
+            uiController.UpdateZombieKills(value);
+            
+        } }
 
 
     #endregion
