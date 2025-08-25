@@ -36,6 +36,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public Transform targetTransform;
 
+    public Rigidbody playerRb;
+
     public enum EnemyType
     {
         Civilian,
@@ -322,8 +324,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     #region boid flocking behavior
 
-    float maxVelocity = 5f;
-    float maxForce = 5f;
+    float maxVelocity = 2.5f;
+    float maxForce = 2.5f;
     float mass = 1f;
     float slowingRadius = 3f;
     float wanderAngle = 0f;
@@ -337,7 +339,6 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private Vector3 Seek(Vector3 target)
     {
-        target = targetTransform.position;
 
         Vector3 desiredVelocity = (target - transform.position) * maxVelocity;
         float distance = desiredVelocity.magnitude;
@@ -359,6 +360,20 @@ public class Enemy : MonoBehaviour, IDamageable
         return desiredVelocity - velocity;
 
         
+    }
+
+    private Vector3 Flee(Vector3 target)
+    {
+
+        Vector3 desiredVelocity = (transform.position - target) * maxVelocity;
+        float distance = desiredVelocity.magnitude;
+
+        desiredVelocity = desiredVelocity.normalized * maxVelocity;
+
+
+        return desiredVelocity - velocity;
+
+
     }
 
     private Vector3 Wander()
@@ -383,6 +398,8 @@ public class Enemy : MonoBehaviour, IDamageable
     private void HandleBehaviors()
     {
         Vector3 steering = Wander();
+        steering += Pursuit(playerRb);
+
 
         steering = Vector3.ClampMagnitude(steering, maxForce);
         steering = steering / mass;
@@ -395,7 +412,27 @@ public class Enemy : MonoBehaviour, IDamageable
         
     }
 
-    
+    private Vector3 Pursuit(Rigidbody rb)
+    {
+        float dist = Vector3.Distance(rb.position, transform.position);
+        //calculate time based on distance to player. 
+        float t = dist / maxVelocity;
+        //calculate the future position.
+        Vector3 futurePosition = rb.position + rb.linearVelocity * t;
+        return Seek(futurePosition);
+    }
+
+    private Vector3 Evade(Rigidbody rb)
+    {
+        float dist = Vector3.Distance(rb.position, transform.position);
+        //calculate time based on distance to player. 
+        float t = dist / maxVelocity;
+        //calculate the future position.
+        Vector3 futurePosition = rb.position + rb.linearVelocity * t;
+        return Flee(futurePosition);
+    }
+
+
 
     #endregion
 }
