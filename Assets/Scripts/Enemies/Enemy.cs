@@ -336,7 +336,8 @@ public class Enemy : MonoBehaviour, IDamageable
     float separationRadius = 1.1f;
     float maxSeparation = 5f;
     float neighbourHoodRadius = 10f;
-    float matchingFactor = 0.1f;
+    float matchingFactor = 0.2f;
+    float centeringFactor = 0.2f;
 
     private void HandleBehaviors()
     {
@@ -346,6 +347,7 @@ public class Enemy : MonoBehaviour, IDamageable
         steering += Pursuit(playerRb);
         steering += Separation(enemies);
         steering += Alignment(enemies);
+        steering += Cohesion(enemies);
 
         steering = Vector3.ClampMagnitude(steering, maxForce);
         steering = steering / mass;
@@ -450,6 +452,12 @@ public class Enemy : MonoBehaviour, IDamageable
 
         for (int i = 0; i < enemies.Length; i++)
         {
+            //Skip ourselves.
+            if (enemies[i].GetComponent<Enemy>() == this)
+            {
+                continue;
+            }
+
             Vector3 otherPos = enemies[i].GetComponent<Transform>().position;
             //if the other enemy is within our radius.
             if (Vector3.Distance(otherPos, transform.position) <= separationRadius)
@@ -481,6 +489,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     //https://www.red3d.com/cwr/boids/
     //Some better examples on the 3 main rules for boids.
+    //Proper Pseudocode
+    //https://vanhunteradams.com/Pico/Animal_Movement/Boids-algorithm.html#Alignment
     //steer towards the average heading of local flockmates
     private Vector3 Alignment(UnityEngine.Object[] enemies)
     {
@@ -489,6 +499,12 @@ public class Enemy : MonoBehaviour, IDamageable
 
         for (int i = 0; i < enemies.Length; i++)
         {
+            //Skip ourselves.
+            if (enemies[i].GetComponent<Enemy>() == this)
+            {
+                continue;
+            }
+
             Vector3 otherPos = enemies[i].GetComponent<Transform>().position;
             Vector3 otherVel = enemies[i].GetComponent<Enemy>().velocity;
             //if the other enemy is within our radius.
@@ -517,6 +533,49 @@ public class Enemy : MonoBehaviour, IDamageable
         Vector3 headingDisplacement = (averageHeading - velocity) * matchingFactor;
 
         return headingDisplacement;
+    }
+
+    private Vector3 Cohesion(UnityEngine.Object[] enemies)
+    {
+        int neighbourCount = 0;
+        Vector3 averagePos = Vector3.zero;
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            //Skip ourselves.
+            if (enemies[i].GetComponent<Enemy>() == this)
+            {
+                continue;
+            }
+
+            Vector3 otherPos = enemies[i].GetComponent<Transform>().position;
+            Vector3 otherVel = enemies[i].GetComponent<Enemy>().velocity;
+            //if the other enemy is within our radius.
+            if (Vector3.Distance(otherPos, transform.position) <= neighbourHoodRadius)
+            {
+                //add to the total position
+                //and increment neighbourCount.
+                averagePos += otherPos;
+                neighbourCount++;
+            }
+        }
+
+        if (neighbourCount != 0)
+        {
+            //Calculate average position by dividing by neighbourCount
+            averagePos /= neighbourCount;
+        }
+
+        //Remove y component.
+        //We do not want them moving vertically like this.
+        averagePos.y = 0;
+
+        //Calculate the displacement required to reach the average center position of neighbours.
+        //We multiply by centering factor so we aren't 100% matching
+        //the average position instantly and instead slowly make it to something close.
+        Vector3 centerDisplacement = (averagePos - transform.position) * centeringFactor;
+
+        return centerDisplacement;
     }
 
     #endregion
