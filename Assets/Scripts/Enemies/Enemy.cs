@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -332,6 +333,8 @@ public class Enemy : MonoBehaviour, IDamageable
     float angleChange = 5f;
     float circleDistance = 0.5f;
     float circleRadius = 0.1f;
+    float separationRadius = 1.1f;
+    float maxSeparation = 5f;
 
     //A lot of my code for boids typically
     //references these blog posts:
@@ -399,7 +402,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         Vector3 steering = Wander();
         steering += Pursuit(playerRb);
-
+        steering += Separation();
 
         steering = Vector3.ClampMagnitude(steering, maxForce);
         steering = steering / mass;
@@ -432,6 +435,43 @@ public class Enemy : MonoBehaviour, IDamageable
         return Flee(futurePosition);
     }
 
+    private Vector3 Separation()
+    {
+        UnityEngine.Object[] enemies = FindObjectsByType(typeof(Enemy), FindObjectsSortMode.None);
+
+        int neighbourCount = 0;
+        Vector3 force = Vector3.zero;
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            Vector3 otherPos = enemies[i].GetComponent<Transform>().position;
+            //if the other enemy is within our radius.
+            if (Vector3.Distance(otherPos, transform.position) <= separationRadius)
+            {
+                //calculate separation force.
+                force += otherPos - transform.position;
+                neighbourCount++;
+            }
+        }
+
+        if (neighbourCount != 0)
+        {
+            //Scale force by the total enemies
+            //so we distribute all of their forces evenly.
+            force /= neighbourCount;
+
+            //invert force to push away.
+            force *= -1;
+        }
+
+        force = force.normalized * maxSeparation;
+
+        //Remove y component.
+        //We do not want them moving vertically like this.
+        force.y = 0;
+
+        return force;
+    }
 
 
     #endregion
