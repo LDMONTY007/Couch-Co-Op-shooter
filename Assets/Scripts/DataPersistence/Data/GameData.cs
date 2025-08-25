@@ -112,6 +112,11 @@ public class GameData
         return percentageCompleted;
     }
 
+    public int GetScore(PlayerInfo p)
+    {
+        return p.zombieKillCount * 5;
+    }
+
     public void UpdatePlayerInfo(PlayerInfo playerInfo)
     {
         playerInfos[playerInfo.playerIndex] = playerInfo;
@@ -131,13 +136,6 @@ public struct PlayerInfo
     public string guid;
     //Store the number of zombies killed by this player.
     public int zombieKillCount;
-    //Store the score of this player.
-    //This is a per-level score and will 
-    //be set to zero when a level starts
-    //so we'll need to implement some logic for
-    //selecting a character, then a level,
-    //and so on. 
-    public int score;
 
     public int deviceID;
 

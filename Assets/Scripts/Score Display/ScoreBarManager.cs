@@ -37,13 +37,17 @@ public class ScoreBarManager : MonoBehaviour
             //assign player index to the score bar.
             scoreBars[scoreBars.Count - 1].playerIndex = p.playerIndex;
 
+            //Score is calculated here, based on the different kills
+            //and kill types the player got.
+            int score = gameData.GetScore(p);
+
             //add the score to our list of scores.
-            endScores.Add(p.score);
+            endScores.Add(score);
 
             //set highest score.
-            if (p.score > highScore)
+            if (score > highScore)
             {
-                highScore = p.score;
+                highScore = score;
             }
         }
 

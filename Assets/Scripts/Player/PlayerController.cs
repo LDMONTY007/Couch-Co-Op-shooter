@@ -195,9 +195,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         guid = id;
         playerModel.material = mat;
 
-        //Now assign the data we have for
-        //the player scores and such.
-        score = p.score;
+
         zombieKillCount = p.zombieKillCount;
 
 
@@ -970,6 +968,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         Debug.LogWarning("SAVE PLAYER DATA!");
         //Update the player's individual data in the game. 
-        gameData.UpdatePlayerInfo(new PlayerInfo() { guid = guid.ToString(), score = score, zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, deviceID=playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
+        gameData.UpdatePlayerInfo(new PlayerInfo() { guid = guid.ToString(), zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, deviceID=playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
     }
 }
