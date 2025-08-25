@@ -335,6 +335,28 @@ public class Enemy : MonoBehaviour, IDamageable
     float circleRadius = 0.1f;
     float separationRadius = 1.1f;
     float maxSeparation = 5f;
+    float neighbourHoodRadius = 10f;
+    float matchingFactor = 0.1f;
+
+    private void HandleBehaviors()
+    {
+        UnityEngine.Object[] enemies = FindObjectsByType(typeof(Enemy), FindObjectsSortMode.None);
+
+        Vector3 steering = Wander();
+        steering += Pursuit(playerRb);
+        steering += Separation(enemies);
+        steering += Alignment(enemies);
+
+        steering = Vector3.ClampMagnitude(steering, maxForce);
+        steering = steering / mass;
+        velocity = Vector3.ClampMagnitude(velocity + steering, maxVelocity);
+        
+        
+
+        transform.Translate(velocity * Time.deltaTime); //Same as position = position + velocity; but takes into account physics.
+
+        
+    }
 
     //A lot of my code for boids typically
     //references these blog posts:
@@ -398,22 +420,6 @@ public class Enemy : MonoBehaviour, IDamageable
         return new Vector3(wanderForce.x, 0f, wanderForce.y);
     }
 
-    private void HandleBehaviors()
-    {
-        Vector3 steering = Wander();
-        steering += Pursuit(playerRb);
-        steering += Separation();
-
-        steering = Vector3.ClampMagnitude(steering, maxForce);
-        steering = steering / mass;
-        velocity = Vector3.ClampMagnitude(velocity + steering, maxVelocity);
-        
-        
-
-        transform.Translate(velocity * Time.deltaTime); //Same as position = position + velocity; but takes into account physics.
-
-        
-    }
 
     private Vector3 Pursuit(Rigidbody rb)
     {
@@ -435,9 +441,9 @@ public class Enemy : MonoBehaviour, IDamageable
         return Flee(futurePosition);
     }
 
-    private Vector3 Separation()
+    private Vector3 Separation(UnityEngine.Object[] enemies)
     {
-        UnityEngine.Object[] enemies = FindObjectsByType(typeof(Enemy), FindObjectsSortMode.None);
+        
 
         int neighbourCount = 0;
         Vector3 force = Vector3.zero;
@@ -473,6 +479,45 @@ public class Enemy : MonoBehaviour, IDamageable
         return force;
     }
 
+    //https://www.red3d.com/cwr/boids/
+    //Some better examples on the 3 main rules for boids.
+    //steer towards the average heading of local flockmates
+    private Vector3 Alignment(UnityEngine.Object[] enemies)
+    {
+        int neighbourCount = 0;
+        Vector3 averageHeading = Vector3.zero;
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            Vector3 otherPos = enemies[i].GetComponent<Transform>().position;
+            Vector3 otherVel = enemies[i].GetComponent<Enemy>().velocity;
+            //if the other enemy is within our radius.
+            if (Vector3.Distance(otherPos, transform.position) <= neighbourHoodRadius)
+            {
+                //add to the total heading
+                //and increment neighbourCount.
+                averageHeading += otherVel;
+                neighbourCount++;
+            }
+        }
+
+        if (neighbourCount != 0)
+        {
+            //Calculate average heading by dividing by neighbourCount
+            averageHeading /= neighbourCount;
+        }
+
+        //Remove y component.
+        //We do not want them moving vertically like this.
+        averageHeading.y = 0;
+
+        //Calculate the displacement required to reach the average heading.
+        //We multiply by matching factor so we aren't 100% matching
+        //the average velocity instantly and instead slowly make it to something close.
+        Vector3 headingDisplacement = (averageHeading - velocity) * matchingFactor;
+
+        return headingDisplacement;
+    }
 
     #endregion
 }
