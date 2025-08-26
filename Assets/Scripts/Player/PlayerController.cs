@@ -5,8 +5,19 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+//Something I need to do is add a ton of
+//actions that can be subscribed to which
+//represent any of the different states and 
+//actions that can occur to the player,
+//so for example if the player is getting revived
+//it'll inform the audio director of that and
+//the players will comment on it.
+//this will also allow us to do GOAP with the
+//player so we can have AI players who know
+//that is occuring so they don't have to deal with
+//it as it's already being dealt with.
 
-public class PlayerController : MonoBehaviour, IDamageable
+public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 {
     #region score tracking
     private int _score = 0;
@@ -34,6 +45,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     #endregion
 
+
+
     public float moveSpeed = 5f;
     public float maxSpeed = 20f;
 
@@ -44,6 +57,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     float mouseLookSpeed = 10f;
     float controllerLookSpeed = 100f;
     Vector2 curLook;
+
+    public float interactDist = 7.5f;
 
     public Renderer playerModel;
 
@@ -69,6 +84,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     Rigidbody rb;
 
+    private bool canMove = true;
+
     #region health vars
     [Header("Health Variables")]
 
@@ -91,6 +108,28 @@ public class PlayerController : MonoBehaviour, IDamageable
             //Update the current health in the UI for the player.
             UpdateUI();
             if (curHealth <= 0)
+            {
+                BecomeKnocked();
+            }
+        }
+    }
+
+    private float _knockedHealth = 300;
+
+    public float knockedHealth
+    {
+        get
+        {
+            return _knockedHealth;
+        }
+
+        set
+        {
+            _knockedHealth = Mathf.Max(value, 0);
+            //LD Montello
+            //Update the current health in the UI for the player.
+            UpdateUI();
+            if (_knockedHealth <= 0)
             {
                 Die();
             }
@@ -116,6 +155,24 @@ public class PlayerController : MonoBehaviour, IDamageable
             //Update the UI for the stunned popup.
             //UIManager.Instance.playerUIManager.UpdateStunnedPopup(value);
             _stunned = value;
+        }
+    }
+
+    private bool _knocked = false;
+
+    //used after being hit to prevent the player from attacking immediately.
+    private bool knocked
+    {
+        get
+        {
+            return _knocked;
+
+        }
+        set
+        {
+            //Update the UI for the stunned popup.
+            //UIManager.Instance.playerUIManager.UpdateStunnedPopup(value);
+            _knocked = value;
         }
     }
 
@@ -396,10 +453,17 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void HandleJumping()
     {
-/*        if (dashing)
+        //if the player can't move
+        //return here.
+        if (!canMove)
         {
             return;
-        }*/
+        }
+
+        /*        if (dashing)
+                {
+                    return;
+                }*/
 
         if (doJump)
         {
@@ -512,6 +576,13 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void HandleMovement()
     {
+        //if the player can't move
+        //return here.
+        if (!canMove)
+        {
+            return;
+        }
+
 /*        if (dashing)
         {
             return;
@@ -643,6 +714,15 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             Debug.Log("INTERACT!!!");
             OnInteract();
+        }
+        //if we're holding down the interact button.
+        if (interactAction.GetButton() && !isHoldingInteract)
+        {
+            OnInteractHeld();
+        }
+        if (interactAction.GetButtonUp() && isHoldingInteract)
+        {
+            CancelInteractHold();
         }
 
     }
@@ -776,8 +856,21 @@ public class PlayerController : MonoBehaviour, IDamageable
             return;
         }
 
-        // Apply the damage
-        curHealth -= damage;
+        //When knocked only decrement
+        //the knocked health
+        //because curHealth will already
+        //be 0.
+        if (knocked)
+        {
+            knockedHealth -= damage;
+        }
+        else
+        {
+            // Apply the damage
+            curHealth -= damage;
+        }
+
+            
 
         //TODO:
         //Add some screen shake
@@ -872,7 +965,11 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void OnInteract()
     {
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, 5f, playerMask))
+
+        Ray r = new Ray(cam.transform.position, cam.transform.forward);
+        //We don't use player mask because players are also interactibles.
+        //so make sure we raycast from the player's collider instead.
+        if (playerCollider.Raycast(r, out var hitInfo, interactDist))
         {
             Weapon temp = hitInfo.transform.gameObject.GetComponent<Weapon>();
             //if the interacted object is a weapon, pick it up.
@@ -889,11 +986,53 @@ public class PlayerController : MonoBehaviour, IDamageable
 
                 //if we actually hit an interactible.
                 if (interactible != null)
-                    interactible.Activate();
+                    interactible.Interact();
             }
 
                 
         }
+    }
+
+    bool isHoldingInteract = false;
+    IInteractible lastHeldInteractible = null;
+
+
+    public void OnInteractHeld()
+    {
+
+        Debug.Log("HERE 1");
+        //Don't execute this logic if we're already holding interact.
+        if (isHoldingInteract)
+            return;
+
+        Debug.Log("HERE 2");
+
+
+
+
+        Ray r = new Ray(cam.transform.position, cam.transform.forward);
+        //We don't use player mask because players are also interactibles.
+        //so make sure we raycast from the player's collider instead.
+        if (Physics.Raycast(r, out var hitInfo, interactDist))
+        {
+            lastHeldInteractible = hitInfo.transform.gameObject.GetComponent<IInteractible>();
+
+            Debug.Log(lastHeldInteractible);
+
+            //if we actually hit an interactible.
+            if (lastHeldInteractible != null)
+            {
+                Debug.Log("HOLD!");
+                lastHeldInteractible.InteractHold();
+                isHoldingInteract = true;
+            }
+        }
+    }
+
+    public void CancelInteractHold()
+    {
+        isHoldingInteract = false;
+        lastHeldInteractible.InteractStopHold();
     }
 
     public void CreateNewWeapon(GameObject g)
@@ -969,5 +1108,127 @@ public class PlayerController : MonoBehaviour, IDamageable
         Debug.LogWarning("SAVE PLAYER DATA!");
         //Update the player's individual data in the game. 
         gameData.UpdatePlayerInfo(new PlayerInfo() { guid = guid.ToString(), zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, deviceID=playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
+    }
+
+    private Coroutine knockedCoroutine = null;
+
+    private void BecomeKnocked()
+    {
+        if (knockedCoroutine != null)
+        {
+            Debug.LogError("Tried to become knocked when already knocked!!!");
+        }
+        else
+        {
+            knockedCoroutine = StartCoroutine(KnockedCoroutine());
+        }
+    }
+
+    float knockedHealthDecrementInterval = 1f;
+    float knockedHealthDecrement = 10f;
+
+    private IEnumerator KnockedCoroutine()
+    {
+        Debug.Log("Knocked");
+
+        knocked = true;
+
+        while (knockedHealth > 0)
+        {
+            //Wait interval seconds and then
+            yield return new WaitForSeconds(knockedHealthDecrementInterval);
+            //deal damage.
+            knockedHealth -= knockedHealthDecrement;
+            //Should take 30 seconds to die.
+
+            
+        }
+
+        knocked = false;
+        knockedCoroutine = null;
+    }
+
+    //called when the player is picked
+    //up by another player.
+    public void CancelKnocked()
+    {
+        StopCoroutine(knockedCoroutine);
+        knockedCoroutine = null;
+        knocked = false;
+
+        //When exiting knocked
+        //don't just set current health to a constant.
+        //instead we should just take whatever percent
+        //of knocked health was left and give that
+        //back to the player multiplied by some factor.
+        curHealth = knockedHealth / 3 * 0.25f;
+    }
+
+    float curReviveTime = 0f;
+    float totalReviveTime = 5f;
+
+    Coroutine reviveCoroutine = null;
+
+    bool isGettingRevived = false;
+
+    public IEnumerator ReviveCoroutine()
+    {
+        isGettingRevived = true;
+        Debug.Log("START REVIVING");
+
+        while (curReviveTime < totalReviveTime)
+        {
+            curReviveTime += Time.deltaTime;
+
+            Debug.Log("REVIVING: " +  curReviveTime / totalReviveTime);
+
+            yield return null;
+        }
+
+        isGettingRevived = false;
+
+        CancelKnocked();
+    }
+
+    public void StartRevive()
+    {
+        reviveCoroutine = StartCoroutine(ReviveCoroutine());
+    }
+
+    public void CancelRevive()
+    {
+        StopCoroutine(reviveCoroutine);
+        curReviveTime = 0;
+        isGettingRevived = false;
+        reviveCoroutine = null;
+    }
+
+    public void OnFocusEnter()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Interact()
+    {
+
+    }
+
+    public void InteractHold()
+    {
+        if (knocked && !isGettingRevived)
+        {
+            StartRevive();
+        }
+    }
+
+    public void InteractStopHold()
+    {
+        if (isGettingRevived)
+        CancelRevive();
+    }
+
+    public void OnFocusLeave()
+    {
+        throw new NotImplementedException();
     }
 }

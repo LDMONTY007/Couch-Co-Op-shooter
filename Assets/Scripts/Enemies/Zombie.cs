@@ -409,10 +409,9 @@ public class Zombie : MonoBehaviour, IDamageable
             return;
         }
 
-        Debug.Log("HERE!!");
+
         if (Physics.Raycast(transform.position, transform.forward, out var hitInfo, attackDistance, layerMask))
         {
-            Debug.Log("HERE!!");
             IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
 
             //if we actually hit a damageable.

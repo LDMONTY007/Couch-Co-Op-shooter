@@ -330,13 +330,13 @@ public class Enemy : MonoBehaviour, IDamageable
     float mass = 1f;
     float slowingRadius = 3f;
     float wanderAngle = 0f;
-    float angleChange = 5f;
-    float circleDistance = 0.5f;
-    float circleRadius = 0.1f;
+    float angleChange = 15f;
+    float circleDistance = 1f;
+    float circleRadius = 1f;
     float separationRadius = 1.5f;
     float maxSeparation = 15f;
-    float neighbourHoodRadius = 3f;
-    float matchingFactor = 0.2f;
+    float neighbourHoodRadius = 4f;
+    float matchingFactor = 0.1f;
     float centeringFactor = 0.1f;
     float leaderBehindDist = 5f;
 
@@ -346,7 +346,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
         Vector3 steering = Wander();
         //steering += Pursuit(playerRb);
-        steering += followLeader(playerRb);
+        //steering += followLeader(playerRb);
         steering += Separation(enemies);
         steering += Alignment(enemies);
         steering += Cohesion(enemies);

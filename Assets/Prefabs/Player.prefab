@@ -399,6 +399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   maxSpeed: 20
+  interactDist: 7.5
   playerModel: {fileID: 8945600692140703755}
   cam: {fileID: 7371796333402482502}
   curWeapon: {fileID: 0}
@@ -422,7 +423,7 @@ MonoBehaviour:
   didLaunch: 0
   useGravity: 1
   doJump: 0
-  playerCollider: {fileID: 0}
+  playerCollider: {fileID: 5855211771221852801}
   isGrounded: 0
   desiredMoveDirection: {x: 0, y: 0, z: 0}
   accumulatedVelocity: {x: 0, y: 0}
@@ -447,7 +448,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -468,7 +469,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
