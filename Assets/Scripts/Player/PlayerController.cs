@@ -734,7 +734,7 @@ public float moveSpeed = 5f;
         {
             OnInteractHeld();
         }
-        if (interactAction.GetButtonUp() && isHoldingInteract)
+        if (!interactAction.GetButton() && isHoldingInteract)
         {
             CancelInteractHold();
         }
