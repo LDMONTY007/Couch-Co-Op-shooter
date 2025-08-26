@@ -40,14 +40,19 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             //Update the visual label for the zombie kill count.
             uiController.UpdateZombieKills(value);
             
-        } }
+        }
+    }
 
 
     #endregion
 
+    public Transform knockedCamTransform;
+    public Transform defaultCamTransform;
+    public GameObject standingModel;
+    public GameObject knockedModel;
 
 
-    public float moveSpeed = 5f;
+public float moveSpeed = 5f;
     public float maxSpeed = 20f;
 
     Guid guid;
@@ -415,7 +420,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private void HandleLook()
     {
-        var mouseInput = lookAction.ReadValue<Vector2>();
+        if (knocked)
+        {
+            cam.transform.position = knockedCamTransform.position;
+        }
+        else
+        {
+            cam.transform.position = defaultCamTransform.position;
+        }
+
+            var mouseInput = lookAction.ReadValue<Vector2>();
 
         //apply mouse input to our current look vector using deltaTime and look speed.
         curLook.y -= mouseInput.y * GetCorrespondingLookSensitivity(playerInput.GetDevice<InputDevice>()) * Time.deltaTime;
@@ -727,8 +741,26 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     }
 
+    private void HandleAnimations()
+    {
+        //Use the knocked model when knocked.
+        if (knocked)
+        {
+            knockedModel.SetActive(true);
+            standingModel.SetActive(false);
+        }
+        //Use the standing model when standing normally.
+        else
+        {
+            knockedModel.SetActive(false);
+            standingModel.SetActive(true);
+        }
+    }
+
     private void Update()
     {
+        
+
         HandleLook();
 
         HandleAttack();
@@ -739,12 +771,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         JumpUpdateLogic();
 
-
+        HandleAnimations();
 
         //Move the character controller.
         //controller.Move(finalMove * Time.deltaTime);
 
-        
+
     }
 
     private void FixedUpdate()
@@ -1132,6 +1164,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         Debug.Log("Knocked");
 
         knocked = true;
+        canMove = false;
+        //freeze the character.
+        rb.isKinematic = true;
 
         while (knockedHealth > 0)
         {
@@ -1144,6 +1179,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             
         }
 
+        canMove = true;
         knocked = false;
         knockedCoroutine = null;
     }
@@ -1155,6 +1191,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         StopCoroutine(knockedCoroutine);
         knockedCoroutine = null;
         knocked = false;
+        canMove = true;
+        //stop freeezing the character.
+        rb.isKinematic = false;
 
         //When exiting knocked
         //don't just set current health to a constant.
