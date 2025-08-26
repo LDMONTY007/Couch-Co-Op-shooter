@@ -111,7 +111,7 @@ public float moveSpeed = 5f;
             _curHealth = Mathf.Max(value, 0);
             //LD Montello
             //Update the current health in the UI for the player.
-            UpdateUI();
+            UpdateHealthUI();
             if (curHealth <= 0)
             {
                 BecomeKnocked();
@@ -133,7 +133,7 @@ public float moveSpeed = 5f;
             _knockedHealth = Mathf.Max(value, 0);
             //LD Montello
             //Update the current health in the UI for the player.
-            UpdateUI();
+            UpdateHealthUI();
             if (_knockedHealth <= 0)
             {
                 Die();
@@ -279,7 +279,13 @@ public float moveSpeed = 5f;
         interactAction = playerInput.actions["Interact"];
     }
 
-    public void UpdateUI()
+    public void HandleUI()
+    {
+        //Set revive panel visibility.
+        uiController.ShowRevivePanel(isGettingRevived);
+    }
+
+    public void UpdateHealthUI()
     {
         //Update the health bar.
         uiController.UpdateHealthBar();
@@ -773,6 +779,8 @@ public float moveSpeed = 5f;
 
         HandleAnimations();
 
+        HandleUI();
+
         //Move the character controller.
         //controller.Move(finalMove * Time.deltaTime);
 
@@ -1203,7 +1211,11 @@ public float moveSpeed = 5f;
         curHealth = knockedHealth / 3 * 0.25f;
     }
 
-    float curReviveTime = 0f;
+    float _curReviveTime = 0f;
+
+    //Used to update the revive slider as this updates.
+    //do cur / total to get a 0-1 value representing the progress to reviving.
+    float curReviveTime { get {  return _curReviveTime; } set { _curReviveTime = value; uiController.UpdateReviveSlider(value / totalReviveTime); } }
     float totalReviveTime = 5f;
 
     Coroutine reviveCoroutine = null;
@@ -1213,6 +1225,7 @@ public float moveSpeed = 5f;
     public IEnumerator ReviveCoroutine()
     {
         isGettingRevived = true;
+
         Debug.Log("START REVIVING");
 
         while (curReviveTime < totalReviveTime)

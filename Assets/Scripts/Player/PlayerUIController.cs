@@ -16,6 +16,8 @@ public class PlayerUIController : MonoBehaviour
     public GameObject pauseUI;
 
     public Slider healthBarSlider;
+    public Slider reviveSlider;
+    public Image revivePanel;
 
     public TMP_Text zombieKillsLabel;
     public TMP_Text idLabel;
@@ -28,6 +30,24 @@ public class PlayerUIController : MonoBehaviour
     public void UpdateIDLabel(int index)
     {
         idLabel.text = "Player " + index;
+    }
+
+    public void UpdateReviveSlider(float value)
+    {
+        reviveSlider.value = value;
+    }
+
+    //Used to turn on/off the revive UI.
+    public void ShowRevivePanel(bool  value)
+    {
+        if (value)
+        {
+            revivePanel.gameObject.SetActive(true);
+        }
+        else
+        {
+            revivePanel.gameObject.SetActive(false);
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -45,6 +65,9 @@ public class PlayerUIController : MonoBehaviour
 
         healthBarSlider.maxValue = PlayerController.maxHealth;
         healthBarSlider.value = playerController.curHealth;
+
+        //Don't show the revive slider.
+        ShowRevivePanel(false);
     }
 
     // Update is called once per frame
