@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -72,6 +73,8 @@ public float moveSpeed = 5f;
     public Camera cam;
 
     public Weapon curWeapon;
+
+    public Appliable curAppliable;
 
     public Transform handTransform;
 
@@ -1009,8 +1012,17 @@ public float moveSpeed = 5f;
         Ray r = new Ray(cam.transform.position, cam.transform.forward);
         //We don't use player mask because players are also interactibles.
         //so make sure we raycast from the player's collider instead.
-        if (playerCollider.Raycast(r, out var hitInfo, interactDist))
+        if (Physics.Raycast(r, out var hitInfo, interactDist))
         {
+            //Appliable check
+            Appliable tempAppliable = hitInfo.transform.gameObject.GetComponent<Appliable>();
+            if (tempAppliable != null)
+            {
+                //Swap the current appliable with the temp appliable
+                SwapCurrentAppliable(tempAppliable);
+            }
+
+
             Weapon temp = hitInfo.transform.gameObject.GetComponent<Weapon>();
             //if the interacted object is a weapon, pick it up.
             if (temp != null)
@@ -1052,7 +1064,6 @@ public float moveSpeed = 5f;
 
         Ray r = new Ray(cam.transform.position, cam.transform.forward);
         //We don't use player mask because players are also interactibles.
-        //so make sure we raycast from the player's collider instead.
         if (Physics.Raycast(r, out var hitInfo, interactDist))
         {
             lastHeldInteractible = hitInfo.transform.gameObject.GetComponent<IInteractible>();
@@ -1118,6 +1129,44 @@ public float moveSpeed = 5f;
             curWeapon.transform.position = dropPos;
             //set to the same rotation as the prev weapon.
             curWeapon.transform.localRotation = rot;
+
+        }
+    }
+
+    public void SwapCurrentAppliable(Appliable a)
+    {
+        DropCurrentAppliable(a.transform.position, a.transform.rotation);
+
+        //Remove the rigidbody.
+        Destroy(a.rb);
+        //set the weapons parent transform to be this player.
+        a.transform.SetParent(handTransform, false);
+        //Set to zero position so the transform is exactly where the hand is.
+        a.transform.localPosition = Vector3.zero;
+        //set to no rotation (0, 0, 0);
+        a.transform.localRotation = Quaternion.identity;
+
+
+        //assign the new current weapon.
+        curAppliable = a;
+
+        //invoke OnPickup if methods are subscribed to it.
+        //OnPickup?.Invoke();
+    }
+
+    void DropCurrentAppliable(Vector3 dropPos, Quaternion rot)
+    {
+        if (curAppliable != null)
+        { 
+            //set parent to be null
+            //so that we can disconnect it from the player.
+            curAppliable.transform.parent = null;
+            //put the old weapon at the position given.
+            curAppliable.transform.position = dropPos;
+            //set to the same rotation as the prev weapon.
+            curAppliable.transform.localRotation = rot;
+            //Add the rigidbody back
+            curAppliable.rb = curAppliable.AddComponent<Rigidbody>();
         }
     }
 

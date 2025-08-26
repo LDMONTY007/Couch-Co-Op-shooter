@@ -239,6 +239,7 @@ Transform:
   - {fileID: 4711834649103843489}
   - {fileID: 7798992555046969313}
   - {fileID: 1229503154068695074}
+  - {fileID: 6875237764509700596}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4055157184290194517
@@ -441,6 +442,7 @@ MonoBehaviour:
   playerModel: {fileID: 8945600692140703755}
   cam: {fileID: 7371796333402482502}
   curWeapon: {fileID: 0}
+  curAppliable: {fileID: 0}
   handTransform: {fileID: 1041062259185607100}
   uiController: {fileID: 1498720800337398024}
   invincible: 0
@@ -517,6 +519,37 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &5665331446100622677
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6875237764509700596}
+  m_Layer: 3
+  m_Name: AppliableHoldTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6875237764509700596
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5665331446100622677}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 0.156, z: -0.514}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1524256605029116192}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &5939895686569416902
 GameObject:
   m_ObjectHideFlags: 0

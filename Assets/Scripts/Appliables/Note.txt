@@ -1,0 +1,3 @@
+Appliables all go in the same slot, you can only have one at a time.
+Appliables can be used on yourself or on others. 
+This would be medkits, or enchantments (fire enchantment for setting all weapons ablaze when used, etc.)
