@@ -144,6 +144,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         set
         {
+
+
             _curHealth = Mathf.Max(value, 0);
             //LD Montello
             //Update the current health in the UI for the player.
@@ -153,6 +155,44 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
                 BecomeKnocked();
             }
         }
+    }
+
+    private float _degradingHealth = 0f;
+
+
+    //start degrading this temporary health
+    //if we aren't already.
+    public float degradingHealth { get { return _degradingHealth; } set { _degradingHealth = value; if (curHealthDegradationCoroutine == null) { curHealthDegradationCoroutine = StartCoroutine(healthDegradationCoroutine()); }
+            //LD Montello
+            //Update the current health in the UI for the player.
+            UpdateHealthUI(); } }
+
+    bool hasDegradingHealth = false;
+
+    Coroutine curHealthDegradationCoroutine;
+
+    IEnumerator healthDegradationCoroutine()
+    {
+        hasDegradingHealth = true;
+
+        while (degradingHealth > 0f)
+        {
+                
+
+            //in l4d2 degrading health decreases by 1 every 3 seconds.
+            //So gonna just copy it rather than changing the formula up.
+            //if this is bad, or is considered plagiarism, lmk,
+            //this is where I learned it: https://left4dead.fandom.com/wiki/Healing_items#Usage_2
+            yield return new WaitForSeconds(3f);
+
+            degradingHealth -= 1f;
+        }
+
+        //set the coroutine back to null 
+        //so we know to start it the next time
+        curHealthDegradationCoroutine = null;
+
+        hasDegradingHealth = false;
     }
 
     private float _knockedHealth = 300;
@@ -433,8 +473,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void UpdateHealthUI()
     {
+        float currentVisibleHealth = knocked ? knockedHealth : curHealth + degradingHealth;
+
         //Update the health bar.
-        uiController.UpdateHealthBar();
+        uiController.UpdateHealthBar(currentVisibleHealth);
     }
 
     public void OnMove(InputAction.CallbackContext callback)
@@ -1113,8 +1155,29 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
         else
         {
-            // Apply the damage
-            curHealth -= damage;
+            //Check degrading health first
+            if (degradingHealth > 0)
+            {
+                degradingHealth -= damage;
+
+                //if degrading health is now negative
+                //because damage exceeded the amount we had left,
+                //add the negative damage to the curHealth.
+                //this would be the same as finding out how much
+                //damage we had left over after degrading health
+                //reached zero, and then using curHealth -= leftover damage.
+                if (degradingHealth < 0)
+                {
+                    curHealth += degradingHealth;
+                    //set degrading health back to zero.
+                    degradingHealth = 0;
+                }
+            }
+            else
+            {
+                // Apply the damage
+                curHealth -= damage;
+            }
         }
 
             
@@ -1641,9 +1704,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         c.transform.localPosition = Vector3.zero;
         //set to no rotation (0, 0, 0);
         c.transform.localRotation = Quaternion.identity;
+        //Add the onUseableDestroyed listener for the curConsumeable
+        c.onBeforeDestroy.AddListener(OnUseableDestroyed);
+        //Set the parent player reference
+        c.parentPlayer = this;
+
         //Update the slot icon for this appliable.
         uiController.OnUpdateSlotIcon(c.icon, 4);
-
 
         //assign the new current Consumable.
         curConsumable = c;
@@ -1667,6 +1734,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curConsumable.rb = curConsumable.AddComponent<Rigidbody>();
             //don't collide with player.
             curConsumable.rb.excludeLayers = LayerMask.GetMask("Player");
+            //Remove the parent player reference
+            curConsumable.parentPlayer = null;
+            //Remove the onUseableDestroyed listener for the curConsumable
+            curConsumable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
         }
     }
 

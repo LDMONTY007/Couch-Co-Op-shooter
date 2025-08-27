@@ -1,10 +1,16 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Consumable : MonoBehaviour, IUseable
 {
     public Rigidbody rb;
 
     public Sprite icon;
+
+    public PlayerController parentPlayer;
+
+    //called before this gameobject is destroyed.
+    public UnityEvent<IUseable, int> onBeforeDestroy;
 
     private void Start()
     {
@@ -18,6 +24,17 @@ public class Consumable : MonoBehaviour, IUseable
 
     public void Use()
     {
-        throw new System.NotImplementedException();
+        Consume();
+    }
+
+    public virtual void Consume()
+    {
+
+    }
+
+    private void OnDestroy()
+    {
+        //invoke onBeforeDestroy.
+        onBeforeDestroy?.Invoke(this, 4);
     }
 }

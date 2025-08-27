@@ -148,9 +148,9 @@ public class PlayerUIController : MonoBehaviour
         playerInput.SwitchCurrentActionMap("Player");
     }
 
-    public void UpdateHealthBar()
+    public void UpdateHealthBar(float value)
     {
-        healthBarSlider.value = playerController.curHealth;
+        healthBarSlider.value = value;
     }
 
     private string GetCorrespondingControlScheme(InputDevice device)
