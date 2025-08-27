@@ -17,6 +17,7 @@ public class PlayerUIController : MonoBehaviour
     public GameObject pauseUI;
 
     public Slider healthBarSlider;
+    public Slider degradingHealthBarSlider;
     public Slider reviveSlider;
     public Slider useSlider;
     public Image revivePanel;
@@ -148,9 +149,24 @@ public class PlayerUIController : MonoBehaviour
         playerInput.SwitchCurrentActionMap("Player");
     }
 
-    public void UpdateHealthBar(float value)
+    public void UpdateHealthBar(float baseHealth, bool hasDegradingHealth, float degradingHealth, float maxHealth)
     {
-        healthBarSlider.value = value;
+        healthBarSlider.value = baseHealth;
+        healthBarSlider.maxValue = maxHealth;
+        degradingHealthBarSlider.maxValue = maxHealth;
+
+        //Set degrading bar slider so it is longer
+        //than base health and shows the visual area
+        //that is occupied by degrading health in 
+        //the health bar.
+        if (hasDegradingHealth)
+        {
+            degradingHealthBarSlider.value = baseHealth + degradingHealth;
+        }
+        else
+            //otherwise set the value to zero so that
+            //it doesn't clip the normal health at all.
+            degradingHealthBarSlider.value = 0;
     }
 
     private string GetCorrespondingControlScheme(InputDevice device)

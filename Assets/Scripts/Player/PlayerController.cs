@@ -195,7 +195,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         hasDegradingHealth = false;
     }
 
-    private float _knockedHealth = 300;
+    public const float knockedMaxHealth = 300;
+
+    private float _knockedHealth = knockedMaxHealth;
 
     public float knockedHealth
     {
@@ -473,10 +475,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void UpdateHealthUI()
     {
-        float currentVisibleHealth = knocked ? knockedHealth : curHealth + degradingHealth;
+        float currentVisibleHealth = knocked ? knockedHealth : curHealth;
+        float currentMaxHealth = knocked ? knockedMaxHealth : maxHealth;
 
         //Update the health bar.
-        uiController.UpdateHealthBar(currentVisibleHealth);
+        uiController.UpdateHealthBar(currentVisibleHealth, hasDegradingHealth, degradingHealth, currentMaxHealth);
     }
 
     public void OnMove(InputAction.CallbackContext callback)
