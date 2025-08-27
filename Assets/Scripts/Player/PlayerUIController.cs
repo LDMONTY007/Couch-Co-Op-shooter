@@ -29,6 +29,8 @@ public class PlayerUIController : MonoBehaviour
     //These are assigned in the inspector.
     public RectTransform[] slotTransforms = new RectTransform[5];
 
+    public Image[] slotIcons = new Image[5];
+
     public void UpdateZombieKills(int kills)
     {
         zombieKillsLabel.text = "Zombies Killed: " + kills;
@@ -166,6 +168,24 @@ public class PlayerUIController : MonoBehaviour
             return "Keyboard&Mouse";
         }
         return null;
+    }
+
+    public void OnUpdateSlotIcon(Sprite s, int slotIndex)
+    {
+        //if this is an empty
+        //icon, then disable the image.
+        if (s == null)
+        {
+            slotIcons[slotIndex].enabled = false;
+        }
+        else
+        {
+            //make sure the icon is visible.
+            slotIcons[slotIndex].enabled = true;
+
+            //Set the sprite. 
+            slotIcons[slotIndex].sprite = s;
+        }
     }
 
     public void OnSlotSwitched(int  slot)

@@ -4,6 +4,8 @@ public class Throwable : MonoBehaviour, IUseable
 {
     public Rigidbody rb;
 
+    public Sprite icon;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();

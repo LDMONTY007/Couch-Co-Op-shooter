@@ -6,6 +6,8 @@ public class Weapon : MonoBehaviour, IUseable
 
     public PlayerController parentPlayer;
 
+    public Sprite icon;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();

@@ -24,6 +24,8 @@ public class Appliable : MonoBehaviour, IUseable
 
     public Rigidbody rb;
 
+    public Sprite icon;
+
     private void OnDisable()
     {
         //Make sure to remove all the listeners

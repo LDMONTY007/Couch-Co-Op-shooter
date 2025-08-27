@@ -369,11 +369,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     { 
         if (curUseable == useable)
         {
+            //Renove the slot icon for the current slot where the item was destroyed.
+            uiController.OnUpdateSlotIcon(null, curSelectedSlot);
+
             //Go back to slot 0 when a useable is destroyed.
             curSelectedSlot = 0;
             //Make sure to swap the current useable
             //accordingly.
             SwapCurrentUseable(curPrimaryWeapon);
+
+            
         }
     }
 
@@ -1432,9 +1437,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         w.transform.localRotation = Quaternion.identity;
         //set us to be the parent player.
         w.parentPlayer = this;
+        //Update the slot icon for this weapon.
+        uiController.OnUpdateSlotIcon(w.icon, 0);
 
         //assign the new current weapon.
         curPrimaryWeapon = w;
+
 
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();
@@ -1475,9 +1483,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         w.transform.localRotation = Quaternion.identity;
         //set us to be the parent player.
         w.parentPlayer = this;
+        //Update the slot icon for this weapon.
+        uiController.OnUpdateSlotIcon(w.icon, 1);
+
 
         //assign the new current SecondaryWeapon.
         curSecondaryWeapon = w;
+
 
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();
@@ -1517,6 +1529,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         t.transform.localPosition = Vector3.zero;
         //set to no rotation (0, 0, 0);
         t.transform.localRotation = Quaternion.identity;
+
+        //Update the slot icon for this throwable.
+        uiController.OnUpdateSlotIcon(t.icon, 2);
 
         //assign the new current Throwable.
         curThrowable = t;
@@ -1558,6 +1573,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         a.transform.localRotation = Quaternion.identity;
         a.parentController = this;
 
+        //Update the slot icon for this appliable.
+        uiController.OnUpdateSlotIcon(a.icon, 3);
+
         //assign the new current weapon.
         curAppliable = a;
 
@@ -1598,6 +1616,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         c.transform.localPosition = Vector3.zero;
         //set to no rotation (0, 0, 0);
         c.transform.localRotation = Quaternion.identity;
+        //Update the slot icon for this appliable.
+        uiController.OnUpdateSlotIcon(c.icon, 4);
 
 
         //assign the new current Consumable.
