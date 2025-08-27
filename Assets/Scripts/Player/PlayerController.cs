@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -20,6 +21,32 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 {
+    #region Hotbar
+
+    [HideInInspector]
+    public UnityEvent<int> onSlotValueChanged;
+
+    //automatically loop slots
+    private int _curSelectedSlot = 0;
+    public int curSelectedSlot 
+    { 
+        get {  return _curSelectedSlot; } 
+        set { 
+            if (value > 4) 
+            { _curSelectedSlot = 0; } 
+            else if (value < 0) 
+            { _curSelectedSlot = 4; } 
+            else 
+            { _curSelectedSlot = value; } 
+            onSlotValueChanged.Invoke(value); } }
+
+
+    public IUseable curUseable = null;
+
+    public IUseable[] useables = new IUseable[5];
+
+    #endregion
+
     #region score tracking
     private int _score = 0;
 
@@ -53,7 +80,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     public GameObject knockedModel;
 
 
-public float moveSpeed = 5f;
+    public float moveSpeed = 5f;
     public float maxSpeed = 20f;
 
     Guid guid;
@@ -72,17 +99,23 @@ public float moveSpeed = 5f;
 
     public Camera cam;
 
-    public Weapon curWeapon;
+    public PrimaryWeapon curPrimaryWeapon;
+    public SecondaryWeapon curSecondaryWeapon;
+    public Throwable curThrowable;
 
     public Appliable curAppliable;
+    public Consumable curConsumable;
 
     public Transform handTransform;
+    public Transform backTransform;
 
     private PlayerInput playerInput;
     private InputAction jumpAction;
     private InputAction lookAction;
     private InputAction attackAction;
     private InputAction interactAction;
+    private InputAction slotUpAction;
+    private InputAction slotDownAction;
 
     float yVel = 0f;
 
@@ -280,6 +313,69 @@ public float moveSpeed = 5f;
         lookAction = playerInput.actions["Look"];
         attackAction = playerInput.actions["Attack"];
         interactAction = playerInput.actions["Interact"];
+        slotUpAction = playerInput.actions["SlotUp"];
+        slotDownAction = playerInput.actions["SlotDown"];
+    }
+
+    public void HandleSlots()
+    {
+        if (slotUpAction.GetButtonDown())
+        {
+            curSelectedSlot--;
+            //repeat last action until
+            //there is not an empty slot.
+            //this basically skips over any empty slots.
+            while (useables[curSelectedSlot] == null)
+            {
+                curSelectedSlot--;
+            }
+        }
+        
+        if (slotDownAction.GetButtonDown())
+        {
+            curSelectedSlot++;
+            //repeat last action until
+            //there is not an empty slot.
+            //this basically skips over any empty slots.
+            while (useables[curSelectedSlot] == null)
+            {
+                curSelectedSlot++;
+            }
+        }
+
+        switch (curSelectedSlot)
+        {
+            case 0:
+                SwapCurrentUseable(curPrimaryWeapon);
+                break;
+            case 1:
+                SwapCurrentUseable(curSecondaryWeapon);
+                break;
+            case 2:
+                SwapCurrentUseable(curThrowable);
+                break;
+            case 3:
+                SwapCurrentUseable(curAppliable);
+                break;
+            case 4:
+                SwapCurrentUseable(curConsumable);
+                break;
+
+
+        }
+    }
+
+
+    public void SwapCurrentUseable(IUseable useable)
+    {
+        if (curUseable != null)
+        //any weapon not currently held in the players
+        //hand is on their back.
+        (curUseable as Component).transform.SetParent(backTransform, false);
+        //Put the new useable in the player's hand.
+        (useable as Component).transform.SetParent(handTransform, false);
+        //set current useable.
+        curUseable = useable;
     }
 
     public void HandleUI()
@@ -458,15 +554,15 @@ public float moveSpeed = 5f;
     {
         if (attackAction.GetButtonDown())
         {
-            if (curWeapon != null)
+            if (curUseable != null)
             {
-                //call attack.
-                curWeapon.Attack(cam, this);
+                //call use.
+                curUseable.Use();
             }
             else
             {
                 //Throw error to console if there was no weapon assigned yet.
-                Debug.LogWarning("No weapon has been assigned to this player. Player " + guid.ToString());
+                Debug.LogWarning("No useable has been assigned to this player. Player " + guid.ToString());
             }
         }
 
@@ -772,6 +868,8 @@ public float moveSpeed = 5f;
 
         HandleLook();
 
+        HandleSlots();
+
         HandleAttack();
 
         HandleInteract();
@@ -779,6 +877,7 @@ public float moveSpeed = 5f;
         GroundedCheck();
 
         JumpUpdateLogic();
+
 
         HandleAnimations();
 
@@ -1006,43 +1105,151 @@ public float moveSpeed = 5f;
         yield break;
     }
 
-    public void OnInteract()
+    public void TryPickupAnyItem()
     {
-
         Ray r = new Ray(cam.transform.position, cam.transform.forward);
         //We don't use player mask because players are also interactibles.
         //so make sure we raycast from the player's collider instead.
         if (Physics.Raycast(r, out var hitInfo, interactDist))
-        {
+        { 
+            //Primary Weapon
+            PrimaryWeapon tempPrimaryWeapon = hitInfo.transform.gameObject.GetComponent<PrimaryWeapon>();
+            //if the interacted object is a weapon, pick it up.
+            if (tempPrimaryWeapon != null)
+            {
+                //Swap the current weapon with the one the player interacted with.
+                SwapCurrentWeapon(tempPrimaryWeapon);
+                useables[0] = tempPrimaryWeapon;
+            }
+
+            //Secondary Weapon
+
+            SecondaryWeapon tempSecondaryWeapon = hitInfo.transform.gameObject.GetComponent<SecondaryWeapon>();
+            //if the interacted object is a weapon, pick it up.
+            if (tempSecondaryWeapon != null)
+            {
+                //Swap the current weapon with the one the player interacted with.
+                SwapCurrentSecondaryWeapon(tempSecondaryWeapon);
+                useables[1] = tempSecondaryWeapon;
+            }
+
+            //Throwable check
+            Throwable tempThrowable = hitInfo.transform.gameObject.GetComponent<Throwable>();
+            if (tempThrowable != null)
+            {
+                //Swap the current Throwable with the temp Throwable
+                SwapCurrentThrowable(tempThrowable);
+                useables[2] = tempThrowable;
+            }
+
             //Appliable check
             Appliable tempAppliable = hitInfo.transform.gameObject.GetComponent<Appliable>();
             if (tempAppliable != null)
             {
                 //Swap the current appliable with the temp appliable
                 SwapCurrentAppliable(tempAppliable);
+                useables[3] = tempAppliable;
             }
 
-
-            Weapon temp = hitInfo.transform.gameObject.GetComponent<Weapon>();
-            //if the interacted object is a weapon, pick it up.
-            if (temp != null)
-            { 
-                //Swap the current weapon with the one the player interacted with.
-                SwapCurrentWeapon(temp);
-            }
-            //otherwise check if we interacted with an interactible.
-            else
+            //Consumable check
+            Consumable tempConsumable = hitInfo.transform.gameObject.GetComponent<Consumable>();
+            if (tempConsumable != null)
             {
-                
-                IInteractible interactible = hitInfo.transform.gameObject.GetComponent<IInteractible>();
-
-                //if we actually hit an interactible.
-                if (interactible != null)
-                    interactible.Interact();
+                //Swap the current Consumable with the temp Consumable
+                SwapCurrentConsumable(tempConsumable);
+                useables[4] = tempConsumable;
             }
-
-                
         }
+    }
+
+    public void OnInteract()
+    {
+
+        /*        Ray r = new Ray(cam.transform.position, cam.transform.forward);
+                //We don't use player mask because players are also interactibles.
+                //so make sure we raycast from the player's collider instead.
+                if (Physics.Raycast(r, out var hitInfo, interactDist))
+                {
+                    //Depending on what slot is selected,
+                    //we equip the item to the current selected slot.
+                    switch (curSelectedSlot)
+                    {
+                        //Primary Weapon
+                        case 0:
+                            Weapon tempPrimaryWeapon = hitInfo.transform.gameObject.GetComponent<Weapon>();
+                            //if the interacted object is a weapon, pick it up.
+                            if (tempPrimaryWeapon != null)
+                            {
+                                //Swap the current weapon with the one the player interacted with.
+                                SwapCurrentWeapon(tempPrimaryWeapon);
+                            }
+                            break;
+                        //Secondary Weapon
+                        case 1:
+                            Weapon tempSecondaryWeapon = hitInfo.transform.gameObject.GetComponent<Weapon>();
+                            //if the interacted object is a weapon, pick it up.
+                            if (tempSecondaryWeapon != null)
+                            {
+                                //Swap the current weapon with the one the player interacted with.
+                                SwapCurrentSecondaryWeapon(tempSecondaryWeapon);
+                            }
+                            break;
+                        case 2:
+                            //Throwable check
+                            Throwable tempThrowable = hitInfo.transform.gameObject.GetComponent<Throwable>();
+                            if (tempThrowable != null)
+                            {
+                                //Swap the current Throwable with the temp Throwable
+                                SwapCurrentThrowable(tempThrowable);
+                            }
+                            break;
+                        case 3:
+                            //Appliable check
+                            Appliable tempAppliable = hitInfo.transform.gameObject.GetComponent<Appliable>();
+                            if (tempAppliable != null)
+                            {
+                                //Swap the current appliable with the temp appliable
+                                SwapCurrentAppliable(tempAppliable);
+                            }
+                            break;
+                        case 4:
+                            //Consumable check
+                            Consumable tempConsumable = hitInfo.transform.gameObject.GetComponent<Consumable>();
+                            if (tempConsumable != null)
+                            {
+                                //Swap the current Consumable with the temp Consumable
+                                SwapCurrentConsumable(tempConsumable);
+                            }
+                            break;
+
+
+                    }
+                }*/
+
+        TryPickupAnyItem();
+
+        Ray r = new Ray(cam.transform.position, cam.transform.forward);
+        //We don't use player mask because players are also interactibles.
+        //so make sure we raycast from the player's collider instead.
+        if (Physics.Raycast(r, out var hitInfo, interactDist))
+        {
+            //ocheck if we interacted with an interactible.
+            IInteractible interactible = hitInfo.transform.gameObject.GetComponent<IInteractible>();
+
+            //if we actually hit an interactible.
+            if (interactible != null)
+                interactible.Interact();
+
+        }
+
+
+
+
+
+
+
+
+    
     }
 
     bool isHoldingInteract = false;
@@ -1086,7 +1293,7 @@ public float moveSpeed = 5f;
         lastHeldInteractible.InteractStopHold();
     }
 
-    public void CreateNewWeapon(GameObject g)
+    public void CreateNewPrimaryWeapon(GameObject g)
     {
         GameObject temp = Instantiate(g);
 
@@ -1097,50 +1304,170 @@ public float moveSpeed = 5f;
         //set to no rotation (0, 0, 0);
         temp.transform.localRotation = Quaternion.identity;
 
+        PrimaryWeapon pw = temp.GetComponent<PrimaryWeapon>();
+        pw.parentPlayer = this;
+
         //assign the new current weapon.
-        curWeapon = temp.GetComponent<Weapon>();
+        curPrimaryWeapon = temp.GetComponent<PrimaryWeapon>();
+        useables[0] = curPrimaryWeapon;
     }
 
-    public void SwapCurrentWeapon(Weapon w)
+    public void CreateNewSecondaryWeapon(GameObject g)
     {
-        DropCurrentWeapon(w.transform.position, w.transform.rotation);
+        GameObject temp = Instantiate(g);
+
         //set the weapons parent transform to be this player.
-        w.transform.SetParent(handTransform, false);
+        temp.transform.SetParent(backTransform, false);
+        //Set to zero position so the transform is exactly where the hand is.
+        temp.transform.localPosition = Vector3.zero;
+        //set to no rotation (0, 0, 0);
+        temp.transform.localRotation = Quaternion.identity;
+        SecondaryWeapon sw = temp.GetComponent<SecondaryWeapon>();
+        sw.parentPlayer = this;
+
+
+        //assign the new current weapon.
+        curSecondaryWeapon = temp.GetComponent<SecondaryWeapon>();
+        useables[1] = curSecondaryWeapon;
+    }
+
+
+
+    public void SwapCurrentWeapon(PrimaryWeapon w)
+    {
+        DropPrimaryWeapon(transform.position, Quaternion.identity);
+
+        //Remove the rigidbody.
+        Destroy(w.rb);
+        //set the weapons parent transform to be this player.
+        //we switch placement depending on if this item type is the currently selected item.
+        w.transform.SetParent(curSelectedSlot == 0 ? handTransform : backTransform, false);
         //Set to zero position so the transform is exactly where the hand is.
         w.transform.localPosition = Vector3.zero;
         //set to no rotation (0, 0, 0);
         w.transform.localRotation = Quaternion.identity;
+        //set us to be the parent player.
+        w.parentPlayer = this;
 
         //assign the new current weapon.
-        curWeapon = w;
+        curPrimaryWeapon = w;
 
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();
     }
 
-    void DropCurrentWeapon(Vector3 dropPos, Quaternion rot)
+    void DropPrimaryWeapon(Vector3 dropPos, Quaternion rot)
     {
-        if (curWeapon != null)
+        if (curPrimaryWeapon != null)
         {
             //set parent to be null
             //so that we can disconnect it from the player.
-            curWeapon.transform.parent = null;
+            curPrimaryWeapon.transform.parent = null;
             //put the old weapon at the position given.
-            curWeapon.transform.position = dropPos;
+            curPrimaryWeapon.transform.position = dropPos;
             //set to the same rotation as the prev weapon.
-            curWeapon.transform.localRotation = rot;
+            curPrimaryWeapon.transform.localRotation = rot;
+            //Add the rigidbody back
+            curPrimaryWeapon.rb = curPrimaryWeapon.AddComponent<Rigidbody>();
+            //don't collide with player.
+            curPrimaryWeapon.rb.excludeLayers = LayerMask.GetMask("Player");
+            //Set the parent player to null for this weapon.
+            curPrimaryWeapon.parentPlayer = null;
+        }
+    }
 
+    public void SwapCurrentSecondaryWeapon(SecondaryWeapon w)
+    {
+        DropSecondaryWeapon(transform.position, Quaternion.identity);
+
+        //Remove the rigidbody.
+        Destroy(w.rb);
+        //set the SecondaryWeapons parent transform to be this player.
+        //we switch placement depending on if this item type is the currently selected item.
+        w.transform.SetParent(curSelectedSlot == 1 ? handTransform : backTransform, false);
+        //Set to zero position so the transform is exactly where the hand is.
+        w.transform.localPosition = Vector3.zero;
+        //set to no rotation (0, 0, 0);
+        w.transform.localRotation = Quaternion.identity;
+        //set us to be the parent player.
+        w.parentPlayer = this;
+
+        //assign the new current SecondaryWeapon.
+        curSecondaryWeapon = w;
+
+        //invoke OnPickup if methods are subscribed to it.
+        //OnPickup?.Invoke();
+    }
+
+    void DropSecondaryWeapon(Vector3 dropPos, Quaternion rot)
+    {
+        if (curSecondaryWeapon != null)
+        {
+            //set parent to be null
+            //so that we can disconnect it from the player.
+            curSecondaryWeapon.transform.parent = null;
+            //put the old SecondaryWeapon at the position given.
+            curSecondaryWeapon.transform.position = dropPos;
+            //set to the same rotation as the prev SecondaryWeapon.
+            curSecondaryWeapon.transform.localRotation = rot;
+            //Add the rigidbody back
+            curSecondaryWeapon.rb = curSecondaryWeapon.AddComponent<Rigidbody>();
+            //don't collide with player.
+            curSecondaryWeapon.rb.excludeLayers = LayerMask.GetMask("Player");
+            //Set the parent player to null for this weapon.
+            curSecondaryWeapon.parentPlayer = null;
+        }
+    }
+
+    public void SwapCurrentThrowable(Throwable t)
+    {
+        DropCurrentThrowable(transform.position, Quaternion.identity);
+
+        //Remove the rigidbody.
+        Destroy(t.rb);
+
+        //set the Throwables parent transform to be this player.
+        //we switch placement depending on if this item type is the currently selected item.
+        t.transform.SetParent(curSelectedSlot == 2 ? handTransform : backTransform, false);
+        //Set to zero position so the transform is exactly where the hand is.
+        t.transform.localPosition = Vector3.zero;
+        //set to no rotation (0, 0, 0);
+        t.transform.localRotation = Quaternion.identity;
+
+        //assign the new current Throwable.
+        curThrowable = t;
+
+        //invoke OnPickup if methods are subscribed to it.
+        //OnPickup?.Invoke();
+    }
+
+    void DropCurrentThrowable(Vector3 dropPos, Quaternion rot)
+    {
+        if (curThrowable != null)
+        {
+            //set parent to be null
+            //so that we can disconnect it from the player.
+            curThrowable.transform.parent = null;
+            //put the old Throwable at the position given.
+            curThrowable.transform.position = dropPos;
+            //set to the same rotation as the prev Throwable.
+            curThrowable.transform.localRotation = rot;
+            //Add the rigidbody back
+            curThrowable.rb = curThrowable.AddComponent<Rigidbody>();
+            //don't collide with player.
+            curThrowable.rb.excludeLayers = LayerMask.GetMask("Player");
         }
     }
 
     public void SwapCurrentAppliable(Appliable a)
     {
-        DropCurrentAppliable(a.transform.position, a.transform.rotation);
+        DropCurrentAppliable(transform.position, Quaternion.identity);
 
         //Remove the rigidbody.
         Destroy(a.rb);
         //set the weapons parent transform to be this player.
-        a.transform.SetParent(handTransform, false);
+        //we switch placement depending on if this item type is the currently selected item.
+        a.transform.SetParent(curSelectedSlot == 3 ? handTransform : backTransform, false);
         //Set to zero position so the transform is exactly where the hand is.
         a.transform.localPosition = Vector3.zero;
         //set to no rotation (0, 0, 0);
@@ -1167,6 +1494,48 @@ public float moveSpeed = 5f;
             curAppliable.transform.localRotation = rot;
             //Add the rigidbody back
             curAppliable.rb = curAppliable.AddComponent<Rigidbody>();
+            //don't collide with player.
+            curAppliable.rb.excludeLayers = LayerMask.GetMask("Player");
+        }
+    }
+
+    public void SwapCurrentConsumable(Consumable c)
+    {
+        DropCurrentConsumable(transform.position, Quaternion.identity);
+
+        //Remove the rigidbody.
+        Destroy(c.rb);
+        //set the Consumables parent transform to be this player.
+        //we switch placement depending on if this item type is the currently selected item.
+        c.transform.SetParent(curSelectedSlot == 4 ? handTransform : backTransform, false);
+        //Set to zero position so the transform is exactly where the hand is.
+        c.transform.localPosition = Vector3.zero;
+        //set to no rotation (0, 0, 0);
+        c.transform.localRotation = Quaternion.identity;
+
+
+        //assign the new current Consumable.
+        curConsumable = c;
+
+        //invoke OnPickup if methods are subscribed to it.
+        //OnPickup?.Invoke();
+    }
+
+    void DropCurrentConsumable(Vector3 dropPos, Quaternion rot)
+    {
+        if (curConsumable != null)
+        {
+            //set parent to be null
+            //so that we can disconnect it from the player.
+            curConsumable.transform.parent = null;
+            //put the old Consumable at the position given.
+            curConsumable.transform.position = dropPos;
+            //set to the same rotation as the prev Consumable.
+            curConsumable.transform.localRotation = rot;
+            //Add the rigidbody back
+            curConsumable.rb = curConsumable.AddComponent<Rigidbody>();
+            //don't collide with player.
+            curConsumable.rb.excludeLayers = LayerMask.GetMask("Player");
         }
     }
 
@@ -1187,8 +1556,8 @@ public float moveSpeed = 5f;
 
         //TODO: Add a null check for this player.
         //if the weapon is null, creat and load the default weapon.
-        CreateNewWeapon(DataPersistenceManager.instance.FindWeaponPrefab("Revolver"));
-
+        CreateNewPrimaryWeapon(DataPersistenceManager.instance.FindWeaponPrefab("Stake"));
+        CreateNewSecondaryWeapon(DataPersistenceManager.instance.FindWeaponPrefab("Revolver"));
         
     }
 

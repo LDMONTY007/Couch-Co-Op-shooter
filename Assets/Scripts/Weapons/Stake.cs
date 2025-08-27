@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Stake : Weapon
+public class Stake : PrimaryWeapon
 {
     //base damage, no damage type bonus applied here.
     int damage = 5;
@@ -27,5 +27,15 @@ public class Stake : Weapon
             if (damageable != null)
             damageable.TakeDamage(damage, stunTime, player.gameObject);
         }
+    }
+
+    public override void CancelUse()
+    {
+        //This is not a hold down to use weapon so this goes unused.
+    }
+
+    public override void Use()
+    {
+        Attack(parentPlayer.cam, parentPlayer);
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Revolver : Weapon
+public class Revolver : SecondaryWeapon
 {
     //base damage, no damage type bonus applied here.
     float damage = 20f;
@@ -14,7 +14,7 @@ public class Revolver : Weapon
 
     float attackCooldownTime = 0.3f;
 
-    float stunTime = 1.5f;
+    float stunTime = 1.5f; 
 
     private void Awake()
     {
@@ -58,5 +58,15 @@ public class Revolver : Weapon
 
         //Delete the muzzleFlashParticles
         muzzleFlashParticles.Clear();
+    }
+
+    public override void CancelUse()
+    {
+        //Do nothing as holding the button down does nothing for this useable.
+    }
+
+    public override void Use()
+    {
+        Attack(parentPlayer.cam, parentPlayer);
     }
 }

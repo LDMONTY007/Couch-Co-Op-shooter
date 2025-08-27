@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Appliable : MonoBehaviour
+public class Appliable : MonoBehaviour, IUseable
 {
     public float totalTimeToApply = 5f;
 
@@ -73,5 +73,15 @@ public class Appliable : MonoBehaviour
 
         //Destory this item.
         Destroy(gameObject);
+    }
+
+    public void Use()
+    {
+        StartApply();
+    }
+
+    public void CancelUse()
+    {
+        CancelApply();
     }
 }

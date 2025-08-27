@@ -17,7 +17,9 @@ public class PlayerUIController : MonoBehaviour
 
     public Slider healthBarSlider;
     public Slider reviveSlider;
+    public Slider useSlider;
     public Image revivePanel;
+    public Image usePanel;
 
     public TMP_Text zombieKillsLabel;
     public TMP_Text idLabel;
@@ -40,14 +42,18 @@ public class PlayerUIController : MonoBehaviour
     //Used to turn on/off the revive UI.
     public void ShowRevivePanel(bool  value)
     {
-        if (value)
-        {
-            revivePanel.gameObject.SetActive(true);
-        }
-        else
-        {
-            revivePanel.gameObject.SetActive(false);
-        }
+        revivePanel.gameObject.SetActive(value);
+    }
+
+    public void UpdateUseSlider(float value)
+    {
+        useSlider.value = value;
+    }
+
+    public void ShowUseSlider(bool value)
+    {
+        usePanel.gameObject.SetActive(value);
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

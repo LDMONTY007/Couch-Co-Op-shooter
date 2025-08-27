@@ -1,6 +1,26 @@
 using UnityEngine;
 
-public abstract class Weapon : MonoBehaviour
+public class Weapon : MonoBehaviour, IUseable
 {
-    public abstract void Attack(Camera cam, PlayerController player);
+    public Rigidbody rb;
+
+    public PlayerController parentPlayer;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    public virtual void Attack(Camera cam, PlayerController player)
+    {
+
+    }
+    public virtual void CancelUse()
+    {
+
+    }
+    public virtual void Use()
+    {
+        
+    }
 }

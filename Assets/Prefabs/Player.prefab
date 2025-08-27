@@ -415,6 +415,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 6043ef8f-3f16-489a-b7f4-25f904bf622a
     m_ActionName: 'UI/Back[/Keyboard/escape,/XInputControllerWindows/select]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 10a8e843-566d-49de-ae45-e68997f400af
+    m_ActionName: 'Player/SlotUp[/Mouse/scroll/up,/XInputControllerWindows/rightShoulder]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5f865ba3-2776-4b9b-a060-35f511b96daf
+    m_ActionName: 'Player/SlotDown[/Mouse/scroll/down,/XInputControllerWindows/rightShoulder]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -432,6 +440,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d748a82d7966945b294e8a95edc454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onSlotValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
   knockedCamTransform: {fileID: 7798992555046969313}
   defaultCamTransform: {fileID: 1229503154068695074}
   standingModel: {fileID: 8722378375648558659}
@@ -442,8 +453,12 @@ MonoBehaviour:
   playerModel: {fileID: 8945600692140703755}
   cam: {fileID: 7371796333402482502}
   curWeapon: {fileID: 0}
+  curSecondaryWeapon: {fileID: 0}
+  curThrowable: {fileID: 0}
   curAppliable: {fileID: 0}
+  curConsumable: {fileID: 0}
   handTransform: {fileID: 1041062259185607100}
+  backTransform: {fileID: 6875237764509700596}
   uiController: {fileID: 1498720800337398024}
   invincible: 0
   canJump: 1
@@ -529,7 +544,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6875237764509700596}
   m_Layer: 3
-  m_Name: AppliableHoldTransform
+  m_Name: BackTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -884,6 +899,10 @@ PrefabInstance:
     - target: {fileID: 4811819733880549125, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5121456086580370081, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5388226147349064277, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Layer
