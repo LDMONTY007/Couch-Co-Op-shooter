@@ -1399,6 +1399,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //assign the new current weapon.
         curPrimaryWeapon = temp.GetComponent<PrimaryWeapon>();
         useables[0] = curPrimaryWeapon;
+        //Set the slot icon.
+        uiController.OnUpdateSlotIcon(curPrimaryWeapon.icon, 0);
     }
 
     public void CreateNewSecondaryWeapon(GameObject g)
@@ -1418,6 +1420,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //assign the new current weapon.
         curSecondaryWeapon = temp.GetComponent<SecondaryWeapon>();
         useables[1] = curSecondaryWeapon;
+        //Set the slot icon.
+        uiController.OnUpdateSlotIcon(curSecondaryWeapon.icon, 1);
     }
 
 
@@ -1762,6 +1766,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
 
         isGettingRevived = false;
+        //Reset knocked health and curRevive time.
+        knockedHealth = 300;
+        curReviveTime = 0f;
+
 
         CancelKnocked();
     }
