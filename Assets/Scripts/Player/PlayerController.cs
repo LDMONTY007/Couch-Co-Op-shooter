@@ -372,6 +372,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //Renove the slot icon for the current slot where the item was destroyed.
         uiController.OnUpdateSlotIcon(null, slot);
 
+        //set the useable in this slot to be null.
+        useables[slot] = null;
+
+
         //Cast to component to do a proper reference comparison.
         if ((curUseable as Component) == (useable as Component))
         {
