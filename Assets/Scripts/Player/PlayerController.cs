@@ -595,7 +595,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
                         }
                     }
 
-                        
+
                 }
                 //for any other slot just use the item.
                 else
@@ -604,12 +604,19 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
                     curUseable.Use();
                 }
 
-                
+
             }
             else
             {
                 //Throw error to console if there was no weapon assigned yet.
                 Debug.LogWarning("No useable has been assigned to this player. Player " + guid.ToString());
+            }
+        }
+        else if (!attackAction.GetButton())
+        {
+            if (curSelectedSlot == 3)
+            {
+                curUseable.CancelUse();
             }
         }
 

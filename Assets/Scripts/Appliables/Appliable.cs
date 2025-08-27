@@ -65,8 +65,19 @@ public class Appliable : MonoBehaviour, IUseable
 
     public void CancelApply()
     {
+        //Reset back to beginning and don't apply when canceled.
+        if (applyCoroutine != null)
         StopCoroutine(applyCoroutine);
         applyCoroutine = null;
+        curApplyTime = 0f;
+
+        //Make sure to remove all the listeners
+        //as it could cause an error otherwise.
+        onValueChanged.RemoveAllListeners();
+
+        //Hide use slider for both player's UI
+        parentController?.uiController.ShowUseSlider(false);
+        targetPlayer?.uiController.ShowUseSlider(false);
     }
 
     Coroutine applyCoroutine;
@@ -103,8 +114,8 @@ public class Appliable : MonoBehaviour, IUseable
         onValueChanged.RemoveAllListeners();
 
         //Hide use slider for both player's UI
-        parentController.uiController.ShowUseSlider(false);
-        targetPlayer.uiController.ShowUseSlider(false);
+        parentController?.uiController.ShowUseSlider(false);
+        targetPlayer?.uiController.ShowUseSlider(false);
 
         onBeforeDestroy?.Invoke(this);
     }
