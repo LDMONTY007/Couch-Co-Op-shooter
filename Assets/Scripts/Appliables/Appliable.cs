@@ -9,6 +9,8 @@ public class Appliable : MonoBehaviour, IUseable
     //use this for updating the UI of the player.
     public UnityEvent<float> onValueChanged;
 
+    //called before this gameobject is destroyed.
+    public UnityEvent<IUseable> onBeforeDestroy;
     
     private float _curApplyTime = 0f;
     //call onValueChanged when setting.
@@ -18,7 +20,16 @@ public class Appliable : MonoBehaviour, IUseable
 
     public PlayerController targetPlayer;
 
+    public PlayerController parentController;
+
     public Rigidbody rb;
+
+    private void OnDisable()
+    {
+        //Make sure to remove all the listeners
+        //as it could cause an error otherwise.
+        onValueChanged.RemoveAllListeners();
+    }
 
     private void Start()
     {
@@ -41,6 +52,7 @@ public class Appliable : MonoBehaviour, IUseable
             Debug.LogError("Appliable didn't stop applying before starting to apply again!");
             return;
         }
+
         applyCoroutine = StartCoroutine(ApplyCoroutine());
     }
 
@@ -71,8 +83,15 @@ public class Appliable : MonoBehaviour, IUseable
 
         applyCoroutine = null;
 
-        //Destory this item.
+
+        
+        //Destroy this item.
         Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        onBeforeDestroy?.Invoke(this);
     }
 
     public void Use()

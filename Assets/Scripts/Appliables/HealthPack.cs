@@ -10,5 +10,6 @@ public class HealthPack : Appliable
     {
         //Add to the player's health.
         playerController.curHealth += HealthToRestore;
+        Debug.Log("HEALED!!");
     }
 }

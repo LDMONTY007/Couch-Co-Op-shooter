@@ -365,10 +365,28 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
+    public void OnUseableDestroyed(IUseable useable)
+    { 
+        if (curUseable == useable)
+        {
+            //Go back to slot 0 when a useable is destroyed.
+            curSelectedSlot = 0;
+            //Make sure to swap the current useable
+            //accordingly.
+            SwapCurrentUseable(curPrimaryWeapon);
+        }
+    }
 
     public void SwapCurrentUseable(IUseable useable)
     {
-        if (curUseable != null)
+        //if this useable is null don't finish executing this method.
+        //We cast to Component as null check won't work correctly otherwise.
+        if ((useable as Component) == null)
+        {
+            return;
+        }
+
+        if (curUseable != null && (curUseable as Component) != null)
         //any weapon not currently held in the players
         //hand is on their back.
         (curUseable as Component).transform.SetParent(backTransform, false);
@@ -549,15 +567,44 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //set rotation for the body.
         //transform.localRotation = Quaternion.Euler(0f, curLook.x, 0f);
     }
-   
+
     public void HandleAttack()
     {
         if (attackAction.GetButtonDown())
         {
             if (curUseable != null)
             {
-                //call use.
-                curUseable.Use();
+                //if the appliable is selected,
+                //make sure to assign a reference
+                //to the target player.
+                if (curSelectedSlot == 3)
+                {
+                    Ray r = new Ray(cam.transform.position, cam.transform.forward);
+                    //We don't use player mask because players are also interactibles.
+                    //so make sure we raycast from the player's collider instead.
+                    if (Physics.Raycast(r, out var hitInfo, interactDist))
+                    {
+                        //check that we're looking at a player.
+                        PlayerController target = hitInfo.transform.gameObject.GetComponent<PlayerController>();
+                        if (target != null)
+                        {
+                            //assign the target
+                            (curUseable as Appliable).targetPlayer = target;
+                            //call use.
+                            curUseable.Use();
+                        }
+                    }
+
+                        
+                }
+                //for any other slot just use the item.
+                else
+                {
+                    //call use.
+                    curUseable.Use();
+                }
+
+                
             }
             else
             {
@@ -859,6 +906,24 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         {
             knockedModel.SetActive(false);
             standingModel.SetActive(true);
+        }
+    }
+
+    private void OnEnable()
+    {
+        //Add the onUseableDestroyed listener for the curAppliable
+        if (curAppliable != null)
+        {
+            curAppliable.onBeforeDestroy.AddListener(OnUseableDestroyed);
+        }
+    }
+
+    private void OnDisable()
+    {
+        //Remove the onUseableDestroyed listener for the curAppliable
+        if (curAppliable != null)
+        {
+            curAppliable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
         }
     }
 
@@ -1472,7 +1537,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         a.transform.localPosition = Vector3.zero;
         //set to no rotation (0, 0, 0);
         a.transform.localRotation = Quaternion.identity;
-
 
         //assign the new current weapon.
         curAppliable = a;
