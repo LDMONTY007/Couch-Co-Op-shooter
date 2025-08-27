@@ -1537,6 +1537,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         a.transform.localPosition = Vector3.zero;
         //set to no rotation (0, 0, 0);
         a.transform.localRotation = Quaternion.identity;
+        a.parentController = this;
 
         //assign the new current weapon.
         curAppliable = a;
@@ -1560,6 +1561,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curAppliable.rb = curAppliable.AddComponent<Rigidbody>();
             //don't collide with player.
             curAppliable.rb.excludeLayers = LayerMask.GetMask("Player");
+            curAppliable.parentController = null;
+            curAppliable.targetPlayer = null;
         }
     }
 

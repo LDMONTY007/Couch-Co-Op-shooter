@@ -14,7 +14,7 @@ public class Appliable : MonoBehaviour, IUseable
     
     private float _curApplyTime = 0f;
     //call onValueChanged when setting.
-    public float curApplyTime { get { return _curApplyTime; } set { _curApplyTime = value; onValueChanged.Invoke(value); } }
+    public float curApplyTime { get { return _curApplyTime; } set { _curApplyTime = value; onValueChanged.Invoke(value / totalTimeToApply); } }
 
     private bool didApply = false;
 
@@ -53,6 +53,13 @@ public class Appliable : MonoBehaviour, IUseable
             return;
         }
 
+        //Show use slider for both player's UI
+        parentController.uiController.ShowUseSlider(true);
+        targetPlayer.uiController.ShowUseSlider(true);
+        //Subscribe to the onvaluechanged methods so the sliders on both are updated
+        //to match this appliable's progress.
+        onValueChanged.AddListener(parentController.uiController.UpdateUseSlider);
+        onValueChanged.AddListener(targetPlayer.uiController.UpdateUseSlider);
         applyCoroutine = StartCoroutine(ApplyCoroutine());
     }
 
@@ -91,6 +98,14 @@ public class Appliable : MonoBehaviour, IUseable
 
     private void OnDestroy()
     {
+        //Make sure to remove all the listeners
+        //as it could cause an error otherwise.
+        onValueChanged.RemoveAllListeners();
+
+        //Hide use slider for both player's UI
+        parentController.uiController.ShowUseSlider(false);
+        targetPlayer.uiController.ShowUseSlider(false);
+
         onBeforeDestroy?.Invoke(this);
     }
 
