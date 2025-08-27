@@ -452,7 +452,7 @@ MonoBehaviour:
   interactDist: 7.5
   playerModel: {fileID: 8945600692140703755}
   cam: {fileID: 7371796333402482502}
-  curWeapon: {fileID: 0}
+  curPrimaryWeapon: {fileID: 0}
   curSecondaryWeapon: {fileID: 0}
   curThrowable: {fileID: 0}
   curAppliable: {fileID: 0}
@@ -868,6 +868,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3880988136621582702, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3893891882805570024, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -1061,8 +1065,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6649410990726516643, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6649410990726516643, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7292757289219454292, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -213.1662
       objectReference: {fileID: 0}
     - target: {fileID: 8084027748965831715, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Layer

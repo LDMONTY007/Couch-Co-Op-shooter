@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -23,6 +24,10 @@ public class PlayerUIController : MonoBehaviour
 
     public TMP_Text zombieKillsLabel;
     public TMP_Text idLabel;
+
+    public RectTransform slotSelectionTransform;
+    //These are assigned in the inspector.
+    public RectTransform[] slotTransforms = new RectTransform[5];
 
     public void UpdateZombieKills(int kills)
     {
@@ -74,6 +79,8 @@ public class PlayerUIController : MonoBehaviour
 
         //Don't show the revive slider.
         ShowRevivePanel(false);
+        //Don't show the use slider on start
+        ShowUseSlider(false);
     }
 
     // Update is called once per frame
@@ -159,5 +166,54 @@ public class PlayerUIController : MonoBehaviour
             return "Keyboard&Mouse";
         }
         return null;
+    }
+
+    public void OnSlotSwitched(int  slot)
+    {
+        //stop coroutine so we can instead
+        //start a new animation coroutine.
+        if (slotSwitchCoroutine != null)
+        {
+            StopCoroutine(slotSwitchCoroutine);
+
+            //Go back to the original position before 
+            //animating again.
+            slotSelectionTransform.position = slotStartPos;
+            slotSelectionTransform.sizeDelta = slotStartSize;
+        }
+        Debug.Log("SLOT: " + slot);
+
+        slotSwitchCoroutine = StartCoroutine(SlotSwitchAnimation(slotTransforms[slot]));
+    }
+
+    float curSlotSwitchTime = 0f;
+    float totalSlotSwitchTime = 0.3f;
+
+    Coroutine slotSwitchCoroutine = null;
+
+    Vector3 slotStartPos;
+    Vector2 slotStartSize;
+
+    public IEnumerator SlotSwitchAnimation(RectTransform toTransform)
+    {
+        slotStartPos = slotSelectionTransform.position;
+        slotStartSize = slotSelectionTransform.sizeDelta;
+
+
+        while (curSlotSwitchTime < totalSlotSwitchTime)
+        {
+            curSlotSwitchTime += Time.deltaTime;
+            slotSelectionTransform.position = new Vector3(Mathf.SmoothStep(slotStartPos.x, toTransform.position.x, curSlotSwitchTime / totalSlotSwitchTime), Mathf.SmoothStep(slotStartPos.y, toTransform.position.y, curSlotSwitchTime / totalSlotSwitchTime), 0f);
+
+            slotSelectionTransform.sizeDelta = new Vector2(Mathf.SmoothStep(slotStartSize.x, toTransform.sizeDelta.x, curSlotSwitchTime / totalSlotSwitchTime), Mathf.SmoothStep(slotStartSize.y, toTransform.sizeDelta.y, curSlotSwitchTime / totalSlotSwitchTime));
+
+            yield return null;
+        }
+
+        //Set exact values at end of coroutine.
+        slotSelectionTransform.position = toTransform.position;
+        slotSelectionTransform.sizeDelta = toTransform.sizeDelta;
+
+        slotSwitchCoroutine = null;
     }
 }

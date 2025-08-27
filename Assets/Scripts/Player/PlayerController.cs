@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             { _curSelectedSlot = 4; } 
             else 
             { _curSelectedSlot = value; } 
-            onSlotValueChanged.Invoke(value); } }
+            onSlotValueChanged.Invoke(_curSelectedSlot); } }
 
 
     public IUseable curUseable = null;
@@ -923,6 +923,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         {
             curAppliable.onBeforeDestroy.AddListener(OnUseableDestroyed);
         }
+
+        //Add listener so the slot animation will work.
+        if (uiController != null)
+        {
+            onSlotValueChanged.AddListener(uiController.OnSlotSwitched);
+        }
     }
 
     private void OnDisable()
@@ -931,6 +937,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         if (curAppliable != null)
         {
             curAppliable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
+        }
+
+        //Remove UI listener for the slot switching animation.
+        if (uiController != null)
+        {
+            onSlotValueChanged.RemoveListener(uiController.OnSlotSwitched);
         }
     }
 
