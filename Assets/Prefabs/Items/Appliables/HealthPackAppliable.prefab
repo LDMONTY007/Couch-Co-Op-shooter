@@ -53,8 +53,13 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  onBeforeDestroy:
+    m_PersistentCalls:
+      m_Calls: []
   targetPlayer: {fileID: 0}
+  parentController: {fileID: 0}
   rb: {fileID: 0}
+  icon: {fileID: 21300000, guid: 6cb63218ccc273846b07f78010713f90, type: 3}
   HealthToRestore: 50
 --- !u!33 &8023356343275002191
 MeshFilter:

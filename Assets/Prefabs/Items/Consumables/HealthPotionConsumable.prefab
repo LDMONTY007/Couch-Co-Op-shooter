@@ -270,6 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
+  icon: {fileID: 21300000, guid: 2045f48f0f9e8b34f82a056965f24a79, type: 3}
 --- !u!54 &5803656983923303165
 Rigidbody:
   m_ObjectHideFlags: 0
