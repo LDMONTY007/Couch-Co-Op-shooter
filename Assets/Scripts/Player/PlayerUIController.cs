@@ -178,8 +178,9 @@ public class PlayerUIController : MonoBehaviour
 
             //Go back to the original position before 
             //animating again.
-            slotSelectionTransform.position = slotStartPos;
-            slotSelectionTransform.sizeDelta = slotStartSize;
+            /*slotSelectionTransform.localPosition = slotStartPos;
+            slotSelectionTransform.sizeDelta = slotStartSize;*/
+            curSlotSwitchTime = 0f;
         }
         Debug.Log("SLOT: " + slot);
 
@@ -187,7 +188,7 @@ public class PlayerUIController : MonoBehaviour
     }
 
     float curSlotSwitchTime = 0f;
-    float totalSlotSwitchTime = 0.3f;
+    float totalSlotSwitchTime = 0.2f;
 
     Coroutine slotSwitchCoroutine = null;
 
@@ -196,23 +197,27 @@ public class PlayerUIController : MonoBehaviour
 
     public IEnumerator SlotSwitchAnimation(RectTransform toTransform)
     {
-        slotStartPos = slotSelectionTransform.position;
+        slotStartPos = slotSelectionTransform.localPosition;
         slotStartSize = slotSelectionTransform.sizeDelta;
 
 
         while (curSlotSwitchTime < totalSlotSwitchTime)
         {
             curSlotSwitchTime += Time.deltaTime;
-            slotSelectionTransform.position = new Vector3(Mathf.SmoothStep(slotStartPos.x, toTransform.position.x, curSlotSwitchTime / totalSlotSwitchTime), Mathf.SmoothStep(slotStartPos.y, toTransform.position.y, curSlotSwitchTime / totalSlotSwitchTime), 0f);
+            slotSelectionTransform.localPosition = new Vector3(Mathf.SmoothStep(slotStartPos.x, toTransform.localPosition.x, curSlotSwitchTime / totalSlotSwitchTime), Mathf.SmoothStep(slotStartPos.y, toTransform.localPosition.y, curSlotSwitchTime / totalSlotSwitchTime), 0f);
 
             slotSelectionTransform.sizeDelta = new Vector2(Mathf.SmoothStep(slotStartSize.x, toTransform.sizeDelta.x, curSlotSwitchTime / totalSlotSwitchTime), Mathf.SmoothStep(slotStartSize.y, toTransform.sizeDelta.y, curSlotSwitchTime / totalSlotSwitchTime));
+
+            
 
             yield return null;
         }
 
         //Set exact values at end of coroutine.
-        slotSelectionTransform.position = toTransform.position;
+        slotSelectionTransform.localPosition = toTransform.localPosition;
         slotSelectionTransform.sizeDelta = toTransform.sizeDelta;
+
+        curSlotSwitchTime = 0f;
 
         slotSwitchCoroutine = null;
     }

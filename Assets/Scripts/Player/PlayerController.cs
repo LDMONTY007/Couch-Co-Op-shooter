@@ -321,18 +321,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     {
         if (slotUpAction.GetButtonDown())
         {
-            curSelectedSlot--;
-            //repeat last action until
-            //there is not an empty slot.
-            //this basically skips over any empty slots.
-            while (useables[curSelectedSlot] == null)
-            {
-                curSelectedSlot--;
-            }
-        }
-        
-        if (slotDownAction.GetButtonDown())
-        {
             curSelectedSlot++;
             //repeat last action until
             //there is not an empty slot.
@@ -340,6 +328,18 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             while (useables[curSelectedSlot] == null)
             {
                 curSelectedSlot++;
+            }
+        }
+        
+        if (slotDownAction.GetButtonDown())
+        {
+            curSelectedSlot--;
+            //repeat last action until
+            //there is not an empty slot.
+            //this basically skips over any empty slots.
+            while (useables[curSelectedSlot] == null)
+            {
+                curSelectedSlot--;
             }
         }
 
