@@ -10,7 +10,7 @@ public class Appliable : MonoBehaviour, IUseable
     public UnityEvent<float> onValueChanged;
 
     //called before this gameobject is destroyed.
-    public UnityEvent<IUseable> onBeforeDestroy;
+    public UnityEvent<IUseable, int> onBeforeDestroy;
     
     private float _curApplyTime = 0f;
     //call onValueChanged when setting.
@@ -119,7 +119,7 @@ public class Appliable : MonoBehaviour, IUseable
         parentController?.uiController.ShowUseSlider(false);
         targetPlayer?.uiController.ShowUseSlider(false);
 
-        onBeforeDestroy?.Invoke(this);
+        onBeforeDestroy?.Invoke(this, 3);
     }
 
     public void Use()

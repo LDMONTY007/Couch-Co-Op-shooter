@@ -365,18 +365,21 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
-    public void OnUseableDestroyed(IUseable useable)
-    { 
-        if (curUseable == useable)
-        {
-            //Renove the slot icon for the current slot where the item was destroyed.
-            uiController.OnUpdateSlotIcon(null, curSelectedSlot);
+    public void OnUseableDestroyed(IUseable useable, int slot)
+    {
+        Debug.Log("DESTROYED");
 
-            //Go back to slot 0 when a useable is destroyed.
+        //Renove the slot icon for the current slot where the item was destroyed.
+        uiController.OnUpdateSlotIcon(null, slot);
+
+        //Cast to component to do a proper reference comparison.
+        if ((curUseable as Component) == (useable as Component))
+        {
+            //Go back to slot 0 when the currently held useable is destroyed.
             curSelectedSlot = 0;
-            //Make sure to swap the current useable
-            //accordingly.
-            SwapCurrentUseable(curPrimaryWeapon);
+            //Make sure to swap the current useable and
+            //don't try to access the useable that was destroyed.
+            SwapCurrentUseableIgnoreLastUseable(curPrimaryWeapon);
 
             
         }
@@ -391,10 +394,27 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             return;
         }
 
+        //make sure the curUseable wasn't destroyed before trying
+        //to set it's position.
         if (curUseable != null && (curUseable as Component) != null)
         //any weapon not currently held in the players
         //hand is on their back.
         (curUseable as Component).transform.SetParent(backTransform, false);
+        //Put the new useable in the player's hand.
+        (useable as Component).transform.SetParent(handTransform, false);
+        //set current useable.
+        curUseable = useable;
+    }
+
+    public void SwapCurrentUseableIgnoreLastUseable(IUseable useable)
+    {
+        //if this useable is null don't finish executing this method.
+        //We cast to Component as null check won't work correctly otherwise.
+        if ((useable as Component) == null)
+        {
+            return;
+        }
+
         //Put the new useable in the player's hand.
         (useable as Component).transform.SetParent(handTransform, false);
         //set current useable.
@@ -923,11 +943,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private void OnEnable()
     {
-        //Add the onUseableDestroyed listener for the curAppliable
-        if (curAppliable != null)
-        {
-            curAppliable.onBeforeDestroy.AddListener(OnUseableDestroyed);
-        }
+       
 
         //Add listener so the slot animation will work.
         if (uiController != null)
@@ -938,11 +954,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private void OnDisable()
     {
-        //Remove the onUseableDestroyed listener for the curAppliable
-        if (curAppliable != null)
-        {
-            curAppliable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
-        }
+        
 
         //Remove UI listener for the slot switching animation.
         if (uiController != null)
@@ -1576,6 +1588,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //set to no rotation (0, 0, 0);
         a.transform.localRotation = Quaternion.identity;
         a.parentController = this;
+        //Add the onUseableDestroyed listener for the curAppliable
+        a.onBeforeDestroy.AddListener(OnUseableDestroyed);
 
         //Update the slot icon for this appliable.
         uiController.OnUpdateSlotIcon(a.icon, 3);
@@ -1604,6 +1618,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curAppliable.rb.excludeLayers = LayerMask.GetMask("Player");
             curAppliable.parentController = null;
             curAppliable.targetPlayer = null;
+
+            //Remove the onUseableDestroyed listener for the curAppliable
+            curAppliable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
         }
     }
 
