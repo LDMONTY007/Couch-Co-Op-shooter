@@ -56,7 +56,7 @@ public class Throwable : MonoBehaviour, IUseable
 
             //say we were thrown.
             wasThrown = true;
-
+            //call OnThrown()
             OnThrown();
         }
     }
