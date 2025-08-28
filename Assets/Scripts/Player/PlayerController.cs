@@ -1669,6 +1669,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         DropCurrentThrowable(transform.position, Quaternion.identity);
 
+
+
         //Remove the rigidbody.
         Destroy(t.rb);
 

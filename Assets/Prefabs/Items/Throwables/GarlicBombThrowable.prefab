@@ -265,6 +265,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
   icon: {fileID: 21300000, guid: 1e9c655150b287041ab128f958c5fd65, type: 3}
+  wasThrown: 0
+  launchTransform: {fileID: 0}
+  explosionRadius: 10
+  baseDamage: 50
 --- !u!54 &661899317418726981
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -284,7 +288,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1

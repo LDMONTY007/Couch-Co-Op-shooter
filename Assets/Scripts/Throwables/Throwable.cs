@@ -18,6 +18,7 @@ public class Throwable : MonoBehaviour, IUseable
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        Debug.Log(rb);
     }
 
     public void CancelUse()
@@ -69,4 +70,5 @@ public class Throwable : MonoBehaviour, IUseable
         //to explode here.
         //Override this in your child class.
     }
+
 }

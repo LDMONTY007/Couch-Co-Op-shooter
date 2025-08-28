@@ -1,24 +1,43 @@
+using System.Collections;
 using UnityEngine;
 
-public class GarlicBomb : Throwable
+public class Dynamite : Throwable, IDamageable
 {
+    //small radius
     public float explosionRadius = 10f;
-    bool explodeOnCollisionEnter = false;
+    //huge base damage so if the player
+    //is too close, it will knock them.
+    //Tweak this later, it may need to drop down to just 100.
+    public float baseDamage = 200f;
 
-    public float baseDamage = 50f;
-
+    float curTime = 0;
+    float totalTime = 6f;
 
     public override void OnThrown()
     {
-        explodeOnCollisionEnter = true;
+        //Start countdown.
+        StartCoroutine(CountdownCoroutine());
     }
 
-    private void OnCollisionEnter(Collision collision)
+    IEnumerator CountdownCoroutine()
     {
-        if (explodeOnCollisionEnter)
+        while (curTime < totalTime)
         {
-            Detonate();
+            curTime += Time.deltaTime;
+            //TODO: 
+            //Set the animator value for the 
+            //fuse on the dynamite. 
+            yield return null;
         }
+
+        //Detonate the Dynamite
+        Detonate();
+    }
+
+    public void TakeDamage(float damage, float stunTime, GameObject other)
+    {
+        //When we take any amount of damage we should detonate.
+        Detonate();
     }
 
     public void Detonate()
@@ -45,11 +64,5 @@ public class GarlicBomb : Throwable
 
         //Destroy after exploding
         Destroy(gameObject);
-    }
-
-    public void TakeDamage(float damage, float stunTime, GameObject other)
-    {
-        //When we take any amount of damage we should detonate.
-        Detonate();
     }
 }
