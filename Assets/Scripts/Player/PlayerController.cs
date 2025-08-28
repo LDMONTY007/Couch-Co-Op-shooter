@@ -26,12 +26,17 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     [HideInInspector]
     public UnityEvent<int> onSlotValueChanged;
 
+    public int lastSelectedSlot = 0;
+
     //automatically loop slots
     private int _curSelectedSlot = 0;
     public int curSelectedSlot 
     { 
         get {  return _curSelectedSlot; } 
-        set { 
+        set {
+            //Set last selected slot before
+            //changing current value
+            lastSelectedSlot = _curSelectedSlot;
             if (value > 4) 
             { _curSelectedSlot = 0; } 
             else if (value < 0) 
@@ -108,6 +113,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public Transform handTransform;
     public Transform backTransform;
+    public Transform throwableLaunchTransform;
 
     private PlayerInput playerInput;
     private InputAction jumpAction;
@@ -407,6 +413,25 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
+    public void ClearSlot(int slot)
+    {
+        useables[slot] = null;
+        //Make the slot blank in the UI.
+        uiController.OnUpdateSlotIcon(null, slot);
+
+        if (slot == curSelectedSlot)
+        {
+            curUseable = null;
+        }
+
+        //clear cur throwable if 
+        //we're removing it from it's
+        //slot.
+        if (slot == 2)
+        curThrowable = null;
+        
+    }
+
     public void OnUseableDestroyed(IUseable useable, int slot)
     {
         Debug.Log("DESTROYED");
@@ -440,12 +465,25 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             return;
         }
 
+
+
         //make sure the curUseable wasn't destroyed before trying
         //to set it's position.
         if (curUseable != null && (curUseable as Component) != null)
-        //any weapon not currently held in the players
-        //hand is on their back.
-        (curUseable as Component).transform.SetParent(backTransform, false);
+        {
+            Debug.Log(curUseable.ToString());
+            //any weapon not currently held in the players
+            //hand is on their back.
+            (curUseable as Component).transform.SetParent(backTransform, false);
+
+            //if our previous slot was the throwable slot,
+            //cancel throwing if we were about to throw,
+            //before switching to the next item slot.
+            if (lastSelectedSlot == 2 && (curUseable is Throwable) && (curUseable as Throwable).readyToThrow)
+            {
+                curUseable.CancelUse();
+            }
+        }
         //Put the new useable in the player's hand.
         (useable as Component).transform.SetParent(handTransform, false);
         //set current useable.
@@ -686,11 +724,30 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
                 Debug.LogWarning("No useable has been assigned to this player. Player " + guid.ToString());
             }
         }
+        //when the player stops holding down the attack button.
         else if (!attackAction.GetButton())
         {
+            //for appliables cancel use
             if (curSelectedSlot == 3)
             {
                 curUseable.CancelUse();
+            }
+
+            //for throwables release use when ready to throw
+            //this is so the player can prepare a grenade
+            //for a throw, and change their mind by switching slots.
+            //remember when swapping current useable to call cancelUse
+            //just in case.
+            if (curSelectedSlot == 2 && (curUseable as Throwable).readyToThrow)
+            {
+                curUseable.ReleaseUse();
+                //clear the slot 
+                //so it's references are removed
+                //as it has been thrown.
+                ClearSlot(curSelectedSlot);
+                //Swap back to primary weapon.
+                SwapCurrentUseable(curPrimaryWeapon);
+                curSelectedSlot = 0;
             }
         }
 
@@ -1603,6 +1660,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void SwapCurrentThrowable(Throwable t)
     {
+        //We cannot pickup a throwable 
+        //that has been thrown.
+        if (t.wasThrown)
+        {
+            return;
+        }
+
         DropCurrentThrowable(transform.position, Quaternion.identity);
 
         //Remove the rigidbody.
@@ -1615,6 +1679,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         t.transform.localPosition = Vector3.zero;
         //set to no rotation (0, 0, 0);
         t.transform.localRotation = Quaternion.identity;
+        //assign the launch transform.
+        t.launchTransform = throwableLaunchTransform;
 
         //Update the slot icon for this throwable.
         uiController.OnUpdateSlotIcon(t.icon, 2);

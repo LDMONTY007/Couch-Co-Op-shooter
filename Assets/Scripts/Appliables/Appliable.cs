@@ -131,4 +131,9 @@ public class Appliable : MonoBehaviour, IUseable
     {
         CancelApply();
     }
+
+    public void ReleaseUse()
+    {
+        throw new System.NotImplementedException();
+    }
 }

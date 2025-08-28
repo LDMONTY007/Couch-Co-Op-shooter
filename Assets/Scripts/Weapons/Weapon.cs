@@ -25,4 +25,9 @@ public class Weapon : MonoBehaviour, IUseable
     {
         
     }
+
+    public void ReleaseUse()
+    {
+        
+    }
 }

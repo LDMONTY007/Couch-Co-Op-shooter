@@ -32,6 +32,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4587740729993036385}
   - {fileID: 1041062259185607100}
   m_Father: {fileID: 1524256605029116192}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -200,6 +201,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1524256605029116192}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4549197118118058637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4587740729993036385}
+  m_Layer: 3
+  m_Name: ThrowableLaunchTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4587740729993036385
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4549197118118058637}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.21643952, y: -0, z: -0, w: 0.97629607}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4711834649103843489}
+  m_LocalEulerAnglesHint: {x: -25, y: 0, z: 0}
 --- !u!1 &5336900089535494830
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,6 +491,7 @@ MonoBehaviour:
   curConsumable: {fileID: 0}
   handTransform: {fileID: 1041062259185607100}
   backTransform: {fileID: 6875237764509700596}
+  throwableLaunchTransform: {fileID: 4587740729993036385}
   uiController: {fileID: 1498720800337398024}
   invincible: 0
   canJump: 1
@@ -820,6 +853,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 1562081337771518352, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2444570381452448913, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -868,6 +905,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3703321970100675032, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3880988136621582702, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -886,6 +927,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3983268891042196920, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_fontColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222444673304480605, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4322489327330808313, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
@@ -1076,9 +1121,17 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6715467157329398805, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7292757289219454292, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -213.1662
+      objectReference: {fileID: 0}
+    - target: {fileID: 7720363588984921294, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8084027748965831715, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Layer
@@ -1092,6 +1145,10 @@ PrefabInstance:
       propertyPath: playerObject
       value: 
       objectReference: {fileID: 5336900089535494830}
+    - target: {fileID: 8468931827160359537, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8578282350130901058, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1099,6 +1156,10 @@ PrefabInstance:
     - target: {fileID: 8597800968256455710, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8692921283238166239, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9070840867315876597, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_fontColor.b

@@ -37,4 +37,9 @@ public class Consumable : MonoBehaviour, IUseable
         //invoke onBeforeDestroy.
         onBeforeDestroy?.Invoke(this, 4);
     }
+
+    public void ReleaseUse()
+    {
+        throw new System.NotImplementedException();
+    }
 }
