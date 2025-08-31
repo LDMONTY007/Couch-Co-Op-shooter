@@ -26,7 +26,7 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
 
     public Material[] materials;
 
-    List<PlayerController> playerList = new List<PlayerController>();
+    public List<PlayerController> playerList = new List<PlayerController>();
 
     private void Awake()
     {

@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     Rigidbody rb;
 
-    private bool canMove = true;
+    public bool canMove = true;
 
     #region health vars
     [Header("Health Variables")]
@@ -326,11 +326,25 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     //terraria uses this number for iframes as do most games.
     public float iFrameTime = 0.67f;
 
+
+    public bool isDead = false;
+
     public void Die()
     {
         //TODO: Code dying.
         Debug.Log("DEAD");
-        Destroy(gameObject);
+
+        isDead = true;
+
+        //TODO: Properly disable this player
+        //and turn their body into a ragdoll.
+        //but for now just disable this object.
+        //in the future we also need to make rescue
+        //points where dead players will respawn 
+        //and can be rescued and rejoin their fellow players.
+        gameObject.SetActive(false);
+
+        //Destroy(gameObject);
     }
 
     public void init(Guid id, int index, Material mat, PlayerInfo p)
