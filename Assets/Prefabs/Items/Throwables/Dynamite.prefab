@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f35a1f89208324695b4a2fba12a32a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabData: {fileID: 11400000, guid: cd97f7bfdcdeabe43a99725d502166ee, type: 2}
   rb: {fileID: 0}
   icon: {fileID: 21300000, guid: 95adcb33b56f69747886d3bcb2c0487c, type: 3}
   wasThrown: 0

@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb298f4b0aebc4a4c839e18fab2c15da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabData: {fileID: 11400000, guid: 59127079a3aa92343a45cf02442d0b44, type: 2}
   totalTimeToApply: 5
   onValueChanged:
     m_PersistentCalls:

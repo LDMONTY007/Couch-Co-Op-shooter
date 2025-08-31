@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Throwable : MonoBehaviour, IUseable
 {
+    public PrefabData prefabData;
+
     public Rigidbody rb;
 
     public Sprite icon;

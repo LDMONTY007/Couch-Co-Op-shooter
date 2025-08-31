@@ -1525,6 +1525,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     {
         GameObject temp = Instantiate(g);
 
+        //SwapCurrentWeapon(temp.GetComponent<PrimaryWeapon>());
+
         //set the weapons parent transform to be this player.
         temp.transform.SetParent(handTransform, false);
         //Set to zero position so the transform is exactly where the hand is.
@@ -1545,6 +1547,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     public void CreateNewSecondaryWeapon(GameObject g)
     {
         GameObject temp = Instantiate(g);
+
+        //SwapCurrentSecondaryWeapon(temp.GetComponent<SecondaryWeapon>());
 
         //set the weapons parent transform to be this player.
         temp.transform.SetParent(backTransform, false);
@@ -1658,6 +1662,14 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
+    public void CreateNewThrowable(GameObject g)
+    {
+        GameObject temp = Instantiate(g);
+
+        //Swap to the new throwable.
+        SwapCurrentThrowable(temp.GetComponent<Throwable>());
+    }
+
     public void SwapCurrentThrowable(Throwable t)
     {
         //We cannot pickup a throwable 
@@ -1690,6 +1702,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //assign the new current Throwable.
         curThrowable = t;
 
+        //make sure to also set the correct
+        //slot as our current throwable.
+        useables[2] = curThrowable;
+
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();
     }
@@ -1710,6 +1726,14 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             //don't collide with player.
             curThrowable.rb.excludeLayers = LayerMask.GetMask("Player");
         }
+    }
+
+    public void CreateNewAppliable(GameObject g)
+    {
+        GameObject temp = Instantiate(g);
+
+        //Swap to the new Appliable.
+        SwapCurrentAppliable(temp.GetComponent<Appliable>());
     }
 
     public void SwapCurrentAppliable(Appliable a)
@@ -1734,6 +1758,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         //assign the new current weapon.
         curAppliable = a;
+
+        //make sure to also set the correct
+        //slot as our current appliable.
+        useables[3] = curAppliable;
 
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();
@@ -1762,6 +1790,14 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
+    public void CreateNewConsumable(GameObject g)
+    {
+        GameObject temp = Instantiate(g);
+
+        //Swap to the new Consumable.
+        SwapCurrentConsumable(temp.GetComponent<Consumable>());
+    }
+
     public void SwapCurrentConsumable(Consumable c)
     {
         DropCurrentConsumable(transform.position, Quaternion.identity);
@@ -1785,6 +1821,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         //assign the new current Consumable.
         curConsumable = c;
+
+        //make sure to also set the correct
+        //slot as our current consumable.
+        useables[4] = curConsumable;
 
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();
@@ -1827,18 +1867,52 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         Debug.Log("LOAD DATA");
 
-        //TODO: Add a null check for this player.
-        //if the weapon is null, creat and load the default weapon.
+        //if the weapon is null, create and load the default weapon.
+        //This should only ever happen on the first level of a campaign
+        if (gameData.playerInfos[playerInput.playerIndex].primaryWeaponKey == string.Empty)
         CreateNewPrimaryWeapon(DataPersistenceManager.instance.FindWeaponPrefab("Stake"));
-        CreateNewSecondaryWeapon(DataPersistenceManager.instance.FindWeaponPrefab("Revolver"));
-        
+        else//Create the new weapon using it's key.
+            CreateNewPrimaryWeapon(DataPersistenceManager.instance.FindWeaponPrefab(gameData.playerInfos[playerInput.playerIndex].primaryWeaponKey));
+
+        if (gameData.playerInfos[playerInput.playerIndex].secondaryWeaponKey == string.Empty)
+            CreateNewSecondaryWeapon(DataPersistenceManager.instance.FindWeaponPrefab("Revolver"));
+        else//Create the new weapon using it's key.
+            CreateNewSecondaryWeapon(DataPersistenceManager.instance.FindWeaponPrefab(gameData.playerInfos[playerInput.playerIndex].secondaryWeaponKey));
+
+        //try to load the other items if they exist
+        if (gameData.playerInfos[playerInput.playerIndex].throwableKey != string.Empty)
+        {
+            //Create the new throwable using it's key.
+            CreateNewThrowable(DataPersistenceManager.instance.FindItemPrefab(gameData.playerInfos[playerInput.playerIndex].throwableKey));
+        }
+
+        if (gameData.playerInfos[playerInput.playerIndex].appliableKey != string.Empty)
+        {
+            //Create the new appliable using it's key.
+            CreateNewAppliable(DataPersistenceManager.instance.FindItemPrefab(gameData.playerInfos[playerInput.playerIndex].appliableKey));
+        }
+
+        if (gameData.playerInfos[playerInput.playerIndex].consumableKey != string.Empty)
+        {
+            //Create the new consumable using it's key.
+            CreateNewConsumable(DataPersistenceManager.instance.FindItemPrefab(gameData.playerInfos[playerInput.playerIndex].consumableKey));
+        }
+
     }
 
     public void SaveDataManually(ref GameData gameData)
     {
         Debug.LogWarning("SAVE PLAYER DATA!");
         //Update the player's individual data in the game. 
-        gameData.UpdatePlayerInfo(new PlayerInfo() { guid = guid.ToString(), zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, deviceID=playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
+        gameData.UpdatePlayerInfo(new PlayerInfo() { guid = guid.ToString(), zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, deviceID=playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true, 
+            //For weapons/items leave key as string.Empty if we don't have one when saving,
+            //otherwise save their prefab data key.
+            primaryWeaponKey = curPrimaryWeapon == null ? string.Empty : curPrimaryWeapon.prefabData.key ,
+            secondaryWeaponKey = curSecondaryWeapon == null ? string.Empty : curSecondaryWeapon.prefabData.key,
+            throwableKey = curThrowable == null ? string.Empty : curThrowable.prefabData.key,
+            appliableKey = curAppliable == null ? string.Empty : curAppliable.prefabData.key,
+            consumableKey = curConsumable == null ? string.Empty : curConsumable.prefabData.key
+        });
     }
 
     private Coroutine knockedCoroutine = null;

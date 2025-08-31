@@ -133,6 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284db394b763ff949bd3c380c08a5c7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabData: {fileID: 11400000, guid: 1e85b17c53f61a34ab230a92a138508c, type: 2}
   rb: {fileID: 0}
   parentPlayer: {fileID: 0}
   icon: {fileID: 21300000, guid: 36e1cbb56eb2a494ea8c927b6801ea32, type: 3}

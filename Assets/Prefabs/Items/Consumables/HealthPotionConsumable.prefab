@@ -269,8 +269,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb2fd1013abd68e43b99dc654c95f685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabData: {fileID: 11400000, guid: b5b237b74e5497d47ba07aeca2dcae11, type: 2}
   rb: {fileID: 0}
   icon: {fileID: 21300000, guid: 2045f48f0f9e8b34f82a056965f24a79, type: 3}
+  parentPlayer: {fileID: 0}
+  onBeforeDestroy:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &5803656983923303165
 Rigidbody:
   m_ObjectHideFlags: 0

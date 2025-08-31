@@ -18,6 +18,7 @@ public class DataPersistenceManager : MonoBehaviour
     [SerializeField] private bool useEncryption;
 
     public ScriptableObjectList weaponDataList;
+    public ScriptableObjectList itemDataList;
 
     private GameData gameData;
     private List<IDataPersistence> dataPersistenceObjects;
@@ -79,11 +80,22 @@ public class DataPersistenceManager : MonoBehaviour
         PrefabData temp = (weaponDataList.soList.Find(d => (d as PrefabData).key == key) as PrefabData);
         if (temp == null)
         {
-            Debug.LogError("DROP DATA WAS NULL FOR THIS SEARCH: " + key);
+            Debug.LogError("WEAPON DATA WAS NULL FOR THIS SEARCH: " + key);
         }
         GameObject temp1 = temp.prefab;
-        //return the dropped object specifically.
-        //return (dropDataList.soList.Find(d => d.name == key) as DropData).droppedObject;
+        //return the weapon prefab
+        return temp1;
+    }
+
+    public GameObject FindItemPrefab(string key)
+    {
+        PrefabData temp = (itemDataList.soList.Find(d => (d as PrefabData).key == key) as PrefabData);
+        if (temp == null)
+        {
+            Debug.LogError("ITEM DATA WAS NULL FOR THIS SEARCH: " + key);
+        }
+        GameObject temp1 = temp.prefab;
+        //Return the item prefab
         return temp1;
     }
 

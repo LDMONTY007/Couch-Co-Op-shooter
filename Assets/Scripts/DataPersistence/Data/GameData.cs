@@ -145,4 +145,12 @@ public struct PlayerInfo
     public int splitScreenIndex;
 
     public bool hasDevice;
+
+    //The keys for our weapons and items
+    //to load.
+    public string primaryWeaponKey;
+    public string secondaryWeaponKey;
+    public string throwableKey;
+    public string appliableKey;
+    public string consumableKey;
 }

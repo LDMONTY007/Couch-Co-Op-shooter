@@ -4,6 +4,8 @@ using UnityEngine.Events;
 
 public class Appliable : MonoBehaviour, IUseable
 {
+    public PrefabData prefabData;
+
     public float totalTimeToApply = 5f;
 
     //use this for updating the UI of the player.

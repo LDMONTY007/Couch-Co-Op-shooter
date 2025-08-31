@@ -3,6 +3,8 @@ using UnityEngine.Events;
 
 public class Consumable : MonoBehaviour, IUseable
 {
+    public PrefabData prefabData;
+
     public Rigidbody rb;
 
     public Sprite icon;

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour, IUseable
 {
+    public PrefabData prefabData;
+
     public Rigidbody rb;
 
     public PlayerController parentPlayer;
