@@ -6,7 +6,7 @@ public interface IInteractible
     //Use raycasts on the player to detect if they look at an interactible.
     void OnFocusEnter();
 
-    void Interact();
+    void Interact(GameObject other);
 
     void InteractHold();
 

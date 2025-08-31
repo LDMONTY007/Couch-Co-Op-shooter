@@ -1480,7 +1480,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
             //if we actually hit an interactible.
             if (interactible != null)
-                interactible.Interact();
+                interactible.Interact(gameObject);
 
         }
 
@@ -2043,7 +2043,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         throw new NotImplementedException();
     }
 
-    public void Interact()
+    public void Interact(GameObject other)
     {
 
     }
