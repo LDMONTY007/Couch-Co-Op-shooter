@@ -121,6 +121,45 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public float attackCooldownTime = 0.67f;
 
+    
+
+    public PlayerController FindTargetPlayer()
+    {
+        PlayerController closestPlayer = PlayerManager.instance.playerList[0];
+        float dist = Mathf.Infinity;
+
+        //search for the closest player.
+        //TODO: In the future
+        //add a sensor to this object
+        //that only allows the enemy
+        //to check if the player is within their view.
+        foreach (PlayerController p in PlayerManager.instance.playerList) {
+            if (Vector3.Distance(p.transform.position, transform.position) < dist)
+            {
+                //if the player is dead, ignore them.
+                if (p.isDead)
+                    continue;
+                closestPlayer = p;
+                dist = Vector3.Distance(p.transform.position, transform.position);
+            }
+        }
+        
+
+        //in the future use some code
+        //to store how much damage the last attacker
+        //has done and decide that when they've done
+        //a certain amount of damage we'll switch
+        //to targeting them. 
+        //otherwise we should target the nearest player
+        //to us.
+        if (lastAttacker != null && lastAttacker == closestPlayer)
+        {
+            return lastAttacker;
+        }
+
+        return closestPlayer;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -156,14 +195,11 @@ public class Zombie : MonoBehaviour, IDamageable
     void Update()
     {
         //don't do anything when the player isn't here.
-        if (playerObj == null)
-        {
-            //try to get any players.
-            PlayerController controller = FindFirstObjectByType<PlayerController>();
-            if (controller != null)
-                playerObj = controller.gameObject;
-            return;
-        }
+        //try to get any players.
+        PlayerController controller = FindTargetPlayer();
+        if (controller != null)
+            playerObj = controller.gameObject;
+
 
         float distance = Vector3.Distance(transform.position, playerObj.transform.position);
 

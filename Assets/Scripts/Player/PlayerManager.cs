@@ -28,6 +28,13 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
 
     public List<PlayerController> playerList = new List<PlayerController>();
 
+    //Reference to the room in a level where
+    //dead players can be rescued and will respawn.
+    //Dead players will only spawn in this room
+    //on the start of the level, dying in the level
+    //means they will respawn in the next level.
+    public RespawnRoom respawnRoom;
+
     private void Awake()
     {
         instance = this;
@@ -106,6 +113,14 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
             if (!gameData.playerInfos[i].hasDevice)
                 continue;
 
+            //if the player is dead, spawn them 
+            //in the respawn room instead.
+            if (gameData.playerInfos[i].isDead)
+            {
+                SpawnPlayerInRespawnRoom(gameData.playerInfos[i], gameData);
+                Debug.LogWarning("RESPAWN");
+            }
+
             Debug.LogWarning("SPAWN");
             //Spawn the player.
             SpawnPlayer(gameData.playerInfos[i], gameData);
@@ -133,6 +148,35 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
         //it has been loaded and will instantiate
         //the weapon in it's game data.
         controller.LoadDataManually(gameData);
+    }
+
+    public void SpawnPlayerInRespawnRoom(PlayerInfo p, GameData gameData)
+    {
+        //Create the player input object.
+        //PlayerInput pi = PlayerInput.Instantiate(playerPrefab, p.playerIndex, p.controlScheme, p.splitScreenIndex);
+        //Join the player and let the system auto-assign the screen.
+        PlayerInput pi = inputManager.JoinPlayer(playerIndex: p.playerIndex, controlScheme: p.controlScheme, pairWithDevice: InputSystem.devices.First<InputDevice>(d => d.deviceId == p.deviceID));
+        Debug.LogWarning("Player " + p.playerIndex + " Spawned!");
+
+        //Get player controller.
+        PlayerController controller = pi.GetComponent<PlayerController>();
+
+        //Call init on the player.
+        controller.init(Guid.Parse(p.guid), p.playerIndex, materials[p.playerIndex], p);
+
+        //Add to our player list.
+        playerList.Add(controller);
+
+        //Call load data manually so that the player knows
+        //it has been loaded and will instantiate
+        //the weapon in it's game data.
+        controller.LoadDataManually(gameData);
+
+        //Put this player at their respawn transform in the respawn room.
+        controller.transform.position = respawnRoom.spawnTransforms[p.playerIndex].position;
+
+        //Say the player is no longer dead.
+        controller.isDead = false;
     }
 
     public void LoadData(GameData gameData)

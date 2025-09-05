@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Campaign 1/C1_L1.unity
     guid: 121bbe7bd88f2754e849f297600635fd
+  - enabled: 1
+    path: Assets/Scenes/Campaign 1/C1_L2.unity
+    guid: 6ee734fc0692abf47a3021d4cef17047
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

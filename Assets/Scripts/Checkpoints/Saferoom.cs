@@ -27,19 +27,16 @@ public class Saferoom : MonoBehaviour
     {
         Debug.Log("HERE 1");
 
-        //check that we've reached the player count we need
-        //to load the next level.
-        if (playersInRoom.Count != playerManager.playerList.Count)
-        {
-            return;
-        }
-
-        Debug.Log("HERE 2");
-
         //verify that all players are in the room
         //and we don't have duplicate players.
         for (int i = 0; i < playerManager.playerList.Count; i++)
         {
+            //if a player is dead, skip them when
+            //checking if they've made it into the room.
+            if (playerManager.playerList[i].isDead)
+            {
+                continue;
+            }
 
             //if our players in room contains a matching player,
             //continue executing this method.

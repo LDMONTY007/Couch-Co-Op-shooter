@@ -338,11 +338,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         //TODO: Properly disable this player
         //and turn their body into a ragdoll.
-        //but for now just disable this object.
+        //but for now just stop them from moving.
         //in the future we also need to make rescue
         //points where dead players will respawn 
         //and can be rescued and rejoin their fellow players.
-        gameObject.SetActive(false);
+        canMove = false;
+
 
         //Destroy(gameObject);
     }
@@ -1925,7 +1926,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             secondaryWeaponKey = curSecondaryWeapon == null ? string.Empty : curSecondaryWeapon.prefabData.key,
             throwableKey = curThrowable == null ? string.Empty : curThrowable.prefabData.key,
             appliableKey = curAppliable == null ? string.Empty : curAppliable.prefabData.key,
-            consumableKey = curConsumable == null ? string.Empty : curConsumable.prefabData.key
+            consumableKey = curConsumable == null ? string.Empty : curConsumable.prefabData.key,
+            isDead = isDead
         });
     }
 

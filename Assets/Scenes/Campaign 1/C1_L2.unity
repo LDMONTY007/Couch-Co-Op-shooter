@@ -5683,7 +5683,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480340168577969943, guid: e25785b151b7707418ab49503e6879ab, type: 3}
       propertyPath: sceneToLoad
-      value: C1_L2
+      value: Score Display Scene
       objectReference: {fileID: 0}
     - target: {fileID: 5480340168577969943, guid: e25785b151b7707418ab49503e6879ab, type: 3}
       propertyPath: playerManager

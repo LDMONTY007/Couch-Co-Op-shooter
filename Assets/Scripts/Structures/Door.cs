@@ -1,14 +1,34 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Door : MonoBehaviour, IInteractible
 {
     public Transform doorTransform;
 
-    bool isDoorOpen = false;
+    bool _isDoorOpen = false;
+
+    bool isDoorOpen {  get { return _isDoorOpen; } set { _isDoorOpen = value; 
+            if (_isDoorOpen)
+            {        
+                //invoke onOpen.
+                OnDoorOpen.Invoke();
+            }
+            else
+            {
+                //invoke onClose.
+                OnDoorClose.Invoke();
+            }
+        } }
     bool inAnimation = false;
 
-    bool isLocked = false;
+    public bool isLocked = false;
+
+    public bool unlockFromFront = false;
+
+    public UnityEvent OnDoorOpen;
+
+    public UnityEvent OnDoorClose;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -41,6 +61,8 @@ public class Door : MonoBehaviour, IInteractible
             yield return null;
         }
         isDoorOpen = true;
+
+        OnDoorOpen.Invoke();
 
         inAnimation = false;
     }
@@ -118,13 +140,7 @@ public class Door : MonoBehaviour, IInteractible
 
     public void Interact(GameObject other)
     {
-        //if locked don't do the interact logic.
-        if (isLocked)
-        {
-            //TODO: Play sound of door handle locked
-            //and not turning.
-            return;
-        }
+
 
         bool openForward = false;
 
@@ -137,6 +153,26 @@ public class Door : MonoBehaviour, IInteractible
         else
         {
             openForward = false;
+        }
+
+        //if locked don't do the interact logic.
+        if (isLocked)
+        {
+            //if a player opens the door from
+            //the front this door will become unlocked.
+            if (unlockFromFront && !openForward)
+            {
+                //TODO: Play sound of unlocking.
+                isLocked = false;
+            }
+            else
+            {
+                //TODO: Play sound of door handle locked
+                //and not turning.
+                return;
+            }
+
+                
         }
 
         //If we're in an animation

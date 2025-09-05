@@ -153,4 +153,6 @@ public struct PlayerInfo
     public string throwableKey;
     public string appliableKey;
     public string consumableKey;
+
+    public bool isDead;
 }
