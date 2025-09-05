@@ -10,6 +10,8 @@ public class Weapon : MonoBehaviour, IUseable
 
     public Sprite icon;
 
+    public Animator animator;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();

@@ -12,7 +12,7 @@ public class Revolver : SecondaryWeapon
 
     bool onCooldown = true;
 
-    float attackCooldownTime = 0.3f;
+    float attackCooldownTime = 0.34f;
 
     float stunTime = 1.5f; 
 
@@ -31,8 +31,11 @@ public class Revolver : SecondaryWeapon
             return;
         }
 
+        //set the gun's animator trigger.
+        animator.SetTrigger("Fire");
+
         //Play the muzzleFlashParticles
-        muzzleFlashParticles.Play();
+        //muzzleFlashParticles.Play();
 
         if (Physics.Raycast(c.transform.position, c.transform.forward, out var hitInfo, attackDist, mask))
         {
@@ -57,7 +60,7 @@ public class Revolver : SecondaryWeapon
         onCooldown = true;
 
         //Delete the muzzleFlashParticles
-        muzzleFlashParticles.Clear();
+        //muzzleFlashParticles.Clear();
     }
 
     public override void CancelUse()
