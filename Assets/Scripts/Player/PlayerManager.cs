@@ -178,6 +178,11 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
 
         //Say the player is no longer dead.
         controller.isDead = false;
+        //Say the player is in the respawn room.
+        controller.inRespawnRoom = true;
+
+        //Add the player to the list of players in the respawn room.
+        respawnRoom.deadPlayers.Add(controller);
     }
 
     public void LoadData(GameData gameData)
@@ -188,6 +193,13 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
 
     public void SaveData(ref GameData gameData)
     {
+        //Make sure if the respawn room hasn't
+        //been unlocked that we set the dead players
+        //back to being dead so they will show up in
+        //the respawn room again in the next level.
+        if (respawnRoom != null)
+        respawnRoom.SetPlayersDeadIfNotFreed();
+
         //Call save data manually on players
         //so any private variables are properly
         //saved and we don't need to change access modifiers.

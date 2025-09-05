@@ -326,6 +326,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     //terraria uses this number for iframes as do most games.
     public float iFrameTime = 0.67f;
 
+    //if the player is trapped
+    public bool inRespawnRoom = false;
 
     public bool isDead = false;
 

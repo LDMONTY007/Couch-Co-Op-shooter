@@ -19,7 +19,9 @@ public class Door : MonoBehaviour, IInteractible
                 //invoke onClose.
                 OnDoorClose.Invoke();
             }
-        } }
+        } 
+    }
+
     bool inAnimation = false;
 
     public bool isLocked = false;
@@ -29,6 +31,8 @@ public class Door : MonoBehaviour, IInteractible
     public UnityEvent OnDoorOpen;
 
     public UnityEvent OnDoorClose;
+
+    public UnityEvent OnUnlocked;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -164,6 +168,7 @@ public class Door : MonoBehaviour, IInteractible
             {
                 //TODO: Play sound of unlocking.
                 isLocked = false;
+                OnUnlocked.Invoke();
             }
             else
             {

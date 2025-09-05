@@ -31,9 +31,9 @@ public class Saferoom : MonoBehaviour
         //and we don't have duplicate players.
         for (int i = 0; i < playerManager.playerList.Count; i++)
         {
-            //if a player is dead, skip them when
+            //if a player is dead or if they're still in the respawn room, skip them when
             //checking if they've made it into the room.
-            if (playerManager.playerList[i].isDead)
+            if (playerManager.playerList[i].isDead || playerManager.playerList[i].inRespawnRoom)
             {
                 continue;
             }

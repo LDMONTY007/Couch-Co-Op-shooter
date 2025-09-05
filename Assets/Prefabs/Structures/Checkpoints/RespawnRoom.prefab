@@ -1803,6 +1803,34 @@ PrefabInstance:
       propertyPath: unlockFromFront
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6534335035825628053, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
+      propertyPath: OnUnlocked.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534335035825628053, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
+      propertyPath: OnUnlocked.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534335035825628053, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
+      propertyPath: OnUnlocked.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7682786559108020551}
+    - target: {fileID: 6534335035825628053, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
+      propertyPath: OnUnlocked.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534335035825628053, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
+      propertyPath: OnUnlocked.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: FreePlayers
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534335035825628053, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
+      propertyPath: OnUnlocked.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: RespawnRoom, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534335035825628053, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
+      propertyPath: OnUnlocked.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6785650207123595332, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
