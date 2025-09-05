@@ -119,6 +119,7 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
             {
                 SpawnPlayerInRespawnRoom(gameData.playerInfos[i], gameData);
                 Debug.LogWarning("RESPAWN");
+                continue;
             }
 
             Debug.LogWarning("SPAWN");

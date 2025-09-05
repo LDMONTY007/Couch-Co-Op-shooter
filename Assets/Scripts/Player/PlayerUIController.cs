@@ -22,6 +22,7 @@ public class PlayerUIController : MonoBehaviour
     public Slider useSlider;
     public Image revivePanel;
     public Image usePanel;
+    public Image deadPanel;
 
     public TMP_Text zombieKillsLabel;
     public TMP_Text idLabel;
@@ -62,6 +63,11 @@ public class PlayerUIController : MonoBehaviour
     {
         usePanel.gameObject.SetActive(value);
 
+    }
+
+    public void ShowDeadPanel(bool value)
+    {
+        deadPanel.gameObject.SetActive(value);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

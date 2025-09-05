@@ -524,6 +524,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     {
         //Set revive panel visibility.
         uiController.ShowRevivePanel(isGettingRevived);
+
+        uiController.ShowDeadPanel(isDead);
     }
 
     public void UpdateHealthUI()
@@ -668,9 +670,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //Play landing particles.
     }
 
-    private void HandleLook()
+    private void HandleCameraPosition()
     {
-        if (knocked)
+        if (knocked || isDead)
         {
             cam.transform.position = knockedCamTransform.position;
         }
@@ -678,6 +680,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         {
             cam.transform.position = defaultCamTransform.position;
         }
+    }
+
+    private void HandleLook()
+    {
+       
 
             var mouseInput = lookAction.ReadValue<Vector2>();
 
@@ -1049,7 +1056,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     private void HandleAnimations()
     {
         //Use the knocked model when knocked.
-        if (knocked)
+        if (knocked || isDead)
         {
             knockedModel.SetActive(true);
             standingModel.SetActive(false);
@@ -1086,7 +1093,18 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private void Update()
     {
-        
+        HandleAnimations();
+
+        HandleUI();
+
+        HandleCameraPosition();
+
+        //if the player is dead don't execute
+        //any logic.
+        if (isDead)
+        {
+            return;
+        }
 
         HandleLook();
 
@@ -1101,9 +1119,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         JumpUpdateLogic();
 
 
-        HandleAnimations();
-
-        HandleUI();
+        
 
         //Move the character controller.
         //controller.Move(finalMove * Time.deltaTime);
