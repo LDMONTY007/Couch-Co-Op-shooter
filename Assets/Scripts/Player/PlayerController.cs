@@ -83,6 +83,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     public Transform defaultCamTransform;
     public GameObject standingModel;
     public GameObject knockedModel;
+    public Animator playerAnimator;
 
 
     public float moveSpeed = 5f;
@@ -1069,6 +1070,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             knockedModel.SetActive(false);
             standingModel.SetActive(true);
         }
+
+        //Set bools of the animator if the player is moving.
+        if (canMove && moveInput.sqrMagnitude > 0)
+            playerAnimator.SetBool("walk", true);
+        else
+            playerAnimator.SetBool("walk", false);
     }
 
     private void OnEnable()
