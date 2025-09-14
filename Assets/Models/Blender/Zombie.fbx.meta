@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Zombie|Idle (1)
-      takeName: Zombie|Idle
+      name: Zombie|Chase
+      takeName: Zombie|Chase
       internalID: 1893384997238890232
       firstFrame: 0
-      lastFrame: 0
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

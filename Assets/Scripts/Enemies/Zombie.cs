@@ -20,6 +20,8 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public EnemyType type = EnemyType.Civilian;
 
+    public Transform aimIKTransform;
+
     //Distance from player
     //to start fleeing.
     public float attackDistance = 3f;
@@ -195,8 +197,7 @@ public class Zombie : MonoBehaviour, IDamageable
     // Update is called once per frame
     void Update()
     {
-        //Handle the animations.
-        HandleAnimations();
+        
 
         //don't do anything when the player isn't here.
         //try to get any players.
@@ -327,6 +328,12 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             HandlePatrol();
         }
+
+        //Handle head look.
+        HandleRigLook();
+
+        //Handle the animations.
+        HandleAnimations();
     }
 
     public void HandlePatrol()
@@ -357,6 +364,14 @@ public class Zombie : MonoBehaviour, IDamageable
 
             _agent.SetDestination(point);
         }
+    }
+
+    public void HandleRigLook()
+    {
+        //Handle where the head is looking
+        //by setting it's target look position.
+        if (playerObj != null)
+        aimIKTransform.position = playerObj.transform.position;
     }
 
     public void HandleAnimations()
