@@ -160,6 +160,8 @@ public class Zombie : MonoBehaviour, IDamageable
         return closestPlayer;
     }
 
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -188,12 +190,14 @@ public class Zombie : MonoBehaviour, IDamageable
         PlayerController controller = FindFirstObjectByType<PlayerController>();
         if (controller != null)
             playerObj = controller.gameObject;
-        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Handle the animations.
+        HandleAnimations();
+
         //don't do anything when the player isn't here.
         //try to get any players.
         PlayerController controller = FindTargetPlayer();
@@ -323,11 +327,6 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             HandlePatrol();
         }
-
-        if (animator != null)
-        {
-            HandleAnimation();
-        }
     }
 
     public void HandlePatrol()
@@ -360,11 +359,27 @@ public class Zombie : MonoBehaviour, IDamageable
         }
     }
 
-    public void HandleAnimation()
+    public void HandleAnimations()
     {
-        //set the speed for the animator visuals
-        animator.SetFloat("Speed", _agent.velocity.magnitude);
-        animator.SetFloat("MotionSpeed", 1f);
+        switch (currentState)
+        {
+            case EnemyState.Chase:
+                //if moving play chase animation.
+                if (_agent.velocity.sqrMagnitude > 0)
+                {
+                    animator.SetBool("Chase", true);
+                }
+                else
+                {
+                    animator.SetBool("Chase", false);
+                }
+                break;
+            default:
+                //Make sure to set chase to false otherwise.
+                animator.SetBool("Chase", false);
+                break;
+        }
+
     }
 
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
