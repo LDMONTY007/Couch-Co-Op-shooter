@@ -197,7 +197,8 @@ public class Zombie : MonoBehaviour, IDamageable
     // Update is called once per frame
     void Update()
     {
-        
+        //Handle the animations.
+        HandleAnimations();
 
         //don't do anything when the player isn't here.
         //try to get any players.
@@ -332,8 +333,7 @@ public class Zombie : MonoBehaviour, IDamageable
         //Handle head look.
         HandleRigLook();
 
-        //Handle the animations.
-        HandleAnimations();
+        
     }
 
     public void HandlePatrol()
@@ -388,6 +388,8 @@ public class Zombie : MonoBehaviour, IDamageable
                 {
                     animator.SetBool("Chase", false);
                 }
+
+                animator.SetBool("Stun", false);
                 break;
             case EnemyState.Stun:
                 animator.SetBool("Chase", false);
@@ -396,6 +398,7 @@ public class Zombie : MonoBehaviour, IDamageable
             default:
                 //Make sure to set chase to false otherwise.
                 animator.SetBool("Chase", false);
+                animator.SetBool("Stun", false);
                 break;
         }
 
