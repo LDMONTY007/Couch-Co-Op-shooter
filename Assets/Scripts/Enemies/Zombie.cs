@@ -389,6 +389,10 @@ public class Zombie : MonoBehaviour, IDamageable
                     animator.SetBool("Chase", false);
                 }
                 break;
+            case EnemyState.Stun:
+                animator.SetBool("Chase", false);
+                animator.SetBool("Stun", true);
+                break;
             default:
                 //Make sure to set chase to false otherwise.
                 animator.SetBool("Chase", false);
