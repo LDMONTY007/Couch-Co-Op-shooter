@@ -464,6 +464,14 @@ public class Zombie : MonoBehaviour, IDamageable
         //Stun this zombie using the given weapon's stun time.
         curStunCoroutine = StartCoroutine(StunCoroutine(stunTime));
 
+        if (stunTime > 0)
+        {
+            //Make the zombie react to being hit,
+            //then say they are stunned.
+            animator.SetTrigger("HitReact");
+            animator.SetBool("Stun", true);
+
+        }
 
 
         //TODO:
