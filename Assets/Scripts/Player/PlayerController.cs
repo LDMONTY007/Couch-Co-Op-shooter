@@ -146,6 +146,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
+    [Header("FOV Settings.")]
+    public float baseFOV = 60f;
+    public float speedPotionFOV = 80f;
+
     Guid guid;
 
     Vector2 moveInput;
@@ -1135,6 +1139,29 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             playerAnimator.SetBool("walk", false);
     }
 
+
+
+    //This is where we'll blur the camera
+    //for the player after an explosion
+    //and where we'll increase FOV
+    //when the speed potion is applied
+    private void HandleCameraEffects()
+    { 
+        //Switch to the speed potion FOV
+        //when the player's move speed
+        //has been modified by the
+        //speed potion
+        if (moveSpeed > baseMoveSpeed)
+        {
+            cam.fieldOfView = speedPotionFOV;
+        }
+        else
+        {
+            cam.fieldOfView = baseFOV;
+        }
+    }
+
+
     private void OnEnable()
     {
        
@@ -1160,6 +1187,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     private void Update()
     {
         HandleAnimations();
+
+        HandleCameraEffects();
 
         HandleUI();
 
