@@ -56,8 +56,12 @@ public class SaveSlotsMenu : Menu
                 //Function to execute if we slect 'yes'.
                 () =>
                 {
+                   
 
                     DataPersistenceManager.instance.ChangeSelectedProfileID(saveSlot.GetProfileID());
+
+                    
+
                     DataPersistenceManager.instance.NewGame();
                     //Reset the GameManager's scene to load on start
                     //because it could have been set already.
