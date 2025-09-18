@@ -17,7 +17,6 @@ public class VirtualScreen : GraphicRaycaster
         //Debug.Log("HERE");
         //Debug.Log("EVENT POS: " + eventData.position.x + ", " + eventData.position.y);
         Ray ray = eventCamera.ScreenPointToRay(eventData.position); // Mouse
-        RaycastHit hit;
 
         List<RaycastResult> uiHits = new List<RaycastResult>();
         screenCaster.Raycast(eventData, uiHits);
@@ -48,28 +47,53 @@ public class VirtualScreen : GraphicRaycaster
                 float u = Mathf.InverseLerp(rect.xMin, rect.xMax, localPoint.x);
                 float v = Mathf.InverseLerp(rect.yMin, rect.yMax, localPoint.y);
 
+                //offset by 0.5f
                 u -= 0.5f;
                 v -= 0.5f;
 
                 // Convert to render texture space
-                Vector2 virtualPos = new Vector2(
+                Vector3 virtualPos = new Vector3(
                     u * 923.7604f,//screenCamera.targetTexture.width,
-                    v * 519.6152f//screenCamera.targetTexture.height
+                    v * 519.6152f,//screenCamera.targetTexture.height
+                   screenCamera.nearClipPlane
                 );
 
                 cursorTransform.localPosition = virtualPos;
 
-                Debug.Log($"LocalPoint: {localPoint}, UV: ({u},{v}), VirtualPos: {virtualPos}");
+                //Debug.Log($"LocalPoint: {localPoint}, UV: ({u},{v}), VirtualPos: {virtualPos}");
 
                 // Update eventData
-                eventData.position = virtualPos;
+                //eventData.position = virtualPos;
+
+                List<RaycastResult> resultList = new();
+
+                PointerEventData virtualEvent = new PointerEventData(EventSystem.current)
+                {
+                    position = virtualPos,
+                    button = eventData.button,
+                    clickCount = eventData.clickCount,
+                    pointerId = eventData.pointerId,
+                    scrollDelta = eventData.scrollDelta,
+                };
+
+                //this.GetComponent<GraphicRaycaster>().Raycast(virtualEvent, resultList);
 
                 //Use the normal raycast for this player's canvas.
-                base.Raycast(eventData, resultAppendList);
+                // base.Raycast(virtualEvent, resultList);
 
-                foreach (var r in resultAppendList)
+                base.Raycast(virtualEvent, resultList);
+
+                //make sure we don't count any other UI objects
+                //other than our own.
+                for (int i = resultList.Count - 1; i >= 0; i--)
                 {
-                    Debug.Log("Hit Player UI element: " + result.gameObject.name);
+                    if (resultList[i].module != this) // or != screenCaster
+                        resultList.RemoveAt(i);
+                }
+
+                foreach (var r in resultList)
+                {
+                    Debug.Log("Hit Player UI element: " + r.gameObject.name);
                 }
             }
         }

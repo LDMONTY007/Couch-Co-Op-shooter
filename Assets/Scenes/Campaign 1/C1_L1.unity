@@ -2475,6 +2475,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 406654211328272698, guid: fd7dad73634d1f9429b4b92e10335de0, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 924945323363444782, guid: fd7dad73634d1f9429b4b92e10335de0, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -6017,6 +6021,10 @@ PrefabInstance:
     - target: {fileID: 1487670469207686315, guid: d88032fac0adcdc4aae204f5bd350596, type: 3}
       propertyPath: m_Name
       value: Zombie
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487670469207686315, guid: d88032fac0adcdc4aae204f5bd350596, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3186201242951983719, guid: d88032fac0adcdc4aae204f5bd350596, type: 3}
       propertyPath: m_LocalPosition.x
