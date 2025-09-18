@@ -1230,6 +1230,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         HandleJumping();
 
         //set rotation for the body.
+        if (rb.rotation.eulerAngles.y != curLook.x)
         rb.MoveRotation(Quaternion.Euler(0f, curLook.x, 0f));
 
         ApplyFinalMovements();
