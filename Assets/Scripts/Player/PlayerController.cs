@@ -408,6 +408,15 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //and can be rescued and rejoin their fellow players.
         canMove = false;
 
+        //if we're getting revived
+        //but die before they can revive us,
+        //stop getting revived.
+        if (isGettingRevived)
+        {
+            InteractStopHold();
+        }
+
+
 
         //Destroy(gameObject);
     }
@@ -2201,7 +2210,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void InteractHold(float useSpeed=1f)
     {
-        if (knocked && !isGettingRevived)
+        if (!isDead && knocked && !isGettingRevived)
         {
             StartRevive(useSpeed);
         }
