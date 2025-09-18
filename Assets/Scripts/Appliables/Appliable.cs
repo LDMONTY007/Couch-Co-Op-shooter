@@ -26,6 +26,8 @@ public class Appliable : MonoBehaviour, IUseable
 
     public Rigidbody rb;
 
+    public Collider col;
+
     public Sprite icon;
 
     private void OnDisable()

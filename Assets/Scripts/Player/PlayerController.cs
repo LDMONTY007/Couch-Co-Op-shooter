@@ -555,6 +555,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             //hand is on their back.
             (curUseable as Component).transform.SetParent(backTransform, false);
 
+
             //if our previous slot was the throwable slot,
             //cancel throwing if we were about to throw,
             //before switching to the next item slot.
@@ -1666,6 +1667,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         PrimaryWeapon pw = temp.GetComponent<PrimaryWeapon>();
         pw.parentPlayer = this;
 
+        //disable the collider of this item.
+        pw.col.enabled = false;
+
         //assign the new current weapon.
         curPrimaryWeapon = temp.GetComponent<PrimaryWeapon>();
         useables[0] = curPrimaryWeapon;
@@ -1687,6 +1691,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         temp.transform.localRotation = Quaternion.identity;
         SecondaryWeapon sw = temp.GetComponent<SecondaryWeapon>();
         sw.parentPlayer = this;
+
+        //disable the collider of this item.
+        sw.col.enabled = false;
 
 
         //assign the new current weapon.
@@ -1716,6 +1723,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //Update the slot icon for this weapon.
         uiController.OnUpdateSlotIcon(w.icon, 0);
 
+        //disable the collider of this item.
+        w.col.enabled = false;
+
         //assign the new current weapon.
         curPrimaryWeapon = w;
 
@@ -1741,6 +1751,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curPrimaryWeapon.rb.excludeLayers = LayerMask.GetMask("Player");
             //Set the parent player to null for this weapon.
             curPrimaryWeapon.parentPlayer = null;
+
+            //Enable the collider.
+            curPrimaryWeapon.col.enabled = true;
         }
     }
 
@@ -1762,6 +1775,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //Update the slot icon for this weapon.
         uiController.OnUpdateSlotIcon(w.icon, 1);
 
+        //disable the collider of this item.
+        w.col.enabled = false;
 
         //assign the new current SecondaryWeapon.
         curSecondaryWeapon = w;
@@ -1825,6 +1840,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //assign the launch transform.
         t.launchTransform = throwableLaunchTransform;
 
+        //disable the collider of this item.
+        t.col.enabled = false;
+
         //Update the slot icon for this throwable.
         uiController.OnUpdateSlotIcon(t.icon, 2);
 
@@ -1854,6 +1872,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curThrowable.rb = curThrowable.AddComponent<Rigidbody>();
             //don't collide with player.
             curThrowable.rb.excludeLayers = LayerMask.GetMask("Player");
+            //Enable the collider.
+            curThrowable.col.enabled = true;
         }
     }
 
@@ -1881,6 +1901,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         a.parentController = this;
         //Add the onUseableDestroyed listener for the curAppliable
         a.onBeforeDestroy.AddListener(OnUseableDestroyed);
+
+        //disable the collider of this item.
+        a.col.enabled = false;
 
         //Update the slot icon for this appliable.
         uiController.OnUpdateSlotIcon(a.icon, 3);
@@ -1913,6 +1936,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curAppliable.rb.excludeLayers = LayerMask.GetMask("Player");
             curAppliable.parentController = null;
             curAppliable.targetPlayer = null;
+            //Enable the collider.
+            curAppliable.col.enabled = true;
 
             //Remove the onUseableDestroyed listener for the curAppliable
             curAppliable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
@@ -1944,6 +1969,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         c.onBeforeDestroy.AddListener(OnUseableDestroyed);
         //Set the parent player reference
         c.parentPlayer = this;
+
+        //disable the collider of this item.
+        c.col.enabled = false;  
 
         //Update the slot icon for this appliable.
         uiController.OnUpdateSlotIcon(c.icon, 4);
@@ -1978,6 +2006,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curConsumable.parentPlayer = null;
             //Remove the onUseableDestroyed listener for the curConsumable
             curConsumable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
+            //Enable the collider.
+            curConsumable.col.enabled = true;
         }
     }
 

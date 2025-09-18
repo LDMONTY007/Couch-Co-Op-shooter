@@ -6,6 +6,8 @@ public class Throwable : MonoBehaviour, IUseable
 
     public Rigidbody rb;
 
+    public Collider col;
+
     public Sprite icon;
 
     private bool _readyToThrow = false;

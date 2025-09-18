@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabData: {fileID: 11400000, guid: 52866d654e8d5d1488be764fee3ddb51, type: 2}
   rb: {fileID: 6400185074339085125}
+  col: {fileID: 2552602346880833052}
   icon: {fileID: 21300000, guid: 084079cff19e78941b0bd79dfbe64c68, type: 3}
   parentPlayer: {fileID: 0}
   onBeforeDestroy:

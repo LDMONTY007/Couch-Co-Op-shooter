@@ -7,6 +7,8 @@ public class Consumable : MonoBehaviour, IUseable
 
     public Rigidbody rb;
 
+    public Collider col;
+
     public Sprite icon;
 
     public PlayerController parentPlayer;

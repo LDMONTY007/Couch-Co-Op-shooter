@@ -6,6 +6,8 @@ public class Weapon : MonoBehaviour, IUseable
 
     public Rigidbody rb;
 
+    public Collider col;
+
     public PlayerController parentPlayer;
 
     public Sprite icon;
