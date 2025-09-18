@@ -48,13 +48,16 @@ public class VirtualScreen : GraphicRaycaster
                 float u = Mathf.InverseLerp(rect.xMin, rect.xMax, localPoint.x);
                 float v = Mathf.InverseLerp(rect.yMin, rect.yMax, localPoint.y);
 
+                u -= 0.5f;
+                v -= 0.5f;
+
                 // Convert to render texture space
                 Vector2 virtualPos = new Vector2(
                     u * 923.7604f,//screenCamera.targetTexture.width,
                     v * 519.6152f//screenCamera.targetTexture.height
                 );
 
-                cursorTransform.localPosition = localPoint;
+                cursorTransform.localPosition = virtualPos;
 
                 Debug.Log($"LocalPoint: {localPoint}, UV: ({u},{v}), VirtualPos: {virtualPos}");
 
