@@ -659,7 +659,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 14}
   m_SizeDelta: {x: 220, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5134637813591227452
@@ -795,7 +795,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -13}
   m_SizeDelta: {x: 220, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4522439753887166518
@@ -1166,7 +1166,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7220535006157863721}
   - component: {fileID: 1180264376706147651}
-  - component: {fileID: 4980741029288482986}
   - component: {fileID: 2426871969919690361}
   - component: {fileID: 7955030514435135028}
   m_Layer: 5
@@ -1204,24 +1203,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1828861333754213907}
   m_CullTransparentMesh: 1
---- !u!114 &4980741029288482986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828861333754213907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa30210cc3eea8342b57e02a6641c6d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profileID: 0
-  noDataContent: {fileID: 0}
-  hasDataContent: {fileID: 0}
-  percentageCompleteText: {fileID: 0}
-  deathCountText: {fileID: 0}
-  clearButton: {fileID: 0}
 --- !u!114 &2426871969919690361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1295,19 +1276,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2426871969919690361}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5244676789226607274}
-        m_TargetAssemblyTypeName: SaveSlotsMenu, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 4980741029288482986}
-          m_ObjectArgumentAssemblyTypeName: SaveSlot, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1994857672325639363
 GameObject:
   m_ObjectHideFlags: 0
@@ -1884,7 +1853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa30210cc3eea8342b57e02a6641c6d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profileID: 0
+  profileID: 1
   noDataContent: {fileID: 4543598351162167115}
   hasDataContent: {fileID: 1994857672325639363}
   percentageCompleteText: {fileID: 6072230823600219617}
@@ -2261,7 +2230,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -13}
   m_SizeDelta: {x: 220, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5380490688820077676
@@ -2399,7 +2368,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 14}
   m_SizeDelta: {x: 220, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5384417517200249154
@@ -2837,7 +2806,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -13}
   m_SizeDelta: {x: 220, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &60984532191766798
@@ -4172,7 +4141,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 14}
   m_SizeDelta: {x: 220, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8772955559892137061
@@ -4473,7 +4442,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa30210cc3eea8342b57e02a6641c6d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profileID: 0
+  profileID: 2
   noDataContent: {fileID: 8796771725957154997}
   hasDataContent: {fileID: 245665008688912803}
   percentageCompleteText: {fileID: 1177294609827999742}
@@ -4713,7 +4682,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6144157559090453622}
   - component: {fileID: 1233635903383532953}
-  - component: {fileID: 2130308015200181682}
   - component: {fileID: 4314390372646132464}
   - component: {fileID: 8107031676161897716}
   m_Layer: 5
@@ -4751,24 +4719,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8699550883049666030}
   m_CullTransparentMesh: 1
---- !u!114 &2130308015200181682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8699550883049666030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa30210cc3eea8342b57e02a6641c6d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profileID: 0
-  noDataContent: {fileID: 0}
-  hasDataContent: {fileID: 0}
-  percentageCompleteText: {fileID: 0}
-  deathCountText: {fileID: 0}
-  clearButton: {fileID: 0}
 --- !u!114 &4314390372646132464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4842,19 +4792,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4314390372646132464}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5244676789226607274}
-        m_TargetAssemblyTypeName: SaveSlotsMenu, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2130308015200181682}
-          m_ObjectArgumentAssemblyTypeName: SaveSlot, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &8796771725957154997
 GameObject:
   m_ObjectHideFlags: 0

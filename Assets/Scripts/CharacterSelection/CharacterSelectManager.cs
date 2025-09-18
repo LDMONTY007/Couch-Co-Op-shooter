@@ -71,9 +71,23 @@ public class CharacterSelectManager : MonoBehaviour
 
     private void OnEnable()
     {
+        //in the character select scene
+        //clear all devices from the game manager.
+        //this fixes a bug where players couldn't join
+        //after joining in the character select screen,
+        //leaving the select screen, and opening
+        //the select screen again. 
+        //set all devices back to null.
+        for (int i = 0; i < GameManager.Instance.inputDevices.Length; i++)
+        {
+            GameManager.Instance.inputDevices[i] = null;
+
+        }
+
         //Setup input device change check
         InputSystem.onDeviceChange += OnInputDeviceChange;
 
+        
         //Setup the check for a player input device pressing any button.
         //use a disposeable so it can be disposed before this scene ends.
         playerJoinDisposable = InputSystem.onEvent.Where(e => e.HasButtonPress()).Call(eventPtr =>
@@ -105,6 +119,7 @@ public class CharacterSelectManager : MonoBehaviour
                                 Debug.Log("PLAYER JOINED!!!");
                                 break;
                             }
+
                         }
                     }
 
