@@ -8,7 +8,7 @@ public interface IInteractible
 
     void Interact(GameObject other);
 
-    void InteractHold();
+    void InteractHold(float useSpeed = 1f);
 
     void InteractStopHold();
 

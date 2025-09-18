@@ -29,7 +29,7 @@ public class Throwable : MonoBehaviour, IUseable
         readyToThrow = false;
     }
 
-    public void Use()
+    public void Use(float useSpeed = 1f)
     {
         Debug.Log("HERE");
         readyToThrow = true;

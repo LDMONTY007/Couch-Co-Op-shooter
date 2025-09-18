@@ -24,7 +24,7 @@ public class Consumable : MonoBehaviour, IUseable
         throw new System.NotImplementedException();
     }
 
-    public void Use()
+    public void Use(float useSpeed = 1f)
     {
         Consume();
     }

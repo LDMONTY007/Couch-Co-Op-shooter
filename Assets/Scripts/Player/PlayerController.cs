@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -85,9 +87,64 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     public GameObject knockedModel;
     public Animator playerAnimator;
 
+    public StatManager statManager;
 
-    public float moveSpeed = 5f;
+    public float baseMoveSpeed = 5f;
+    public float moveSpeed 
+    { 
+        get
+        {
+            //multipliers and additives
+            float multipliers = 1f;
+            float additives = 0f;
+            float divisors = 1f;
+            float subtractors = 0f;
+            
+
+            //only use modifiers that effect move speed.
+            //calculate all additives and multipliers
+            statManager.modifiers.Where<StatModifier>(s => s.type == ModifiedStat.MoveSpeed).ToList().ForEach(s => 
+            {
+                multipliers += s.multiplier;
+                additives += s.additive;
+                divisors += s.divisor;
+                subtractors += s.subtractor;
+            });
+
+
+            //Add the additives first, then subtractors, then multiply by the multipliers, then divide by divisors.
+            return (baseMoveSpeed + additives - subtractors) * multipliers / divisors;        
+        } 
+    }
     public float maxSpeed = 20f;
+
+    public float baseUseSpeed = 1f;
+    public float useSpeed
+    {
+        get
+        {
+            //multipliers and additives
+            float multipliers = 1f;
+            float additives = 0f;
+            float divisors = 1f;
+            float subtractors = 0f;
+
+            //only use modifiers that effect use speed.
+            //calculate all additives and multipliers
+            statManager.modifiers.Where<StatModifier>(s => s.type == ModifiedStat.UseSpeed).ToList().ForEach(s =>
+            {
+                multipliers += s.multiplier;
+                additives += s.additive;
+                divisors += s.divisor;
+                subtractors += s.subtractor;
+            });
+
+            float newSpeed = (baseUseSpeed + additives - subtractors) * multipliers / divisors;
+            Debug.LogWarning(newSpeed);
+            //Add the additives first, then subtractors, then multiply by the multipliers, then divide by divisors.
+            return (baseUseSpeed + additives - subtractors) * multipliers / divisors;
+        }
+    }
 
     Guid guid;
 
@@ -728,7 +785,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
                             //assign the target
                             (curUseable as Appliable).targetPlayer = target;
                             //call use.
-                            curUseable.Use();
+                            curUseable.Use(useSpeed);
                         }
                     }
 
@@ -1549,7 +1606,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             if (lastHeldInteractible != null)
             {
                 Debug.Log("HOLD!");
-                lastHeldInteractible.InteractHold();
+                //Pass useSpeed into interact hold
+                //so that it uses this player's use speed stats
+                //rather than the stats of player getting revived
+                lastHeldInteractible.InteractHold(useSpeed);
                 isHoldingInteract = true;
             }
         }
@@ -2028,7 +2088,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     bool isGettingRevived = false;
 
-    public IEnumerator ReviveCoroutine()
+    public IEnumerator ReviveCoroutine(float reviveSpeed)
     {
         isGettingRevived = true;
 
@@ -2036,7 +2096,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         while (curReviveTime < totalReviveTime)
         {
-            curReviveTime += Time.deltaTime;
+            //Multiply by revive as speed potions
+            //will make picking up other players faster.
+            curReviveTime += Time.deltaTime * reviveSpeed;
+            Debug.Log(Time.deltaTime);
+            Debug.Log(Time.deltaTime * reviveSpeed);
 
             Debug.Log("REVIVING: " +  curReviveTime / totalReviveTime);
 
@@ -2052,9 +2116,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         CancelKnocked();
     }
 
-    public void StartRevive()
+    public void StartRevive(float reviveSpeed)
     {
-        reviveCoroutine = StartCoroutine(ReviveCoroutine());
+        reviveCoroutine = StartCoroutine(ReviveCoroutine(reviveSpeed));
     }
 
     public void CancelRevive()
@@ -2075,11 +2139,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     }
 
-    public void InteractHold()
+    public void InteractHold(float useSpeed=1f)
     {
         if (knocked && !isGettingRevived)
         {
-            StartRevive();
+            StartRevive(useSpeed);
         }
     }
 

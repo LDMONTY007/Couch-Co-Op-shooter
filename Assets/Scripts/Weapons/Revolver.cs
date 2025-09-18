@@ -68,7 +68,7 @@ public class Revolver : SecondaryWeapon
         //Do nothing as holding the button down does nothing for this useable.
     }
 
-    public override void Use()
+    public override void Use(float useSpeed = 1f)
     {
         Attack(parentPlayer.cam, parentPlayer);
     }

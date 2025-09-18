@@ -225,7 +225,7 @@ public class Door : MonoBehaviour, IInteractible
         }
     }
 
-    public void InteractHold()
+    public void InteractHold(float useSpeed = 1f)
     {
         //Do nothing.
     }

@@ -243,6 +243,7 @@ GameObject:
   - component: {fileID: 1524256605029116192}
   - component: {fileID: 4055157184290194517}
   - component: {fileID: 5107730192156573712}
+  - component: {fileID: 8599222582133920599}
   - component: {fileID: 5179676059896972612}
   - component: {fileID: 5855211771221852801}
   m_Layer: 3
@@ -482,8 +483,10 @@ MonoBehaviour:
   standingModel: {fileID: 1116208718089067800}
   knockedModel: {fileID: 7727701928425530758}
   playerAnimator: {fileID: 5969078831421136344}
-  moveSpeed: 5
+  statManager: {fileID: 8599222582133920599}
+  baseMoveSpeed: 5
   maxSpeed: 20
+  baseUseSpeed: 1
   interactDist: 7.5
   playerModel: {fileID: 8945600692140703755}
   cam: {fileID: 7371796333402482502}
@@ -523,6 +526,18 @@ MonoBehaviour:
   iFrameTime: 0.67
   inRespawnRoom: 0
   isDead: 0
+--- !u!114 &8599222582133920599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5336900089535494830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84dbe439d96817840a279ba2c7cb1494, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &5179676059896972612
 Rigidbody:
   m_ObjectHideFlags: 0

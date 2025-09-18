@@ -25,7 +25,7 @@ public class Weapon : MonoBehaviour, IUseable
     {
 
     }
-    public virtual void Use()
+    public virtual void Use(float useSpeed = 1f)
     {
         
     }

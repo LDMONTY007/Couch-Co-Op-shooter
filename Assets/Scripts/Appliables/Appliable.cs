@@ -49,7 +49,7 @@ public class Appliable : MonoBehaviour, IUseable
         //what occurs when this item is applied.
     }
 
-    public void StartApply()
+    public void StartApply(float useSpeed)
     {
         if (applyCoroutine != null)
         {
@@ -64,7 +64,7 @@ public class Appliable : MonoBehaviour, IUseable
         //to match this appliable's progress.
         onValueChanged.AddListener(parentController.uiController.UpdateUseSlider);
         onValueChanged.AddListener(targetPlayer.uiController.UpdateUseSlider);
-        applyCoroutine = StartCoroutine(ApplyCoroutine());
+        applyCoroutine = StartCoroutine(ApplyCoroutine(useSpeed));
     }
 
     public void CancelApply()
@@ -86,11 +86,11 @@ public class Appliable : MonoBehaviour, IUseable
 
     Coroutine applyCoroutine;
 
-    private IEnumerator ApplyCoroutine()
+    private IEnumerator ApplyCoroutine(float useSpeed)
     {
         while (curApplyTime < totalTimeToApply)
         {
-            curApplyTime += Time.deltaTime;
+            curApplyTime += Time.deltaTime * useSpeed;
             yield return null;
         }
 
@@ -124,9 +124,9 @@ public class Appliable : MonoBehaviour, IUseable
         onBeforeDestroy?.Invoke(this, 3);
     }
 
-    public void Use()
+    public void Use(float useSpeed = 1f)
     {
-        StartApply();
+        StartApply(useSpeed);
     }
 
     public void CancelUse()

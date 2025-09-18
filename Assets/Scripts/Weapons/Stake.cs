@@ -34,7 +34,7 @@ public class Stake : PrimaryWeapon
         //This is not a hold down to use weapon so this goes unused.
     }
 
-    public override void Use()
+    public override void Use(float useSpeed = 1f)
     {
         Attack(parentPlayer.cam, parentPlayer);
     }
