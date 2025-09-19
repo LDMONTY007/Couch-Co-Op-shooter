@@ -19,11 +19,13 @@ public class PixelateRenderPass : ScriptableRenderPass
     {
         this.material = material;
         this.defaultSettings = defaultSettings;
+        renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing; // Or a later event
     }
 
 
     public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
     {
+
         //In the RecordRenderGraph method, create the variable for storing the UniversalResourceData instance from the frameData parameter. UniversalResourceData contains all the texture references used by URP, including the active color and depth textures of the camera.
         UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
 
@@ -35,6 +37,10 @@ public class PixelateRenderPass : ScriptableRenderPass
         var dst = renderGraph.CreateTexture(pixelateTextureDescriptor);
 
         UniversalCameraData cameraData = frameData.Get<UniversalCameraData>();
+
+        // Only apply pixelation on the *final camera* in the stack
+        if (!cameraData.resolveFinalTarget)
+            return;
 
         // The following line ensures that the render pass doesn't blit
         // from the back buffer.

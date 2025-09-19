@@ -41,7 +41,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   m_DefaultStencilState:
     overrideStencilState: 0
-    stencilReference: 1
+    stencilReference: 0
     stencilCompareFunction: 3
     passOperation: 2
     failOperation: 0
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 0
   settings:
-    horizontalBlur: 0.0249
+    horizontalBlur: 0.0149
     verticalBlur: 0
   shader: {fileID: 4800000, guid: e23bb12ac2c3b1c4aa380aff0b1c06dd, type: 3}
 --- !u!114 &7833122117494664109
