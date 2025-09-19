@@ -3,13 +3,15 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class VirtualScreen : GraphicRaycaster
+public class VirtualScreen : GraphicRaycaster, IPointerClickHandler
 {
     public Camera screenCamera; // Reference to the camera responsible for rendering the virtual screen's rendertexture
 
     public GraphicRaycaster screenCaster; // Reference to the GraphicRaycaster of the canvas displayed on the virtual screen
 
     public RectTransform cursorTransform;
+
+    public Vector3 cursorPos = Vector3.zero;
 
     // Called by Unity when a Raycaster should raycast because it extends BaseRaycaster.
     public override void Raycast(PointerEventData eventData, List<RaycastResult> resultAppendList)
@@ -62,39 +64,45 @@ public class VirtualScreen : GraphicRaycaster
 
                 //Debug.Log($"LocalPoint: {localPoint}, UV: ({u},{v}), VirtualPos: {virtualPos}");
 
+                // Convert hit world position back into screen space
+                //Vector2 screenPos = screenCamera.WorldToScreenPoint(result.worldPosition);
+
+                Debug.DrawRay(screenCamera.ScreenToWorldPoint(virtualPos), screenCamera.transform.forward * 10f, Color.red);
+
                 // Update eventData
-                //eventData.position = virtualPos;
-
-                List<RaycastResult> resultList = new();
-
-                PointerEventData virtualEvent = new PointerEventData(EventSystem.current)
-                {
-                    position = virtualPos,
-                    button = eventData.button,
-                    clickCount = eventData.clickCount,
-                    pointerId = eventData.pointerId,
-                    scrollDelta = eventData.scrollDelta,
-                };
+                eventData.position = virtualPos;//screenCamera.WorldToScreenPoint(result.worldPosition);
 
                 //this.GetComponent<GraphicRaycaster>().Raycast(virtualEvent, resultList);
 
                 //Use the normal raycast for this player's canvas.
                 // base.Raycast(virtualEvent, resultList);
 
-                base.Raycast(virtualEvent, resultList);
+                //List<RaycastResult> newHits = new List<RaycastResult>();
+
+                base.Raycast(eventData, resultAppendList);
+
+                //EventSystem.current.RaycastAll(eventData, resultAppendList);
 
                 //make sure we don't count any other UI objects
                 //other than our own.
-                for (int i = resultList.Count - 1; i >= 0; i--)
+                for (int i = resultAppendList.Count - 1; i >= 0; i--)
                 {
-                    if (resultList[i].module != this) // or != screenCaster
-                        resultList.RemoveAt(i);
+                    if (resultAppendList[i].module != this) // or != screenCaster
+                        resultAppendList.RemoveAt(i);
                 }
 
-                foreach (var r in resultList)
+                //Debug.Log("Click count: " + eventData.pointerPress);
+
+                foreach (var r in resultAppendList)
                 {
                     Debug.Log("Hit Player UI element: " + r.gameObject.name);
+                    ForwardAllEvents(r.gameObject, eventData);
+                   /* ExecuteEvents.Execute(r.gameObject, eventData, ExecuteEvents.pointerEnterHandler);
+                    if (eventData.clickCount > 0)
+                        ExecuteEvents.Execute(r.gameObject, eventData, ExecuteEvents.pointerClickHandler);*/
                 }
+
+                
             }
         }
 
@@ -136,10 +144,40 @@ public class VirtualScreen : GraphicRaycaster
         }*/
     }
 
+    private void ForwardAllEvents(GameObject target, PointerEventData eventData)
+    {
+        // Hover
+        ExecuteEvents.Execute(target, eventData, ExecuteEvents.pointerEnterHandler);
+
+        // Pointer actions
+        if (eventData.pointerPress == null && eventData.eligibleForClick)
+        {
+
+            ExecuteEvents.Execute(target, eventData, ExecuteEvents.pointerDownHandler);
+            ExecuteEvents.Execute(target, eventData, ExecuteEvents.pointerClickHandler);
+        }
+
+        if (eventData.dragging)
+            ExecuteEvents.Execute(target, eventData, ExecuteEvents.dragHandler);
+
+        if (eventData.scrollDelta != Vector2.zero)
+            ExecuteEvents.Execute(target, eventData, ExecuteEvents.scrollHandler);
+
+        if (eventData.pointerPress != null && eventData.eligibleForClick)
+        {
+            ExecuteEvents.Execute(target, eventData, ExecuteEvents.pointerUpHandler);
+            
+        }
+
+        // Selection / submission
+        if (eventData.button == PointerEventData.InputButton.Left && eventData.clickCount > 0)
+            ExecuteEvents.Execute(target, eventData, ExecuteEvents.submitHandler);
+    }
+
     private void Update()
     {
 
-
+/*
         if (Input.GetMouseButtonDown(0))
         {
             // Check if the mouse is over a UI element
@@ -151,7 +189,12 @@ public class VirtualScreen : GraphicRaycaster
 
             // Your regular game world click logic here
             Debug.Log("Clicked on the game world.");
-        }
+        }*/
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("CLICKED!!!");
+        Debug.Log("Click Count: " + eventData.clickCount);
+    }
 }
