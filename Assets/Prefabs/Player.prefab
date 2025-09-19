@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3545604666637208860
 Transform:
   m_ObjectHideFlags: 0
@@ -43,7 +43,7 @@ Camera:
   m_GameObject: {fileID: 155999499760753639}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -73,7 +73,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -108,8 +108,9 @@ MonoBehaviour:
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
+  m_CameraType: 1
+  m_Cameras:
+  - {fileID: 7832447003881909035}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
@@ -208,7 +209,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5258949165271759105}
-  - component: {fileID: 7655051809777180096}
   - component: {fileID: 7832447003881909035}
   - component: {fileID: 6361396528131212873}
   - component: {fileID: 5867944608992814333}
@@ -237,25 +237,6 @@ Transform:
   - {fileID: 1041062259185607100}
   m_Father: {fileID: 1524256605029116192}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7655051809777180096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4316735050678712577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d28cf3da74c42b8419b73c226894e74b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 7832447003881909035}
-  playerIndex: -1
-  textures:
-  - {fileID: 8400000, guid: c73d563e2839d474f88e42ad393bd4fe, type: 2}
-  - {fileID: 8400000, guid: 7b344df166c07104bb20c1bf829d38f2, type: 2}
-  - {fileID: 8400000, guid: dc5f3d778219c294d9353178af95ac0e, type: 2}
-  - {fileID: 8400000, guid: b7586539a7420e14c88f2ec363035518, type: 2}
 --- !u!20 &7832447003881909035
 Camera:
   m_ObjectHideFlags: 0
@@ -295,7 +276,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 95
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
