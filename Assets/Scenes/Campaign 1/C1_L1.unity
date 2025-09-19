@@ -2559,10 +2559,6 @@ PrefabInstance:
       propertyPath: m_CameraType
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5867944608992814333, guid: fd7dad73634d1f9429b4b92e10335de0, type: 3}
-      propertyPath: m_VolumeLayerMask.m_Bits
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5935944686058574849, guid: fd7dad73634d1f9429b4b92e10335de0, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 0
