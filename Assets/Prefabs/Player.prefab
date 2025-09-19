@@ -600,7 +600,7 @@ MonoBehaviour:
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
-  m_Camera: {fileID: 7832447003881909035}
+  m_Camera: {fileID: 9213440936608392264}
 --- !u!114 &5107730192156573712
 MonoBehaviour:
   m_ObjectHideFlags: 0
