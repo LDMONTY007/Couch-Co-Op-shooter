@@ -191,8 +191,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public PlayerUIController uiController;
 
-    public RenderTextureManager renderTextureManager;
-
     public VirtualScreen virtualScreen;
 
     Rigidbody rb;
@@ -456,9 +454,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         interactAction = playerInput.actions["Interact"];
         slotUpAction = playerInput.actions["SlotUp"];
         slotDownAction = playerInput.actions["SlotDown"];
-
-        //Init the render texture for this player so we have PS1 style graphics.
-        renderTextureManager.InitRenderTexture(playerInput.playerIndex);
     }
 
     public void HandleSlots()
