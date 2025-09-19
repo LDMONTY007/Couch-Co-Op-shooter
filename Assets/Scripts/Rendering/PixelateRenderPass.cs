@@ -11,7 +11,7 @@ public class PixelateRenderPass : ScriptableRenderPass
 
     private TextureDesc pixelateTextureDescriptor;
 
-    private static readonly int pixelSizeId = Shader.PropertyToID("_PixelSize");
+    
     private const string k_PixelateTextureName = "_PixelateTexture";
     private const string k_PixelatePassName = "PixelateRenderPass";
 
@@ -61,6 +61,6 @@ public class PixelateRenderPass : ScriptableRenderPass
     {
         if (material == null) return;
 
-        material.SetFloat(pixelSizeId, defaultSettings.pixelSize);
+        material.SetVector("_PixelResolution", defaultSettings.pixelSize);
     }
 }

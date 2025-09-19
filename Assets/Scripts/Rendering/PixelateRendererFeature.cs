@@ -51,7 +51,7 @@ public class PixelateRendererFeature : ScriptableRendererFeature
 [Serializable]
 public class PixelateSettings
 {
-     public float pixelSize;
+     public Vector2 pixelSize = new Vector2(320, 240);
 }
 
 

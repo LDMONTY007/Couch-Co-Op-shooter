@@ -68,7 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    pixelSize: 8
+    pixelSize: {x: 320, y: 240}
   shader: {fileID: 4800000, guid: 1817bf3f9e5c1f44c9daa3c2715fe6e3, type: 3}
 --- !u!114 &6482253012236420940
 MonoBehaviour:

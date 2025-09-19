@@ -4,26 +4,22 @@ Shader "CustomEffects/Pixelate"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
-        float _PixelSize; // how many vertical pixels to snap to
+        float2 _PixelResolution; // Target resolution, e.g. (320, 240)
+
 
         float4 FragPixelate (Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-            // Get screen resolution
             float2 screenSize = _ScreenParams.xy;
 
-            // Determine "pixel step" in UV space
-            float2 pixelStep = _PixelSize / screenSize;
+            // Step size in UV space for each pixel
+            float2 pixelStep = 1.0 / _PixelResolution;
 
-            // Snap UVs to nearest pixel grid
-            float2 uv = input.texcoord;
-            uv = floor(uv / pixelStep) * pixelStep;
-
-            // Sample once with snapped UV
+            // Snap UVs to nearest pixel center
+            float2 uv = floor(input.texcoord / pixelStep) * pixelStep;
             //Use point clamp so there are no blurred edges/pixels.
             float4 col = SAMPLE_TEXTURE2D(_BlitTexture, sampler_PointClamp, uv);
-
             return col;
         }
     ENDHLSL
