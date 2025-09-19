@@ -191,8 +191,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public PlayerUIController uiController;
 
-    public VirtualScreen virtualScreen;
-
     Rigidbody rb;
 
     public bool canMove = true;

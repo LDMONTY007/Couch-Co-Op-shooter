@@ -5,17 +5,11 @@ using UnityEngine.Rendering.Universal;
 public class PixelateRendererFeature : ScriptableRendererFeature
 {
     [SerializeField] private PixelateSettings settings;
-    [SerializeField] private Shader shader;
-    private Material material;
+    [SerializeField] private Material material;
     private PixelateRenderPass pixelateRenderPass;
 
     public override void Create()
     {
-        if (shader == null)
-        {
-            return;
-        }
-        material = new Material(shader);
         pixelateRenderPass = new PixelateRenderPass(material, settings);
 
         pixelateRenderPass.renderPassEvent = RenderPassEvent.AfterRenderingSkybox;

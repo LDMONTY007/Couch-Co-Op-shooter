@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Active: 1
   settings:
     pixelSize: {x: 320, y: 240}
-  shader: {fileID: 4800000, guid: 1817bf3f9e5c1f44c9daa3c2715fe6e3, type: 3}
+  material: {fileID: 2100000, guid: c9bfb0579fd076f4aae39d98b794ba19, type: 2}
 --- !u!114 &6482253012236420940
 MonoBehaviour:
   m_ObjectHideFlags: 0
