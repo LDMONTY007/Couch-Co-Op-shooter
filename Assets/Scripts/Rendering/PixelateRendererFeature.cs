@@ -31,14 +31,17 @@ public class PixelateRendererFeature : ScriptableRendererFeature
 
     protected override void Dispose(bool disposing)
     {
-        if (Application.isPlaying)
+        //We no longer destroy the material
+        //as it is now a pre-made asset instead
+        //of created at runtime.
+    /*    if (Application.isPlaying)
         {
             Destroy(material);
         }
         else
         {
             DestroyImmediate(material);
-        }
+        }*/
     }
 
 }
