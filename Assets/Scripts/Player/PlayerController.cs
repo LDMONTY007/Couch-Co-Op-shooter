@@ -1334,7 +1334,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         return mouseLookSpeed;
     }
 
-    public void TakeDamage(float damage, float stunTime, GameObject other)
+    public void TakeDamage(DamageData damageData)
     {
         //if we're invincible, 
         //then exit this method.
@@ -1349,14 +1349,14 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //be 0.
         if (knocked)
         {
-            knockedHealth -= damage;
+            knockedHealth -= damageData.damage;
         }
         else
         {
             //Check degrading health first
             if (degradingHealth > 0)
             {
-                degradingHealth -= damage;
+                degradingHealth -= damageData.damage;
 
                 //if degrading health is now negative
                 //because damage exceeded the amount we had left,
@@ -1374,7 +1374,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             else
             {
                 // Apply the damage
-                curHealth -= damage;
+                curHealth -= damageData.damage;
             }
         }
 

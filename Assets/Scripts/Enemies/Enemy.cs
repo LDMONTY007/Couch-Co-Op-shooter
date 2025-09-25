@@ -305,7 +305,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     }*/
 
-    public void TakeDamage(float damage, float stunTime, GameObject other)
+    public void TakeDamage(DamageData damageData)
     {
         //if we're invincible, 
         //then exit this method.
@@ -315,7 +315,7 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         // Apply the damage
-        curHealth -= damage;
+        curHealth -= damageData.damage;
 
         //TODO:
         //Add some screen shake

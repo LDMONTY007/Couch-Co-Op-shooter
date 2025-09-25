@@ -67,6 +67,7 @@ MonoBehaviour:
   patrolRange: 50
   playerObj: {fileID: 0}
   animator: {fileID: 8808098863740402614}
+  bloodParticlesPrefab: {fileID: 6673894894113231363, guid: 591fa157ce5f5fe4485c8d626eaadeb0, type: 3}
   audioSource: {fileID: 0}
   invincible: 0
   canAttack: 1

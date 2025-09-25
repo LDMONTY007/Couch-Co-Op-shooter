@@ -188,6 +188,7 @@ MonoBehaviour:
   bounceForce: 5
   invincible: 0
   iFrameTime: 0.67
+  bloodParticlesPrefab: {fileID: 6673894894113231363, guid: 591fa157ce5f5fe4485c8d626eaadeb0, type: 3}
 --- !u!33 &922805628536447613
 MeshFilter:
   m_ObjectHideFlags: 0

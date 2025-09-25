@@ -34,6 +34,8 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public Animator animator;
 
+    public GameObject bloodParticlesPrefab;
+
     private float timeBetweenFleeChecks = 0.1f;
 
     private float curTimeSinceLastFlee = 0f;
@@ -439,7 +441,7 @@ public class Zombie : MonoBehaviour, IDamageable
         }
     }
 
-    public void TakeDamage(float damage, float stunTime, GameObject other)
+    public void TakeDamage(DamageData damageData)
     {
         //if we're invincible, 
         //then exit this method.
@@ -452,19 +454,19 @@ public class Zombie : MonoBehaviour, IDamageable
         //if it was a player.
         //this helps us identify who gets credit
         //for kills.
-        PlayerController p = other.GetComponent<PlayerController>();
+        PlayerController p = damageData.other.GetComponent<PlayerController>();
         if (p != null) 
         lastAttacker = p;
 
         // Apply the damage
-        curHealth -= damage;
+        curHealth -= damageData.damage;
 
         if (curStunCoroutine != null)
         StopCoroutine(curStunCoroutine);
         //Stun this zombie using the given weapon's stun time.
-        curStunCoroutine = StartCoroutine(StunCoroutine(stunTime));
+        curStunCoroutine = StartCoroutine(StunCoroutine(damageData.stunTime));
 
-        if (stunTime > 0)
+        if (damageData.stunTime > 0)
         {
             //Make the zombie react to being hit,
             //then say they are stunned.
@@ -472,6 +474,12 @@ public class Zombie : MonoBehaviour, IDamageable
             animator.SetBool("Stun", true);
 
         }
+
+
+        //Spawn the particle system here with it's orientation
+        //matching the damageData hit normal at the damageData hit point.
+        Instantiate(bloodParticlesPrefab, damageData.point, Quaternion.LookRotation(damageData.normal));
+        //When the particle system ends it will destroy itself.
 
 
         //TODO:
@@ -497,7 +505,7 @@ public class Zombie : MonoBehaviour, IDamageable
 
             //if we actually hit a damageable.
             if (damageable != null)
-                damageable.TakeDamage(attackDamage, 0.3f, gameObject);
+                damageable.TakeDamage(new DamageData() { damage = attackDamage, stunTime = 0.3f, other = gameObject, point = hitInfo.point, normal = hitInfo.normal });
         }
 
         //Start the cooldown.

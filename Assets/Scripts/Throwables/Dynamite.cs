@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Dynamite : Throwable, IDamageable
@@ -34,7 +35,7 @@ public class Dynamite : Throwable, IDamageable
         Detonate();
     }
 
-    public void TakeDamage(float damage, float stunTime, GameObject other)
+    public void TakeDamage(DamageData damageData)
     {
         //When we take any amount of damage we should detonate.
         Detonate();
@@ -57,8 +58,15 @@ public class Dynamite : Throwable, IDamageable
                 float falloffFactor = (explosionRadius - Vector3.Distance(cols[i].transform.position, transform.position)) / explosionRadius;
                 float falloffDamage = baseDamage * falloffFactor;
 
+                //calc the normal
+                //Should be the direction facing the explosion source
+                Vector3 normal = (cols[i].transform.position - transform.position).normalized;
+                //TODO: Try a raycast here to get the hitinfo of the raycast
+                //But for now just say the point we hit is the position of the collider object
+                Vector3 point = cols[i].transform.position;
+
                 //Deal damage.
-                damageable.TakeDamage(falloffDamage, 1f, gameObject);
+                damageable.TakeDamage(new DamageData() { damage = falloffDamage, stunTime = 1f, other = gameObject, point = point, normal = normal});
             }
         }
 

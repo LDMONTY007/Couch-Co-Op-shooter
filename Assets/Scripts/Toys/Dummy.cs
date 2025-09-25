@@ -13,6 +13,8 @@ public class Dummy : MonoBehaviour, IDamageable
     //terraria uses this number for iframes as do most games.
     public float iFrameTime = 0.67f;
 
+    public GameObject bloodParticlesPrefab;
+
     //private vars
     private Rigidbody rb;
 
@@ -31,7 +33,7 @@ public class Dummy : MonoBehaviour, IDamageable
         
     }
 
-    public void TakeDamage(float d, float stunTime, GameObject other)
+    public void TakeDamage(DamageData damageData)
     {
         //if we're invincible, 
         //then exit this method.
@@ -54,10 +56,15 @@ public class Dummy : MonoBehaviour, IDamageable
         //have the player get bounced away from the damaging object,
         //and then also give them invincibility frames where
         //they do the blinking in and out of existance thing.
-        rb.linearVelocity += (transform.position - other.transform.position).normalized * bounceForce;
+        rb.linearVelocity += (transform.position - damageData.other.transform.position).normalized * bounceForce;
 
         //print out data about the player taking damage.
-        Debug.Log("Dummy Took: ".Color("Orange") + d.ToString().Color("Red") + " from " + other.transform.root.name.Color("Red"));
+        Debug.Log("Dummy Took: ".Color("Orange") + damageData.damage.ToString().Color("Red") + " from " + damageData.other.transform.root.name.Color("Red"));
+
+        //Spawn the particle system here with it's orientation
+        //matching the damageData hit normal at the damageData hit point.
+        Instantiate(bloodParticlesPrefab, damageData.point, Quaternion.LookRotation(damageData.normal));
+        //When the particle system ends it will destroy itself.
     }
 
     bool isLowRes = false;

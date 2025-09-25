@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Spike : MonoBehaviour
@@ -28,7 +29,7 @@ public class Spike : MonoBehaviour
         {
             //make the damageable take damage.
             //and tell it we gave it damage.
-            damageable.TakeDamage(1, 0.3f, gameObject);
+            damageable.TakeDamage(new DamageData() { damage = 1, stunTime = 0.3f, other = gameObject, point = collision.contacts[0].point, normal = collision.contacts[0].normal });
 
             //if we aren't currently changing our color,
             //then change our color to match that we did damage.

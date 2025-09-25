@@ -45,7 +45,7 @@ public class Revolver : SecondaryWeapon
             //if we actually hit a damageable.
             //Also pass the player as the other gameobject rather than this weapon.
             if (damageable != null)
-            damageable.TakeDamage(damage, stunTime, player.gameObject);
+            damageable.TakeDamage(new DamageData() { damage = damage, stunTime = stunTime, other = player.gameObject, point = hitInfo.point, normal = hitInfo.normal });
         }
 
         //Start the cooldown.
