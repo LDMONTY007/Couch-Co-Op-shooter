@@ -10,6 +10,7 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public enum EnemyState
     {
+        Idle,
         Stun,
         Chase,
         Patrol,
@@ -27,6 +28,10 @@ public class Zombie : MonoBehaviour, IDamageable
     public float attackDistance = 3f;
 
     public float patrolRange = 50;
+
+    //The radius to become aggro on a player
+    //when standing idle.
+    public float aggroRadius = 25f;
 
     private NavMeshAgent _agent;
 
@@ -147,7 +152,7 @@ public class Zombie : MonoBehaviour, IDamageable
                 dist = Vector3.Distance(p.transform.position, transform.position);
             }
         }
-        
+
 
         //in the future use some code
         //to store how much damage the last attacker
@@ -156,12 +161,24 @@ public class Zombie : MonoBehaviour, IDamageable
         //to targeting them. 
         //otherwise we should target the nearest player
         //to us.
+        //We also ignore aggro radius with last attacker code.
         if (lastAttacker != null && lastAttacker == closestPlayer)
         {
             return lastAttacker;
         }
 
-        return closestPlayer;
+        //Only return a target player
+        //if they're within the aggro radius for targeting.
+        if (dist < aggroRadius)
+        {
+            return closestPlayer;
+        }
+        else
+        {
+            return null;
+        }
+
+        
     }
 
     
@@ -191,9 +208,6 @@ public class Zombie : MonoBehaviour, IDamageable
         birdScreamingAudioClips = birdClipHolder.clips;*/
 
         _agent = GetComponent<NavMeshAgent>();
-        PlayerController controller = FindFirstObjectByType<PlayerController>();
-        if (controller != null)
-            playerObj = controller.gameObject;
     }
 
     // Update is called once per frame
@@ -207,6 +221,21 @@ public class Zombie : MonoBehaviour, IDamageable
         PlayerController controller = FindTargetPlayer();
         if (controller != null)
             playerObj = controller.gameObject;
+
+        //playerObj will only be null
+        //if that player is dead 
+        //or if this zombie hasn't 
+        //aggroed onto any player yet.
+        //otherwise once a player becomes aggroed
+        //by a zombie the zombie will pursue them
+        //until one of them is dead.
+        if (playerObj == null)
+        {
+            currentState = EnemyState.Idle;
+            //Return so we idle if a player was not
+            //found in our target radius.
+            return;
+        }
 
 
         float distance = Vector3.Distance(transform.position, playerObj.transform.position);
@@ -227,7 +256,9 @@ public class Zombie : MonoBehaviour, IDamageable
             _agent.speed = walkSpeed;
         }
 
-        //Flee
+        
+
+        //Chase
         if (distance > attackDistance/* && ((currentState == EnemyState.Chase && curTimeSinceLastFlee >= timeBetweenFleeChecks) || (currentState != EnemyState.Chase))*/)
         {
 

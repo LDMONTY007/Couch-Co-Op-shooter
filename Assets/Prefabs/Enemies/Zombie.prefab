@@ -60,11 +60,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chaseSpeed: 7
   walkSpeed: 3
-  currentState: 1
+  currentState: 0
   type: 0
   aimIKTransform: {fileID: 8457710901294861326}
   attackDistance: 3
   patrolRange: 50
+  aggroRadius: 15
   playerObj: {fileID: 0}
   animator: {fileID: 8808098863740402614}
   bloodParticlesPrefab: {fileID: 6673894894113231363, guid: 591fa157ce5f5fe4485c8d626eaadeb0, type: 3}
