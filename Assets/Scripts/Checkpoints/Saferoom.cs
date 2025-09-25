@@ -8,6 +8,8 @@ public class Saferoom : MonoBehaviour
 
     public string sceneToLoad;
 
+    public bool isDoorClosed { get; set; }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -23,6 +25,15 @@ public class Saferoom : MonoBehaviour
         
     }
 
+    public void OnDoorStateChanged()
+    {
+        if (isDoorClosed)
+        {
+            HandlePlayerCountReached();
+        }
+    }
+
+    //We only want to save and load into the next scene when the door is closed with all players inside.
     public void HandlePlayerCountReached()
     {
         Debug.Log("HERE 1");
@@ -77,6 +88,7 @@ public class Saferoom : MonoBehaviour
             playersInRoom.Add(player);
         }
 
+        if (isDoorClosed)
         HandlePlayerCountReached();
     }
 

@@ -41,6 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7689056705261175441}
+  - component: {fileID: 4099405501529380414}
   - component: {fileID: 2282042571619143699}
   - component: {fileID: 718520539281047611}
   - component: {fileID: 7478512638738250365}
@@ -68,6 +69,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8978446892334258157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4099405501529380414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305035966195794038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 600de059e7b41fd4f852d3de51fe9fe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6534335035825628053}
+        m_TargetAssemblyTypeName: Door, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2282042571619143699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,17 +376,9 @@ MonoBehaviour:
   m_Mesh: {fileID: 0}
   m_VersionIndex: 5230
   m_IsSelectable: 1
-  m_SelectedFaces: 00000000
-  m_SelectedEdges:
-  - a: 0
-    b: 1
-  - a: 1
-    b: 2
-  - a: 2
-    b: 3
-  - a: 3
-    b: 0
-  m_SelectedVertices: 02000000000000000100000003000000
+  m_SelectedFaces: 
+  m_SelectedEdges: []
+  m_SelectedVertices: 
 --- !u!33 &928608627570259871
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1016,8 +1036,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.5, y: 2.3008845, z: 0.5}
-  m_Center: {x: -2, y: 1.1504422, z: -0.5}
+  m_Size: {x: 1.5, y: 2.7919261, z: 0.5}
+  m_Center: {x: -2, y: 1.3959631, z: -0.5}
 --- !u!114 &6534335035825628053
 MonoBehaviour:
   m_ObjectHideFlags: 0
