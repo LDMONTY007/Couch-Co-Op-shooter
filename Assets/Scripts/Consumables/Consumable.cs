@@ -17,7 +17,7 @@ public class Consumable : Usable
     //called before this gameobject is destroyed.
     public UnityEvent<Usable, int> onBeforeDestroy;
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }

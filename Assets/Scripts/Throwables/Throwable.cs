@@ -19,10 +19,9 @@ public class Throwable : Usable
 
     public Transform launchTransform;
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        Debug.Log(rb);
     }
 
     public override void CancelUse()

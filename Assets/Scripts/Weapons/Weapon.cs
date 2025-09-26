@@ -15,7 +15,7 @@ public class Weapon : Usable
 
     public Animator animator;
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }

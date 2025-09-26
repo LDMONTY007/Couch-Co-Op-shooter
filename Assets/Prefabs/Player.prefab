@@ -169,6 +169,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5258949165271759105}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3358763518841050575
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2032963493039323540}
+  m_Layer: 3
+  m_Name: Unequipped Consumeable Hip Transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2032963493039323540
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3358763518841050575}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.17, y: 0.15, z: 0.02}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1524256605029116192}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!1 &3927645864181684214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5438204788621827309}
+  m_Layer: 3
+  m_Name: Unequipped Throwable Hip Transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5438204788621827309
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927645864181684214}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -0.155, y: 0.15, z: -0.028}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1524256605029116192}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &3930488450097780206
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,6 +474,8 @@ Transform:
   - {fileID: 7798992555046969313}
   - {fileID: 1229503154068695074}
   - {fileID: 6875237764509700596}
+  - {fileID: 2032963493039323540}
+  - {fileID: 5438204788621827309}
   - {fileID: 5258949165271759105}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -617,6 +681,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   lastSelectedSlot: 0
+  curUseable: {fileID: 0}
+  useables:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   knockedCamTransform: {fileID: 7798992555046969313}
   defaultCamTransform: {fileID: 1229503154068695074}
   standingModel: {fileID: 1116208718089067800}
@@ -638,6 +709,8 @@ MonoBehaviour:
   curConsumable: {fileID: 0}
   handTransform: {fileID: 1041062259185607100}
   backTransform: {fileID: 6875237764509700596}
+  unequippedConsumableTransform: {fileID: 2032963493039323540}
+  unequippedThrowableTransform: {fileID: 5438204788621827309}
   throwableLaunchTransform: {fileID: 4587740729993036385}
   uiController: {fileID: 1498720800337398024}
   canMove: 1
@@ -739,7 +812,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6875237764509700596}
   m_Layer: 3
-  m_Name: BackTransform
+  m_Name: Unequipped BackTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

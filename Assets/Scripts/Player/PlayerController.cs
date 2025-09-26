@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -179,6 +180,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public Transform handTransform;
     public Transform backTransform;
+    public Transform unequippedConsumableTransform;
+    public Transform unequippedThrowableTransform;
     public Transform throwableLaunchTransform;
 
     private PlayerInput playerInput;
@@ -569,9 +572,19 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         if (curUseable != null && (curUseable as Component) != null)
         {
             Debug.Log(curUseable.ToString());
+            
+            //weapons and appliables go on the back transform
+            if (curUseable is Weapon || curUseable is Appliable)
             //any weapon not currently held in the players
             //hand is on their back.
             (curUseable as Component).transform.SetParent(backTransform, false);
+            //Consumables go on specific transform on player's hip.
+            else if (curUseable is Consumable)
+                curUseable.transform.SetParent(unequippedConsumableTransform, false);
+            //Throwables go on specific transform on player's hip
+            else if (curUseable is Throwable)
+                curUseable.transform.SetParent(unequippedThrowableTransform, false);
+
             //Set to the unequipped rotation.
             (curUseable as Component).transform.localRotation = Quaternion.Euler(curUseable.rotationWhenUnequipped);
 
@@ -1746,13 +1759,26 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         //Remove the rigidbody.
         Destroy(w.rb);
-        //set the weapons parent transform to be this player.
-        //we switch placement depending on if this item type is the currently selected item.
-        w.transform.SetParent(curSelectedSlot == 0 ? handTransform : backTransform, false);
+
+        // we switch placement depending on if this item type is the currently selected item.
+        //Place it in the hand if it is currently selected
+        //and place it in the unequipped transform if it isn't selected.
+        if (curSelectedSlot == 0)
+        {
+            w.transform.SetParent(handTransform, false);
+
+            w.transform.localRotation = Quaternion.Euler(w.rotationWhenEquipped);
+        }
+        else
+        {
+            w.transform.SetParent(backTransform, false);
+
+            w.transform.localRotation = Quaternion.Euler(w.rotationWhenUnequipped);
+        }
+
         //Set to zero position so the transform is exactly where the hand is.
         w.transform.localPosition = Vector3.zero;
-        //set to no rotation (0, 0, 0);
-        w.transform.localRotation = Quaternion.identity;
+
         //set us to be the parent player.
         w.parentPlayer = this;
         //Update the slot icon for this weapon.
@@ -1798,13 +1824,25 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         //Remove the rigidbody.
         Destroy(w.rb);
-        //set the SecondaryWeapons parent transform to be this player.
-        //we switch placement depending on if this item type is the currently selected item.
-        w.transform.SetParent(curSelectedSlot == 1 ? handTransform : backTransform, false);
+
+        // we switch placement depending on if this item type is the currently selected item.
+        //Place it in the hand if it is currently selected
+        //and place it in the unequipped transform if it isn't selected.
+        if (curSelectedSlot == 1)
+        {
+            w.transform.SetParent(handTransform, false);
+
+            w.transform.localRotation = Quaternion.Euler(w.rotationWhenEquipped);
+        }
+        else
+        {
+            w.transform.SetParent(backTransform, false);
+
+            w.transform.localRotation = Quaternion.Euler(w.rotationWhenUnequipped);
+        }
+
         //Set to zero position so the transform is exactly where the hand is.
         w.transform.localPosition = Vector3.zero;
-        //set to no rotation (0, 0, 0);
-        w.transform.localRotation = Quaternion.identity;
         //set us to be the parent player.
         w.parentPlayer = this;
         //Update the slot icon for this weapon.
@@ -1865,13 +1903,25 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //Remove the rigidbody.
         Destroy(t.rb);
 
-        //set the Throwables parent transform to be this player.
-        //we switch placement depending on if this item type is the currently selected item.
-        t.transform.SetParent(curSelectedSlot == 2 ? handTransform : backTransform, false);
+
+        // we switch placement depending on if this item type is the currently selected item.
+        //Place it in the hand if it is currently selected
+        //and place it in the unequipped transform if it isn't selected.
+        if (curSelectedSlot == 2)
+        {
+            t.transform.SetParent(handTransform, false);
+
+            t.transform.localRotation = Quaternion.Euler(t.rotationWhenEquipped);
+        }
+        else
+        {
+            t.transform.SetParent(unequippedThrowableTransform, false);
+
+            t.transform.localRotation = Quaternion.Euler(t.rotationWhenUnequipped);
+        }
+
         //Set to zero position so the transform is exactly where the hand is.
         t.transform.localPosition = Vector3.zero;
-        //set to no rotation (0, 0, 0);
-        t.transform.localRotation = Quaternion.identity;
         //assign the launch transform.
         t.launchTransform = throwableLaunchTransform;
 
@@ -1924,15 +1974,29 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     {
         DropCurrentAppliable(transform.position, Quaternion.identity);
 
+       
         //Remove the rigidbody.
         Destroy(a.rb);
-        //set the weapons parent transform to be this player.
-        //we switch placement depending on if this item type is the currently selected item.
-        a.transform.SetParent(curSelectedSlot == 3 ? handTransform : backTransform, false);
+
+        // we switch placement depending on if this item type is the currently selected item.
+        //Place it in the hand if it is currently selected
+        //and place it in the unequipped transform if it isn't selected.
+        if (curSelectedSlot == 3)
+        {
+            a.transform.SetParent(handTransform, false);
+
+            a.transform.localRotation = Quaternion.Euler(a.rotationWhenEquipped);
+        }
+        else
+        {
+            a.transform.SetParent(backTransform, false);
+
+            a.transform.localRotation = Quaternion.Euler(a.rotationWhenUnequipped);
+        }
+
+         
         //Set to zero position so the transform is exactly where the hand is.
         a.transform.localPosition = Vector3.zero;
-        //set to no rotation (0, 0, 0);
-        a.transform.localRotation = Quaternion.identity;
         a.parentController = this;
         //Add the onUseableDestroyed listener for the curAppliable
         a.onBeforeDestroy.AddListener(OnUseableDestroyed);
@@ -1993,13 +2057,26 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         //Remove the rigidbody.
         Destroy(c.rb);
-        //set the Consumables parent transform to be this player.
-        //we switch placement depending on if this item type is the currently selected item.
-        c.transform.SetParent(curSelectedSlot == 4 ? handTransform : backTransform, false);
+
+        // we switch placement depending on if this item type is the currently selected item.
+        //Place it in the hand if it is currently selected
+        //and place it in the unequipped transform if it isn't selected.
+        if (curSelectedSlot == 4)
+        {
+            c.transform.SetParent(handTransform, false);
+
+            c.transform.localRotation = Quaternion.Euler(c.rotationWhenEquipped);
+        }
+        else
+        {
+            c.transform.SetParent(unequippedConsumableTransform, false);
+
+            c.transform.localRotation = Quaternion.Euler(c.rotationWhenUnequipped);
+        }
+
         //Set to zero position so the transform is exactly where the hand is.
         c.transform.localPosition = Vector3.zero;
-        //set to no rotation (0, 0, 0);
-        c.transform.localRotation = Quaternion.identity;
+
         //Add the onUseableDestroyed listener for the curConsumeable
         c.onBeforeDestroy.AddListener(OnUseableDestroyed);
         //Set the parent player reference

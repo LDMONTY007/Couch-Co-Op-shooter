@@ -38,9 +38,14 @@ public class Appliable : Usable
         onValueChanged.RemoveAllListeners();
     }
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+    }
+
+    private void Start()
+    {
+        
     }
 
     //Require the didApply bool so that
