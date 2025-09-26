@@ -23,6 +23,10 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 {
+    //Number of frames to wait at the start of a scene
+    //before giving the player control.
+    private int idleStartFrames = 3;
+
     #region Hotbar
 
     [HideInInspector]
@@ -48,9 +52,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             onSlotValueChanged.Invoke(_curSelectedSlot); } }
 
 
-    public IUseable curUseable = null;
+    public Usable curUseable = null;
 
-    public IUseable[] useables = new IUseable[5];
+    public Usable[] useables = new Usable[5];
 
     #endregion
 
@@ -432,14 +436,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         zombieKillCount = p.zombieKillCount;
 
-
+        //Set the curLook to match our set euler angles from our spawn point.
+        Debug.LogWarning(transform.rotation.eulerAngles);
+        curLook = new Vector2(transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.x);
     }
 
     bool didLoad = false;
 
     private void Awake()
     {
-        
+       
 
         playerMask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
 
@@ -453,6 +459,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         slotUpAction = playerInput.actions["SlotUp"];
         slotDownAction = playerInput.actions["SlotDown"];
     }
+
+
 
     public void HandleSlots()
     {
@@ -521,7 +529,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         
     }
 
-    public void OnUseableDestroyed(IUseable useable, int slot)
+    public void OnUseableDestroyed(Usable useable, int slot)
     {
         Debug.Log("DESTROYED");
 
@@ -545,7 +553,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
-    public void SwapCurrentUseable(IUseable useable)
+    public void SwapCurrentUseable(Usable useable)
     {
         //if this useable is null don't finish executing this method.
         //We cast to Component as null check won't work correctly otherwise.
@@ -564,7 +572,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             //any weapon not currently held in the players
             //hand is on their back.
             (curUseable as Component).transform.SetParent(backTransform, false);
+            //Set to the unequipped rotation.
+            (curUseable as Component).transform.localRotation = Quaternion.Euler(curUseable.rotationWhenUnequipped);
 
+            
 
             //if our previous slot was the throwable slot,
             //cancel throwing if we were about to throw,
@@ -575,12 +586,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             }
         }
         //Put the new useable in the player's hand.
-        (useable as Component).transform.SetParent(handTransform, false);
+        useable.transform.SetParent(handTransform, false);
+        useable.transform.localRotation = Quaternion.Euler(useable.rotationWhenEquipped);
         //set current useable.
         curUseable = useable;
     }
 
-    public void SwapCurrentUseableIgnoreLastUseable(IUseable useable)
+    public void SwapCurrentUseableIgnoreLastUseable(Usable useable)
     {
         //if this useable is null don't finish executing this method.
         //We cast to Component as null check won't work correctly otherwise.
@@ -1197,6 +1209,15 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private void Update()
     {
+        //Don't execute
+        //anything until the idle
+        //start frames finish.
+        if (idleStartFrames > 0)
+        {
+            idleStartFrames--;
+            return;
+        }
+
         HandleAnimations();
 
         HandleCameraEffects();
@@ -1677,6 +1698,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         PrimaryWeapon pw = temp.GetComponent<PrimaryWeapon>();
         pw.parentPlayer = this;
+        //set the rotation to match the configured rotation when unequipped
+        temp.transform.localRotation = Quaternion.Euler(pw.rotationWhenUnequipped);
 
         //disable the collider of this item.
         pw.col.enabled = false;
@@ -1698,10 +1721,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         temp.transform.SetParent(backTransform, false);
         //Set to zero position so the transform is exactly where the hand is.
         temp.transform.localPosition = Vector3.zero;
-        //set to no rotation (0, 0, 0);
-        temp.transform.localRotation = Quaternion.identity;
+        
         SecondaryWeapon sw = temp.GetComponent<SecondaryWeapon>();
         sw.parentPlayer = this;
+        //set the rotation to match the configured rotation when unequipped
+        temp.transform.localRotation = Quaternion.Euler(sw.rotationWhenUnequipped);
 
         //disable the collider of this item.
         sw.col.enabled = false;

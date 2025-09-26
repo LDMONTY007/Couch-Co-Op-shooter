@@ -2,8 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Appliable : MonoBehaviour, IUseable
+public class Appliable : Usable
 {
+
     public PrefabData prefabData;
 
     public float totalTimeToApply = 5f;
@@ -12,7 +13,7 @@ public class Appliable : MonoBehaviour, IUseable
     public UnityEvent<float> onValueChanged;
 
     //called before this gameobject is destroyed.
-    public UnityEvent<IUseable, int> onBeforeDestroy;
+    public UnityEvent<Usable, int> onBeforeDestroy;
     
     private float _curApplyTime = 0f;
     //call onValueChanged when setting.
@@ -126,17 +127,17 @@ public class Appliable : MonoBehaviour, IUseable
         onBeforeDestroy?.Invoke(this, 3);
     }
 
-    public void Use(float useSpeed = 1f)
+    public override void Use(float useSpeed = 1f)
     {
         StartApply(useSpeed);
     }
 
-    public void CancelUse()
+    public override void CancelUse()
     {
         CancelApply();
     }
 
-    public void ReleaseUse()
+    public override void ReleaseUse()
     {
         throw new System.NotImplementedException();
     }

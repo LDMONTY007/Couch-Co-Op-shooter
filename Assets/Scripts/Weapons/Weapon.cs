@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class Weapon : MonoBehaviour, IUseable
+public class Weapon : Usable
 {
+
     public PrefabData prefabData;
 
     public Rigidbody rb;
@@ -23,16 +24,16 @@ public class Weapon : MonoBehaviour, IUseable
     {
 
     }
-    public virtual void CancelUse()
+    public override void CancelUse()
     {
 
     }
-    public virtual void Use(float useSpeed = 1f)
+    public override void Use(float useSpeed = 1f)
     {
         
     }
 
-    public void ReleaseUse()
+    public override void ReleaseUse()
     {
         
     }

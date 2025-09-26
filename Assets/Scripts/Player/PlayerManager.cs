@@ -35,6 +35,8 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
     //means they will respawn in the next level.
     public RespawnRoom respawnRoom;
 
+    public Transform[] playerSpawnPoints = new Transform[4];
+
     private void Awake()
     {
         instance = this;
@@ -124,11 +126,11 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
 
             Debug.LogWarning("SPAWN");
             //Spawn the player.
-            SpawnPlayer(gameData.playerInfos[i], gameData);
+            SpawnPlayer(gameData.playerInfos[i], gameData, playerSpawnPoints[i]);
         }
     }
 
-    public void SpawnPlayer(PlayerInfo p, GameData gameData)
+    public void SpawnPlayer(PlayerInfo p, GameData gameData, Transform spawnTransform)
     {
         //Create the player input object.
         //PlayerInput pi = PlayerInput.Instantiate(playerPrefab, p.playerIndex, p.controlScheme, p.splitScreenIndex);
@@ -138,6 +140,9 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
 
         //Get player controller.
         PlayerController controller = pi.GetComponent<PlayerController>();
+
+        //set the player to be at the spawn transform position and rotation
+        controller.transform.SetPositionAndRotation(spawnTransform.position, spawnTransform.rotation);
 
         //Call init on the player.
         controller.init(Guid.Parse(p.guid), p.playerIndex, materials[p.playerIndex], p);
@@ -149,6 +154,8 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
         //it has been loaded and will instantiate
         //the weapon in it's game data.
         controller.LoadDataManually(gameData);
+
+       
     }
 
     public void SpawnPlayerInRespawnRoom(PlayerInfo p, GameData gameData)

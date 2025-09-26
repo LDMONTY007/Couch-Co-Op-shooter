@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Throwable : MonoBehaviour, IUseable
+public class Throwable : Usable
 {
     public PrefabData prefabData;
 
@@ -25,19 +25,19 @@ public class Throwable : MonoBehaviour, IUseable
         Debug.Log(rb);
     }
 
-    public void CancelUse()
+    public override void CancelUse()
     {
         //Don't throw the throwable if it's canceled.
         readyToThrow = false;
     }
 
-    public void Use(float useSpeed = 1f)
+    public override void Use(float useSpeed = 1f)
     {
         Debug.Log("HERE");
         readyToThrow = true;
     }
 
-    public void ReleaseUse()
+    public override void ReleaseUse()
     {
         //TODO:
         //Throw the throwable.

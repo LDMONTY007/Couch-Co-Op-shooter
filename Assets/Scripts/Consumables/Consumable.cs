@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Consumable : MonoBehaviour, IUseable
+public class Consumable : Usable
 {
+
     public PrefabData prefabData;
 
     public Rigidbody rb;
@@ -14,19 +15,19 @@ public class Consumable : MonoBehaviour, IUseable
     public PlayerController parentPlayer;
 
     //called before this gameobject is destroyed.
-    public UnityEvent<IUseable, int> onBeforeDestroy;
+    public UnityEvent<Usable, int> onBeforeDestroy;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
 
-    public void CancelUse()
+    public override void CancelUse()
     {
         throw new System.NotImplementedException();
     }
 
-    public void Use(float useSpeed = 1f)
+    public override void Use(float useSpeed = 1f)
     {
         Consume();
     }
@@ -42,7 +43,7 @@ public class Consumable : MonoBehaviour, IUseable
         onBeforeDestroy?.Invoke(this, 4);
     }
 
-    public void ReleaseUse()
+    public override void ReleaseUse()
     {
         throw new System.NotImplementedException();
     }
