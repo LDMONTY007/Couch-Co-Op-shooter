@@ -3,12 +3,13 @@ using UnityEngine;
 //I didn't come up with this,
 //I learned it from here: https://www.youtube.com/watch?v=tI3USKIbnh0
 //Same with the shader it uses.
-public class Wobble : MonoBehaviour
+public class GarlicWobble : MonoBehaviour
 {
     public float wobbleSpeed = 1f;
     public float recoveryFactor = 1f;
     public float maxWobble = 0.03f;
-    
+
+    public Transform garlicTransform;
 
     Vector3 wobble = Vector3.zero;
 
@@ -25,6 +26,7 @@ public class Wobble : MonoBehaviour
     float time = 0.5f;
 
     public Renderer liquidRenderer;
+    public Renderer garlicRenderer;
 
     //To get angular velocity I referenced this to
     //make sure I was doing it right:
@@ -36,7 +38,7 @@ public class Wobble : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -44,8 +46,8 @@ public class Wobble : MonoBehaviour
     {
         time += Time.deltaTime;
 
-        
-       
+
+
 
         HandleWobble();
 
@@ -75,9 +77,29 @@ public class Wobble : MonoBehaviour
         liquidRenderer.material.SetFloat("_WobbleX", wobble.x);
         liquidRenderer.material.SetFloat("_WobbleZ", wobble.z);
 
+        garlicRenderer.material.SetFloat("_WobbleX", wobble.x);
+        garlicRenderer.material.SetFloat("_WobbleZ", wobble.z);
+
+        //Always have the garlic transform rotated the same way relative
+        //to the world so it looks like it's floating.
+        //TODO: Use some wobble to affect how quickly it rotates.
+        //Add the x and z wobble
+        //we offset on the right axis by 90 degrees before adding the z wobble.
+        //baseline "upright" orientation relative to the parent
+        Quaternion baseRotation = Quaternion.AngleAxis(-90, transform.right);
+
+        //wobble relative to the parent's right/forward axes
+        Quaternion wobbleRotation =
+            Quaternion.AngleAxis(-wobble.x, transform.right) *
+            Quaternion.AngleAxis(-wobble.z, transform.forward);
+
+        //combine (order matters: wobble after baseline)
+        garlicTransform.rotation = wobbleRotation * baseRotation;
+
+
         //Calculate velocity
         angularVelocity = transform.rotation.eulerAngles - lastRotation;
-        velocity = transform.position - lastPos / Time.deltaTime;
+        velocity = (transform.position - lastPos) / Time.deltaTime;
 
         //add clamped velocity to wobble.
         wobbleToAddX += Mathf.Clamp((velocity.z + (angularVelocity.x * 0.2f)) * maxWobble, -maxWobble, maxWobble);
