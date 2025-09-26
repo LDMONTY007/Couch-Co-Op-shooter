@@ -83,19 +83,7 @@ public class GarlicWobble : MonoBehaviour
         //Always have the garlic transform rotated the same way relative
         //to the world so it looks like it's floating.
         //TODO: Use some wobble to affect how quickly it rotates.
-        //Add the x and z wobble
-        //we offset on the right axis by 90 degrees before adding the z wobble.
-        //baseline "upright" orientation relative to the parent
-        Quaternion baseRotation = Quaternion.AngleAxis(-90, transform.right);
-
-        //wobble relative to the parent's right/forward axes
-        Quaternion wobbleRotation =
-            Quaternion.AngleAxis(-wobble.x, transform.right) *
-            Quaternion.AngleAxis(-wobble.z, transform.forward);
-
-        //combine (order matters: wobble after baseline)
-        garlicTransform.rotation = wobbleRotation * baseRotation;
-
+        garlicTransform.localRotation = Quaternion.Euler(-wobble.x, wobble.z, 0f);
 
         //Calculate velocity
         angularVelocity = transform.rotation.eulerAngles - lastRotation;
