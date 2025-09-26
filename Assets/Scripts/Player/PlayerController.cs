@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -387,7 +386,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public float groundCheckScale = 0.8f;
 
-    int playerMask;
+
+    public int playerMask;
 
     //coroutine references for ensuring no duplicates
     Coroutine iFramesRoutine = null;
