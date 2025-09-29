@@ -1,7 +1,15 @@
 using UnityEngine;
+using System.Collections.Generic;
+
+
 
 public class ItemSpawner : MonoBehaviour
 {
+    public Color rarityColor = Color.red;
+
+    [Range(0f, 1f)]
+    public float baseWeight = 1f; //1f = common, 0.1f = rare
+
     Renderer r;
 
     ItemSpawnDirector spawnDirector;
@@ -17,7 +25,7 @@ public class ItemSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -28,7 +36,7 @@ public class ItemSpawner : MonoBehaviour
 
     public void Spawn()
     {
-        r.material.color = Color.red;
+        r.material.color = rarityColor;
     }
 
     public void Despawn()

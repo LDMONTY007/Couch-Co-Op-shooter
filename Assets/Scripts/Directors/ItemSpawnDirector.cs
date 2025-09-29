@@ -37,6 +37,10 @@ public class ItemSpawnDirector : MonoBehaviour
     //At 0f density:
     public float maxSpacing = 50f;
 
+    public float rarityBias = 1f;
+    // >1 makes rare stuff more common, <1 makes common stuff even more common
+
+
     float lastDensity = 0f;
 
     private List<ItemSpawner> spawners = new List<ItemSpawner>();
@@ -70,6 +74,8 @@ public class ItemSpawnDirector : MonoBehaviour
     //means more possible items. 
     //so we run it once for one player and then run it again for a diff player
     //so it should fill in every possible spot that can fit at our current density.
+    //After testing it, it looks like maybe we shouldn't run this more than once
+    //as running it once is pretty balanced.
     public void SpawnItems()
     {
         float minDistance = Mathf.Lerp(maxSpacing, minSpacing, density);
@@ -77,8 +83,21 @@ public class ItemSpawnDirector : MonoBehaviour
         List<ItemSpawner> selectedSpawners = new List<ItemSpawner>();
         List<ItemSpawner> disabledSpawners = new List<ItemSpawner>();
 
-        foreach (ItemSpawner spawner in spawners.OrderBy(x => Random.value)) // shuffle spawners randomly.
+        foreach (ItemSpawner spawner in spawners.OrderBy(x => Random.value)) //shuffle spawners randomly.
         {
+            //Do a weighted roll using the adjusted weight based off the spawner's individual weight.
+            float adjustedWeight = Mathf.Pow(spawner.baseWeight, 1f / rarityBias);
+            float roll = Random.value;
+
+            //if the roll is higher than the adjusted weight, 
+            //then skip spawning this item.
+            if (roll > adjustedWeight)
+                continue; // skip this spawner
+
+            //We want to do the roll evaluation first before
+            //we even do the density evaluation.
+
+
             bool tooClose = false;
 
             foreach (ItemSpawner s in selectedSpawners)
