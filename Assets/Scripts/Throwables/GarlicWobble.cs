@@ -44,6 +44,13 @@ public class GarlicWobble : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Don't do anything if time scale is zero
+        //because it'll break our calculations.
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
+
         time += Time.deltaTime;
 
 
@@ -62,6 +69,15 @@ public class GarlicWobble : MonoBehaviour
 
     public void HandleWobble()
     {
+        //this will be 0 after we pause,
+        //make sure to return here so that
+        //we don't end up with NaNs.
+        if (Time.deltaTime == 0f)
+        {
+            return;
+        }
+
+
         //add angular velocity to wobble.
         //wobble += angularVelocity;
 

@@ -467,6 +467,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void HandleSlots()
     {
+        //don't execute this code when paused.
+        if (GameManager.Instance.isPaused)
+        {
+            return;
+        }
+
         if (slotUpAction.GetButtonDown())
         {
             curSelectedSlot++;
@@ -684,6 +690,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private void JumpUpdateLogic()
     {
+        //don't execute this code when paused.
+        if (GameManager.Instance.isPaused)
+        {
+            return;
+        }
+
         doJump |= (jumpAction.WasPressedThisFrame() && jumpCount > 0 && !jumping && !stunned && canJump);
 
         if (isGrounded)
@@ -784,9 +796,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private void HandleLook()
     {
-       
+        //don't execute this code when paused.
+        if (GameManager.Instance.isPaused)
+        {
+            return;
+        }
 
-            var mouseInput = lookAction.ReadValue<Vector2>();
+        var mouseInput = lookAction.ReadValue<Vector2>();
 
         //apply mouse input to our current look vector using deltaTime and look speed.
         curLook.y -= mouseInput.y * GetCorrespondingLookSensitivity(playerInput.GetDevice<InputDevice>()) * Time.deltaTime;
@@ -804,6 +820,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void HandleAttack()
     {
+        //don't execute this code when paused.
+        if (GameManager.Instance.isPaused)
+        {
+            return;
+        }
+
         if (attackAction.GetButtonDown())
         {
             if (curUseable != null)
@@ -1135,6 +1157,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void HandleInteract()
     {
+        //don't execute this code when paused.
+        if (GameManager.Instance.isPaused)
+        {
+            return;
+        }
+
+
         //call when the interactAction is pressed down this frame (Not continuously held)
         if (interactAction.GetButtonDown())
         {

@@ -12,7 +12,7 @@ public class PlayerUIController : MonoBehaviour
     public PlayerInput playerInput;
 
     private bool _paused;
-    public bool paused { get { return _paused; } set { _paused = value; OnPauseStateSwitched(); } }
+    public bool paused { get { return _paused; } set { _paused = value; GameManager.Instance.isPaused = value; OnPauseStateSwitched(); } }
 
     public GameObject pauseUI;
 
@@ -142,6 +142,7 @@ public class PlayerUIController : MonoBehaviour
     public void OnPauseButtonPressed()
     {
         paused = true;
+        Time.timeScale = 0f;
         pauseUI.SetActive(paused);
         //Switch to the UI controls.
         playerInput.SwitchCurrentActionMap("UI");
@@ -150,6 +151,7 @@ public class PlayerUIController : MonoBehaviour
     public void OnResumeButtonPressed()
     {
         paused = false;
+        Time.timeScale = 1f;
         pauseUI.SetActive(paused);
         //Switch the current control scheme back to the normal game controls.
         playerInput.SwitchCurrentActionMap("Player");

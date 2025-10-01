@@ -62,6 +62,9 @@ public class GameManager : IDataPersistence
     public float AudioSlider = 0.2f;
     public AudioMixer audioMasterMixer;
 
+    //If the game is currently paused
+    public bool isPaused = false;
+
 
     public void LoadData(GameData gameData)
     {
