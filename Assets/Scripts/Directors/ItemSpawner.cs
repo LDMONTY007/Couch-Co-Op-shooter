@@ -12,16 +12,20 @@ public class WeightedReference<T> where T : UnityEngine.Object
 
 public class ItemSpawner : MonoBehaviour
 {
-    public List<WeightedReference<GameObject>> weightedItems = new List<WeightedReference<GameObject>>();
+    public Transform spawnPoint;
 
-    Renderer r;
+    public List<WeightedReference<GameObject>> weightedItems = new List<WeightedReference<GameObject>>();
 
     ItemSpawnDirector spawnDirector;
 
+    Color curColor = Color.white;
+
+    GameObject curSpawnedItem = null;
+
+    
+
     private void Awake()
     {
-        r = GetComponent<Renderer>();
-        r.material.color = Color.blue;
         spawnDirector = FindAnyObjectByType<ItemSpawnDirector>();
         spawnDirector.RegisterSpawner(this);
     }
@@ -35,13 +39,19 @@ public class ItemSpawner : MonoBehaviour
         //create the object
         if (prefab != null)
         {
-            Instantiate(prefab, transform.position, Quaternion.identity);
+            curSpawnedItem = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+            if (curSpawnedItem.TryGetComponent<Rigidbody>(out Rigidbody rb))
+            { 
+                //Freeze the rigidbody so it doesn't fall.
+                rb.isKinematic = true;
+            }
+
         }
 
 
         if (weightedReference != null)
         {
-            r.material.color = weightedReference.rarityColor; // debug
+           curColor = weightedReference.rarityColor; // debug
             
         }
         else
@@ -53,7 +63,8 @@ public class ItemSpawner : MonoBehaviour
 
     public void Despawn()
     {
-        r.material.color = Color.white;
+        curColor = Color.white;
+        Destroy(curSpawnedItem);
     }
 
     //borrowed this from a previous project.
@@ -89,5 +100,18 @@ public class ItemSpawner : MonoBehaviour
 
         // Fallback: due to float imprecision, return last
         return weightedItems[weightedItems.Count - 1];
+    }
+
+    private void OnDrawGizmos()
+    {
+        //Draw the spawn area for the spawner
+        //usiong the current rarity color.
+        Color temp = Gizmos.color;
+        Gizmos.color = curColor;
+        Gizmos.DrawCube(transform.position, new Vector3(0.5f, 0.1f, 0.5f));
+        //Draw where the spawn point is.
+        if (spawnPoint != null)
+        Gizmos.DrawWireSphere(spawnPoint.position, 0.2f);
+        Gizmos.color = temp;
     }
 }
