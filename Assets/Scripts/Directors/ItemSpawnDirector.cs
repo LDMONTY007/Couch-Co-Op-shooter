@@ -85,19 +85,6 @@ public class ItemSpawnDirector : MonoBehaviour
 
         foreach (ItemSpawner spawner in spawners.OrderBy(x => Random.value)) //shuffle spawners randomly.
         {
-            //Do a weighted roll using the adjusted weight based off the spawner's individual weight.
-            float adjustedWeight = Mathf.Pow(spawner.baseWeight, 1f / rarityBias);
-            float roll = Random.value;
-
-            //if the roll is higher than the adjusted weight, 
-            //then skip spawning this item.
-            if (roll > adjustedWeight)
-                continue; // skip this spawner
-
-            //We want to do the roll evaluation first before
-            //we even do the density evaluation.
-
-
             bool tooClose = false;
 
             foreach (ItemSpawner s in selectedSpawners)
@@ -122,7 +109,7 @@ public class ItemSpawnDirector : MonoBehaviour
 
         foreach (var spawner in selectedSpawners)
         {
-            spawner.Spawn();
+            spawner.Spawn(rarityBias);
         }
 
         foreach (var spawner in disabledSpawners)

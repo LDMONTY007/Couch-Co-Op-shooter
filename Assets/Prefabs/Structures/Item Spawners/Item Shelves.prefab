@@ -47,8 +47,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666f7926d2fac9743a8db9f43784ea07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarityColor: {r: 0, g: 1, b: 0.03500533, a: 1}
-  baseWeight: 0.5
+  weightedItems:
+  - reference: {fileID: 0}
+    baseWeight: 1
+    rarityColor: {r: 1, g: 0, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.5
+    rarityColor: {r: 0.03587365, g: 1, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.1
+    rarityColor: {r: 0, g: 0.86182594, b: 1, a: 1}
 --- !u!33 &2301692633704100882
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -170,8 +178,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666f7926d2fac9743a8db9f43784ea07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarityColor: {r: 1, g: 0, b: 0, a: 1}
-  baseWeight: 1
+  weightedItems:
+  - reference: {fileID: 0}
+    baseWeight: 1
+    rarityColor: {r: 1, g: 0, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.5
+    rarityColor: {r: 0.03587365, g: 1, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.1
+    rarityColor: {r: 0, g: 0.86182594, b: 1, a: 1}
 --- !u!33 &4804384989199521751
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -293,8 +309,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666f7926d2fac9743a8db9f43784ea07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarityColor: {r: 0.86820745, g: 1, b: 0, a: 1}
-  baseWeight: 0.1
+  weightedItems:
+  - reference: {fileID: 0}
+    baseWeight: 1
+    rarityColor: {r: 1, g: 0, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.5
+    rarityColor: {r: 0.03587365, g: 1, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.1
+    rarityColor: {r: 0, g: 0.86182594, b: 1, a: 1}
 --- !u!33 &3618368979924202155
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -416,8 +440,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666f7926d2fac9743a8db9f43784ea07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarityColor: {r: 1, g: 0, b: 0, a: 1}
-  baseWeight: 1
+  weightedItems:
+  - reference: {fileID: 0}
+    baseWeight: 1
+    rarityColor: {r: 1, g: 0, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.5
+    rarityColor: {r: 0.03587365, g: 1, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.1
+    rarityColor: {r: 0, g: 0.86182594, b: 1, a: 1}
 --- !u!33 &7443902843388104717
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -576,8 +608,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666f7926d2fac9743a8db9f43784ea07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarityColor: {r: 1, g: 0, b: 0, a: 1}
-  baseWeight: 1
+  weightedItems:
+  - reference: {fileID: 0}
+    baseWeight: 1
+    rarityColor: {r: 1, g: 0, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.5
+    rarityColor: {r: 0.03587365, g: 1, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.1
+    rarityColor: {r: 0, g: 0.86182594, b: 1, a: 1}
 --- !u!33 &3701654374492291090
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -699,8 +739,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666f7926d2fac9743a8db9f43784ea07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarityColor: {r: 1, g: 0, b: 0, a: 1}
-  baseWeight: 1
+  weightedItems:
+  - reference: {fileID: 0}
+    baseWeight: 1
+    rarityColor: {r: 1, g: 0, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.5
+    rarityColor: {r: 0.03587365, g: 1, b: 0, a: 1}
+  - reference: {fileID: 0}
+    baseWeight: 0.1
+    rarityColor: {r: 0, g: 0.86182594, b: 1, a: 1}
 --- !u!33 &134508200976897532
 MeshFilter:
   m_ObjectHideFlags: 0
