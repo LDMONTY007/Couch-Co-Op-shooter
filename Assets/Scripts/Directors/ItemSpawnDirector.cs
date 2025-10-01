@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI.Table;
 
@@ -44,6 +45,15 @@ public class ItemSpawnDirector : MonoBehaviour
     float lastDensity = 0f;
 
     private List<ItemSpawner> spawners = new List<ItemSpawner>();
+
+    private void OnValidate()
+    {
+        //only when the game is playing call this.
+        if (Application.isPlaying)
+        //whenever the editor has values changed,
+        //try to spawn the items again
+        SpawnItems();
+    }
 
     private void Start()
     {
