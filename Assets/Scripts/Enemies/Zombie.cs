@@ -116,6 +116,10 @@ public class Zombie : MonoBehaviour, IDamageable
             //Increment the last attacker's 
             //zombie kill count.
             lastAttacker.zombieKillCount++;
+            //Tell the player they recieved a score from
+            //this object's position so we spawn the score popping up
+            //on screen.
+            lastAttacker.OnReceiveScore(transform.position);
         }
 
         //TODO: Code dying.
@@ -556,7 +560,8 @@ public class Zombie : MonoBehaviour, IDamageable
         currentState = EnemyState.Stun;
         stunned = true;
         
-        if (_agent.isActiveAndEnabled)
+        //make sure the agent is on a nav mesh and enabled.
+        if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
         //Stop the agent's movement.
         _agent.isStopped = true;
 

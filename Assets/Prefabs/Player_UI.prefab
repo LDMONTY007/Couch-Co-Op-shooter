@@ -2311,6 +2311,8 @@ MonoBehaviour:
   playerObject: {fileID: 0}
   playerController: {fileID: 0}
   playerInput: {fileID: 0}
+  canvasRect: {fileID: 6349497895450846274}
+  scorePrefab: {fileID: 4139630796802983019, guid: f2b638ca54da4d140aa71c1ea2dbdecf, type: 3}
   pauseUI: {fileID: 3325325605095600927}
   healthBarSlider: {fileID: 6199408077917269226}
   degradingHealthBarSlider: {fileID: 6667949254055918315}

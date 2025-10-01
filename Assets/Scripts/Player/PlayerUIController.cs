@@ -10,6 +10,8 @@ public class PlayerUIController : MonoBehaviour
     public GameObject playerObject;
     public PlayerController playerController;
     public PlayerInput playerInput;
+    public RectTransform canvasRect;
+    public GameObject scorePrefab;
 
     private bool _paused;
     public bool paused { get { return _paused; } set { _paused = value; GameManager.Instance.isPaused = value; OnPauseStateSwitched(); } }
@@ -264,5 +266,20 @@ public class PlayerUIController : MonoBehaviour
         curSlotSwitchTime = 0f;
 
         slotSwitchCoroutine = null;
+    }
+
+    public void CreateScorePopup(Vector3 worldPos)
+    {
+        Vector3 screenPos = playerController.cam.WorldToScreenPoint(worldPos);
+        Vector2 canvasPos = Vector2.zero;
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, playerController.cam, out canvasPos))
+        {
+            Debug.LogError("SPAWNING SCORE");
+            //Spawn the score.
+            GameObject temp = Instantiate(scorePrefab, canvasRect);
+
+            RectTransform scoreRect = temp.GetComponent<RectTransform>();
+            scoreRect.anchoredPosition = canvasPos;
+        }
     }
 }

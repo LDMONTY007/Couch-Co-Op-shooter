@@ -54,6 +54,9 @@ public class Throwable : Usable
             {
                 rb = gameObject.AddComponent<Rigidbody>();
             }
+            //enable the collider.
+            col.enabled = true;
+            
             //Launch the throwable with an impulse force
             //impulse means instant change in velocity.
             rb.AddForce(launchTransform.forward.normalized * 5f, ForceMode.Impulse);

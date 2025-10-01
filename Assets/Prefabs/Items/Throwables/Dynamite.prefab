@@ -154,6 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f35a1f89208324695b4a2fba12a32a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationWhenEquipped: {x: 0, y: 0, z: 0}
+  rotationWhenUnequipped: {x: 0, y: 0, z: 0}
   prefabData: {fileID: 11400000, guid: cd97f7bfdcdeabe43a99725d502166ee, type: 2}
   rb: {fileID: 0}
   col: {fileID: 853851604367342769}

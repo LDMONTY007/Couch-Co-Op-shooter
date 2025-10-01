@@ -2357,4 +2357,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     {
         throw new NotImplementedException();
     }
+
+    public void OnReceiveScore(Vector3 worldPos)
+    {
+        uiController.CreateScorePopup(worldPos);
+    }
 }
