@@ -12,6 +12,7 @@ public class PlayerUIController : MonoBehaviour
     public PlayerInput playerInput;
     public RectTransform canvasRect;
     public GameObject scorePrefab;
+    public RectTransform scoreTarget;
 
     private bool _paused;
     public bool paused { get { return _paused; } set { _paused = value; GameManager.Instance.isPaused = value; OnPauseStateSwitched(); } }
@@ -274,12 +275,21 @@ public class PlayerUIController : MonoBehaviour
         Vector2 canvasPos = Vector2.zero;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, playerController.cam, out canvasPos))
         {
-            Debug.LogError("SPAWNING SCORE");
+            Debug.Log("Spawning score at " + canvasPos);
             //Spawn the score.
             GameObject temp = Instantiate(scorePrefab, canvasRect);
 
             RectTransform scoreRect = temp.GetComponent<RectTransform>();
             scoreRect.anchoredPosition = canvasPos;
+
+            ScoreUIController scoreController = temp.GetComponent<ScoreUIController>();
+
+            //assign the score target.
+            scoreController.target = scoreTarget;
+
+            scoreController.worldStartPos = worldPos;
+            scoreController.cam = playerController.cam;
+            scoreController.canvasRect = canvasRect;
         }
     }
 }
