@@ -119,7 +119,7 @@ public class Zombie : MonoBehaviour, IDamageable
             //Tell the player they recieved a score from
             //this object's position so we spawn the score popping up
             //on screen.
-            lastAttacker.OnReceiveScore(transform.position);
+            lastAttacker.OnReceiveScore(transform.position, 50);
         }
 
         //TODO: Code dying.

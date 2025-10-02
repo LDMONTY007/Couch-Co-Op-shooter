@@ -13,6 +13,7 @@ public class PlayerUIController : MonoBehaviour
     public RectTransform canvasRect;
     public GameObject scorePrefab;
     public RectTransform scoreTarget;
+    public ScoreUIController scoreUIController;
 
     private bool _paused;
     public bool paused { get { return _paused; } set { _paused = value; GameManager.Instance.isPaused = value; OnPauseStateSwitched(); } }
@@ -269,7 +270,7 @@ public class PlayerUIController : MonoBehaviour
         slotSwitchCoroutine = null;
     }
 
-    public void CreateScorePopup(Vector3 worldPos)
+    public void CreateScorePopup(Vector3 worldPos, int score)
     {
         Vector3 screenPos = playerController.cam.WorldToScreenPoint(worldPos);
         Vector2 canvasPos = Vector2.zero;
@@ -282,14 +283,17 @@ public class PlayerUIController : MonoBehaviour
             RectTransform scoreRect = temp.GetComponent<RectTransform>();
             scoreRect.anchoredPosition = canvasPos;
 
-            ScoreUIController scoreController = temp.GetComponent<ScoreUIController>();
+            ScoreUIEntity scoreEntity = temp.GetComponent<ScoreUIEntity>();
 
+            //Set the score controller score.
+            scoreEntity.score = score;
             //assign the score target.
-            scoreController.target = scoreTarget;
-
-            scoreController.worldStartPos = worldPos;
-            scoreController.cam = playerController.cam;
-            scoreController.canvasRect = canvasRect;
+            scoreEntity.target = scoreTarget;
+            //Assign the score UI controller.
+            scoreEntity.scoreUIController = scoreUIController;
+            scoreEntity.worldStartPos = worldPos;
+            scoreEntity.cam = playerController.cam;
+            scoreEntity.canvasRect = canvasRect;
         }
     }
 }

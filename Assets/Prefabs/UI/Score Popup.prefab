@@ -50,7 +50,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8291a5bb6640024bb0d12c97bfcf20d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreUIController: {fileID: 0}
+  scoreText: {fileID: 2903898587496368124}
+  score: 0
   target: {fileID: 0}
+  worldStartPos: {x: 0, y: 0, z: 0}
+  cam: {fileID: 0}
+  canvasRect: {fileID: 0}
+  worldRefPoint: {fileID: 0}
+  worldTarget: {fileID: 0}
+  maxSpeed: 20
+  rotationSpeed: 5
+  radius: 5
+  timeToTarget: 0.25
 --- !u!222 &4231141718879837731
 CanvasRenderer:
   m_ObjectHideFlags: 0
