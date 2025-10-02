@@ -9,10 +9,13 @@ public class ScoreUIController : MonoBehaviour
     private int _score = 0;
     public int score { get { return _score; } set { _score = value; scoreText.text = value.ToString(); } }
 
+    Color neonCyan { get { return LDUtil.GetHexColor("#5fffe4"); } }
+    Color neonLime { get { return LDUtil.GetHexColor("#a6fd29"); } }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        scoreText.color = neonCyan;
     }
 
     // Update is called once per frame
@@ -52,11 +55,13 @@ public class ScoreUIController : MonoBehaviour
             {
                 scoreText.fontSize = Mathf.LerpUnclamped(startFontSize, MidFontSize, LDUtil.EaseOutBack(curTime / totalTime));
                 scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, Mathf.LerpUnclamped(startRotation, endRotation, LDUtil.EaseOutBack(curTime / totalTime)));
+                scoreText.color = Color.Lerp(neonCyan, neonLime, curTime / totalTime);
             }
             else
             {
                 scoreText.fontSize = Mathf.LerpUnclamped(MidFontSize, startFontSize, LDUtil.EaseOutBack(curTime / totalTime));
                 scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, Mathf.LerpUnclamped(endRotation, startRotation, LDUtil.EaseOutBack(curTime / totalTime)));
+                scoreText.color = Color.Lerp(neonLime, neonCyan, curTime / totalTime);
             }
 
             
@@ -84,5 +89,7 @@ public class ScoreUIController : MonoBehaviour
         scoreText.fontSize = startFontSize;
         //set back to start rotation.
         scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, startRotation);
+        //set back to default color.
+        scoreText.color = neonCyan;
     }
 }

@@ -203,4 +203,10 @@ public class LDUtil : MonoBehaviour
 
         return 1 + c3* Mathf.Pow(x - 1, 3) + c1* Mathf.Pow(x - 1, 2);
     }
+
+    public static Color GetHexColor(string s)
+    {
+        ColorUtility.TryParseHtmlString(s, out var color);
+        return color;
+    }
 }
