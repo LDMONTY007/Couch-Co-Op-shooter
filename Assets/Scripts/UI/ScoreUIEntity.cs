@@ -5,6 +5,10 @@ using UnityEngine;
 public class ScoreUIEntity
     : MonoBehaviour
 {
+    Color neonCyan { get { return LDUtil.GetHexColor("#5fffe4"); } }
+    Color neonLime { get { return LDUtil.GetHexColor("#a6fd29"); } }
+    Color neonMagenta { get { return LDUtil.GetHexColor("#ff1493"); } }
+
     public ScoreUIController scoreUIController;
     public TMP_Text scoreText;
     public int score = 0;
@@ -21,6 +25,22 @@ public class ScoreUIEntity
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //Select a random color for this spawned score entity.
+        int randColor = Random.Range(0, 3);
+
+        switch (randColor)
+        {
+            case 0:
+                scoreText.color = neonCyan;
+                break;
+            case 1:
+                scoreText.color = neonLime;
+                break;
+            case 2:
+                scoreText.color = neonMagenta;
+                break;
+        }
+
         //Set the score text value.
         scoreText.text = score.ToString();
         rect = GetComponent<RectTransform>();
