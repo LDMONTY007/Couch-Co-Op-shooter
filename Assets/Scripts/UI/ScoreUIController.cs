@@ -25,16 +25,19 @@ public class ScoreUIController : MonoBehaviour
     {
         score += s;
 
-        StartCoroutine(scaleCoroutine());
+        StartCoroutine(AddScoreAnimation());
     }
 
-    public IEnumerator scaleCoroutine()
+    public IEnumerator AddScoreAnimation()
     {
         float totalTime = 0.15f;
         float curTime = 0f;
 
         float startFontSize = scoreText.fontSize;
         float MidFontSize = scoreText.fontSize + 16;
+
+        float startRotation = 0f;
+        float endRotation = -45f;
 
         bool decreasing = false;
         bool sentinel = true;
@@ -43,10 +46,20 @@ public class ScoreUIController : MonoBehaviour
         {
             curTime += Time.deltaTime;
 
+            //Scale up and then down
+            //Rotate up and then down.
             if (!decreasing)
-                scoreText.fontSize = Mathf.SmoothStep(startFontSize, MidFontSize, curTime / totalTime);
+            {
+                scoreText.fontSize = Mathf.LerpUnclamped(startFontSize, MidFontSize, LDUtil.EaseOutBack(curTime / totalTime));
+                scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, Mathf.LerpUnclamped(startRotation, endRotation, LDUtil.EaseOutBack(curTime / totalTime)));
+            }
             else
-                scoreText.fontSize = Mathf.SmoothStep(MidFontSize, startFontSize, curTime / totalTime);
+            {
+                scoreText.fontSize = Mathf.LerpUnclamped(MidFontSize, startFontSize, LDUtil.EaseOutBack(curTime / totalTime));
+                scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, Mathf.LerpUnclamped(endRotation, startRotation, LDUtil.EaseOutBack(curTime / totalTime)));
+            }
+
+            
 
             //if we've reached the end of the lerp.
             if (curTime >= totalTime)
@@ -69,5 +82,7 @@ public class ScoreUIController : MonoBehaviour
 
         //set back to start font size.
         scoreText.fontSize = startFontSize;
+        //set back to start rotation.
+        scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, startRotation);
     }
 }

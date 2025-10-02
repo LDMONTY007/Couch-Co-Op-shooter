@@ -170,5 +170,37 @@ public class LDUtil : MonoBehaviour
         return Quaternion.AngleAxis(angleDeg, axis) * vectorToRotate;
     }
 
-    
+
+    //I got this from here:
+    //https://easings.net/#easeInOutBack
+    //https://discussions.unity.com/t/smooth-function-with-overshooting/241010
+    public static float EaseInOutBack(float t)
+    {
+        const float c1 = 1.70158f;
+        const float c2 = c1 * 1.525f;
+        float t2 = t - 1f;
+        return t < 0.5
+            ? t * t * 2 * ((c2 + 1) * t * 2 - c2)
+            : t2 * t2 * 2 * ((c2 + 1) * t2 * 2 + c2) + 1;
+    }
+
+    //This is also from the easing site.
+    public static float EaseOutElastic(float x) {
+    const float c4 = (2 * Mathf.PI) / 3;
+
+    return x == 0
+      ? 0
+      : x == 1
+      ? 1
+      : Mathf.Pow(2, -10 * x) * Mathf.Sin((x * 10 - 0.75f) * c4) + 1;
+    }
+
+    //this is also from the easing site. 
+    //I love this one.
+    public static float EaseOutBack(float x) {
+    const float c1 = 1.70158f;
+    const float c3 = c1 + 1;
+
+        return 1 + c3* Mathf.Pow(x - 1, 3) + c1* Mathf.Pow(x - 1, 2);
+    }
 }
