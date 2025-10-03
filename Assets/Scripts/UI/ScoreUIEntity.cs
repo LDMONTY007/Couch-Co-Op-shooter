@@ -25,6 +25,11 @@ public class ScoreUIEntity
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //Scale the font size of the score to be relative
+        //to the score size itself, so larger scores mean 
+        //larger score in the UI.
+        scoreText.fontSize = Mathf.Lerp(scoreText.fontSize, scoreText.fontSize + 16, score / 100);
+
         //Select a random color for this spawned score entity.
         int randColor = Random.Range(0, 3);
 
