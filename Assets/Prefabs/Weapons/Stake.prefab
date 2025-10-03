@@ -132,6 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8753c7722eb16864281a191745663dfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageType: 2
   rotationWhenEquipped: {x: 0, y: 0, z: 0}
   rotationWhenUnequipped: {x: 90, y: 0, z: 0}
   prefabData: {fileID: 11400000, guid: ddd4500fb75b42f42972c49bfee1f417, type: 2}
