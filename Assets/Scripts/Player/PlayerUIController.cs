@@ -270,8 +270,11 @@ public class PlayerUIController : MonoBehaviour
         slotSwitchCoroutine = null;
     }
 
-    public void CreateScorePopup(Vector3 worldPos, int score)
+    public void CreateScorePopup(ScoreData scoreData)
     {
+        Vector3 worldPos = scoreData.spawnPos;
+        float score = scoreData.baseScore + scoreData.calcBonus();
+
         Vector3 screenPos = playerController.cam.WorldToScreenPoint(worldPos);
         Vector2 canvasPos = Vector2.zero;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, playerController.cam, out canvasPos))
@@ -286,7 +289,7 @@ public class PlayerUIController : MonoBehaviour
             ScoreUIEntity scoreEntity = temp.GetComponent<ScoreUIEntity>();
 
             //Set the score controller score.
-            scoreEntity.score = score;
+            scoreEntity.score = (int)score;
             //assign the score target.
             scoreEntity.target = scoreTarget;
             //Assign the score UI controller.

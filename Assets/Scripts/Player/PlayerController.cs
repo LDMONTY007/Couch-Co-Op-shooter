@@ -82,6 +82,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
+    //Used for storing score datas.
+    public List<ScoreData> scoreDatas = new List<ScoreData>();
+
+    public void AddScoreData(ScoreData scoreData)
+    {
+        //Add the score data.
+        scoreDatas.Add(scoreData);
+        //Do the UI popup for the score data.
+        uiController.CreateScorePopup(scoreData);
+    }
 
     #endregion
 
@@ -1449,6 +1459,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //Add some knockback to the player from the hit.
     }
 
+    public ScoreData[] TakeDamageScored(DamageData damageData)
+    {
+        throw new System.Exception("Player should not be generating scores when damaged.");
+
+        return null;
+    }
+
     public void StartIFrames()
     {
         //say the player is stunned.
@@ -2358,8 +2375,4 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         throw new NotImplementedException();
     }
 
-    public void OnReceiveScore(Vector3 worldPos, int score)
-    {
-        uiController.CreateScorePopup(worldPos, score);
-    }
 }

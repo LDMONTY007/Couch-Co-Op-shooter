@@ -59,7 +59,7 @@ MonoBehaviour:
   canvasRect: {fileID: 0}
   worldRefPoint: {fileID: 0}
   worldTarget: {fileID: 0}
-  maxSpeed: 20
+  maxSpeed: 50
   rotationSpeed: 5
   radius: 5
   timeToTarget: 0.25

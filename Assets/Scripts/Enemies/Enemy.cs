@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
+using static ScoreData;
 using static UnityEngine.GraphicsBuffer;
 
 //This is what we should use for decision making in our system:
@@ -39,12 +40,6 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public Rigidbody playerRb;
 
-    public enum EnemyType
-    {
-        Civilian,
-        Bird
-    }
-
     public enum EnemyState
     {
         Flee,
@@ -52,8 +47,6 @@ public class Enemy : MonoBehaviour, IDamageable
     }
 
     public EnemyState currentState = EnemyState.Patrol;
-
-    public EnemyType type = EnemyType.Civilian;
 
     //Distance from player
     //to start fleeing.
@@ -305,6 +298,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     }*/
 
+    public float baseScore = 25;
+    public EnemyType enemyType = EnemyType.None;
+
     public void TakeDamage(DamageData damageData)
     {
         //if we're invincible, 
@@ -321,6 +317,29 @@ public class Enemy : MonoBehaviour, IDamageable
         //Add some screen shake
 
         //Add some knockback to the player from the hit.
+    }
+
+    public ScoreData[] TakeDamageScored(DamageData damageData)
+    {
+        //if we're invincible, 
+        //then exit this method.
+        if (invincible)
+        {
+            //return a null score.
+            return null;
+        }
+
+        // Apply the damage
+        curHealth -= damageData.damage;
+
+        //TODO:
+        //Add some screen shake
+
+        //Add some knockback to the player from the hit.
+
+        //Return the scoreData
+        ScoreData sd = new ScoreData(baseScore, damageData.damageType, this.enemyType, transform.position);
+        return new ScoreData[] { sd};
     }
 
     #region boid flocking behavior

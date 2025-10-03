@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using static Enemy;
+using static ScoreData;
 
 public class Zombie : MonoBehaviour, IDamageable
 {
@@ -19,7 +20,9 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public EnemyState currentState = EnemyState.Patrol;
 
-    public EnemyType type = EnemyType.Civilian;
+    public EnemyType enemyType = EnemyType.Undead;
+
+    public float baseScore = 25;
 
     public Transform aimIKTransform;
 
@@ -116,10 +119,12 @@ public class Zombie : MonoBehaviour, IDamageable
             //Increment the last attacker's 
             //zombie kill count.
             lastAttacker.zombieKillCount++;
-            //Tell the player they recieved a score from
+            //For now we don't do it this way,
+            //because we'll add score every time we take damage.
+            /*//Tell the player they recieved a score from
             //this object's position so we spawn the score popping up
             //on screen.
-            lastAttacker.OnReceiveScore(transform.position, 50);
+            lastAttacker.OnReceiveScore(transform.position, 50);*/
         }
 
         //TODO: Code dying.
@@ -490,6 +495,53 @@ public class Zombie : MonoBehaviour, IDamageable
         //this helps us identify who gets credit
         //for kills.
         PlayerController p = damageData.other.GetComponent<PlayerController>();
+        if (p != null)
+            lastAttacker = p;
+
+        // Apply the damage
+        curHealth -= damageData.damage;
+
+        if (curStunCoroutine != null)
+            StopCoroutine(curStunCoroutine);
+        //Stun this zombie using the given weapon's stun time.
+        curStunCoroutine = StartCoroutine(StunCoroutine(damageData.stunTime));
+
+        if (damageData.stunTime > 0)
+        {
+            //Make the zombie react to being hit,
+            //then say they are stunned.
+            animator.SetTrigger("HitReact");
+            animator.SetBool("Stun", true);
+
+        }
+
+
+        //Spawn the particle system here with it's orientation
+        //matching the damageData hit normal at the damageData hit point.
+        Instantiate(bloodParticlesPrefab, damageData.point, Quaternion.LookRotation(damageData.normal));
+        //When the particle system ends it will destroy itself.
+
+
+        //TODO:
+        //Add some screen shake
+
+        //Add some knockback to the player from the hit.
+    }
+
+    public ScoreData[] TakeDamageScored(DamageData damageData)
+    {
+        //if we're invincible, 
+        //then exit this method.
+        if (invincible)
+        {
+            return null;
+        }
+
+        //Say what the last attacker was
+        //if it was a player.
+        //this helps us identify who gets credit
+        //for kills.
+        PlayerController p = damageData.other.GetComponent<PlayerController>();
         if (p != null) 
         lastAttacker = p;
 
@@ -521,6 +573,10 @@ public class Zombie : MonoBehaviour, IDamageable
         //Add some screen shake
 
         //Add some knockback to the player from the hit.
+
+        //Return the scoreData
+        ScoreData sd = new ScoreData(baseScore, damageData.damageType, this.enemyType, transform.position);
+        return new ScoreData[] { sd };
     }
 
     float attackDamage = 5f;
@@ -538,6 +594,7 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
 
+            //We ignore when an enemy gets a score.
             //if we actually hit a damageable.
             if (damageable != null)
                 damageable.TakeDamage(new DamageData() { damage = attackDamage, stunTime = 0.3f, other = gameObject, point = hitInfo.point, normal = hitInfo.normal });

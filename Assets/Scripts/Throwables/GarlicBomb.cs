@@ -1,4 +1,7 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using UnityEngine;
 
 public class GarlicBomb : Throwable
@@ -47,7 +50,7 @@ public class GarlicBomb : Throwable
                 Vector3 point = cols[i].transform.position;
 
                 //Deal damage.
-                damageable.TakeDamage(new DamageData() { damage = falloffDamage, stunTime = 1f, other = gameObject, point = point, normal = normal });
+                scores.AddRange(damageable.TakeDamageScored(new DamageData() { damageType = DamageType.Garlic, damage = falloffDamage, stunTime = 1f, other = gameObject, point = point, normal = normal }).ToList());
             }
         }
 
@@ -59,5 +62,27 @@ public class GarlicBomb : Throwable
     {
         //When we take any amount of damage we should detonate.
         Detonate();
+    }
+
+    List<ScoreData> scores = new();
+
+    //When a player hits this object it needs to be scored so we
+    //can return the score values to the player for all the enemies
+    //they hit/killed.
+    public ScoreData[] TakeDamageScored(DamageData damageData)
+    {
+
+        //When we take any amount of damage we should detonate.
+        Detonate();
+
+        //tell the game we
+        //should get the x2 bonus for shooting the dynamite.
+        foreach (ScoreData sd in scores)
+        {
+            sd.wasIndirectDamage = true;
+        }
+
+        //return the score array.
+        return scores.ToArray();
     }
 }

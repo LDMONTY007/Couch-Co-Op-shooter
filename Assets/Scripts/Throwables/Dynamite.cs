@@ -1,4 +1,7 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -35,11 +38,41 @@ public class Dynamite : Throwable, IDamageable
         Detonate();
     }
 
+    //used so we know to apply
+    //the indirect damage
+    //score modifier.
+    public bool wasDamaged = false;
+
     public void TakeDamage(DamageData damageData)
     {
+        wasDamaged = true;
+
         //When we take any amount of damage we should detonate.
         Detonate();
     }
+
+    //When a player hits this object it needs to be scored so we
+    //can return the score values to the player for all the enemies
+    //they hit/killed.
+    public ScoreData[] TakeDamageScored(DamageData damageData)
+    {
+        wasDamaged = true;
+
+        //When we take any amount of damage we should detonate.
+        Detonate();
+
+        //tell the game we
+        //should get the x2 bonus for shooting the dynamite.
+        foreach (ScoreData sd in scores)
+        {
+            sd.wasIndirectDamage = true;
+        }
+
+        //return the score array.
+        return scores.ToArray();
+    }
+
+    List<ScoreData> scores = new List<ScoreData>();
 
     public void Detonate()
     {
@@ -66,7 +99,7 @@ public class Dynamite : Throwable, IDamageable
                 Vector3 point = cols[i].transform.position;
 
                 //Deal damage.
-                damageable.TakeDamage(new DamageData() { damage = falloffDamage, stunTime = 1f, other = gameObject, point = point, normal = normal});
+                scores.AddRange(damageable.TakeDamageScored(new DamageData() {damageType = DamageType.None, damage = falloffDamage, stunTime = 1f, other = gameObject, point = point, normal = normal}).ToList());
             }
         }
 

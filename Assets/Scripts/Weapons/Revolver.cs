@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Revolver : SecondaryWeapon
@@ -42,10 +44,22 @@ public class Revolver : SecondaryWeapon
             Debug.Log("HIT!!");
             IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
 
+            //create temp scoreData var
+            List<ScoreData> scoreData = new();
+
             //if we actually hit a damageable.
             //Also pass the player as the other gameobject rather than this weapon.
             if (damageable != null)
-            damageable.TakeDamage(new DamageData() { damage = damage, stunTime = stunTime, other = player.gameObject, point = hitInfo.point, normal = hitInfo.normal });
+            scoreData = damageable.TakeDamageScored(new DamageData() { damage = damage, stunTime = stunTime, other = player.gameObject, point = hitInfo.point, normal = hitInfo.normal }).ToList();
+
+            //add all the score data's from the damaged object to the player list.
+            //this is so if they hit multiple enemies with a weapon or even if an explosive
+            //hits multiple enemies.
+            foreach (ScoreData sd in scoreData)
+            {
+                //Add the score data to the player.
+                player.AddScoreData(sd);
+            }
         }
 
         //Start the cooldown.

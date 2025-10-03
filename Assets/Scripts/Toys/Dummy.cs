@@ -67,6 +67,42 @@ public class Dummy : MonoBehaviour, IDamageable
         //When the particle system ends it will destroy itself.
     }
 
+    public ScoreData[] TakeDamageScored(DamageData damageData)
+    {
+        //if we're invincible, 
+        //then exit this method.
+        if (invincible)
+        {
+            return null;
+        }
+
+        //curHealth -= d;
+
+        //Set to be low resolution for a small amount of time.
+        StartLowResRoutine();
+
+        //Start iFrames here.
+        StartIFrames();
+
+        //TODO:
+        //change the layer of the visual model for the player to be
+        //the lowres layer,
+        //have the player get bounced away from the damaging object,
+        //and then also give them invincibility frames where
+        //they do the blinking in and out of existance thing.
+        rb.linearVelocity += (transform.position - damageData.other.transform.position).normalized * bounceForce;
+
+        //print out data about the player taking damage.
+        Debug.Log("Dummy Took: ".Color("Orange") + damageData.damage.ToString().Color("Red") + " from " + damageData.other.transform.root.name.Color("Red"));
+
+        //Spawn the particle system here with it's orientation
+        //matching the damageData hit normal at the damageData hit point.
+        Instantiate(bloodParticlesPrefab, damageData.point, Quaternion.LookRotation(damageData.normal));
+        //When the particle system ends it will destroy itself.
+
+        return null;
+    }
+
     bool isLowRes = false;
 
     Coroutine lowResRoutine = null;
