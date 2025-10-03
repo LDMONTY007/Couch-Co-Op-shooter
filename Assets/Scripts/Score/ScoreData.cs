@@ -115,6 +115,15 @@ public class ScoreData
         return 0f;
     }
 
+    public float GetTotalScore()
+    {
+        float score = baseScore + calcBonus();
+        //lastly we should double the overall score if it was indirect damage.
+        score = wasIndirectDamage ? score * 2 : score;
+
+        return score;
+    }
+
     //Constructor.
     public ScoreData(float score, DamageType damageType, EnemyType enemyType, Vector3 spawnPos)
     {

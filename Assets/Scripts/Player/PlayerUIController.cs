@@ -273,7 +273,7 @@ public class PlayerUIController : MonoBehaviour
     public void CreateScorePopup(ScoreData scoreData)
     {
         Vector3 worldPos = scoreData.spawnPos;
-        float score = scoreData.baseScore + scoreData.calcBonus();
+        float score = scoreData.GetTotalScore();
 
         Vector3 screenPos = playerController.cam.WorldToScreenPoint(worldPos);
         Vector2 canvasPos = Vector2.zero;

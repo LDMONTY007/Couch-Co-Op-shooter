@@ -61,7 +61,8 @@ MonoBehaviour:
   chaseSpeed: 7
   walkSpeed: 3
   currentState: 0
-  type: 0
+  enemyType: 1
+  baseScore: 1
   aimIKTransform: {fileID: 8457710901294861326}
   attackDistance: 3
   patrolRange: 50
