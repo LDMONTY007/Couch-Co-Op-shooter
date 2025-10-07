@@ -18,11 +18,12 @@ public class PixelateRendererFeature : ScriptableRendererFeature
     public override void AddRenderPasses(ScriptableRenderer renderer,
         ref RenderingData renderingData)
     {
-        //nqueue the render pass with the EnqueuePass method.
+        //enqueue the render pass with the EnqueuePass method.
         if (pixelateRenderPass == null)
         {
             return;
         }
+
         if (renderingData.cameraData.cameraType == CameraType.Game)
         {
             renderer.EnqueuePass(pixelateRenderPass);

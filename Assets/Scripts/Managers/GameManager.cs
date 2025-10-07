@@ -65,6 +65,9 @@ public class GameManager : IDataPersistence
     //If the game is currently paused
     public bool isPaused = false;
 
+    //If we're using the lowResolution render pass.
+    public bool isLowRes = true;
+
 
     public void LoadData(GameData gameData)
     {

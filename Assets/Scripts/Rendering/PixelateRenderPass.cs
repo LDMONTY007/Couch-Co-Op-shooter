@@ -25,6 +25,15 @@ public class PixelateRenderPass : ScriptableRenderPass
 
     public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
     {
+        var volumeComponent = VolumeManager.instance.stack.GetComponent<CustomVolumeComponent>();
+
+        //if our volume component disables the low res filter,
+        //then we should return here.
+        if (volumeComponent != null && volumeComponent.isActive.value == false)
+        {
+            //don't do this render pass.
+            return;
+        }
 
         //In the RecordRenderGraph method, create the variable for storing the UniversalResourceData instance from the frameData parameter. UniversalResourceData contains all the texture references used by URP, including the active color and depth textures of the camera.
         UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
@@ -67,6 +76,11 @@ public class PixelateRenderPass : ScriptableRenderPass
     {
         if (material == null) return;
 
-        material.SetVector("_PixelResolution", defaultSettings.pixelSize);
+        // Use the Volume settings or the default settings if no Volume is set.
+        var volumeComponent =
+            VolumeManager.instance.stack.GetComponent<CustomVolumeComponent>();
+
+        //use default settings if we use override state.
+        material.SetVector("_PixelResolution", volumeComponent.pixelSize.overrideState ? volumeComponent.pixelSize.value : defaultSettings.pixelSize);
     }
 }
