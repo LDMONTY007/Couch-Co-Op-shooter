@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 
@@ -17,6 +18,8 @@ public class PlayerManager : MonoBehaviour, IDataPersistence
     public GameObject playerPrefab;
 
     public PlayerInputManager inputManager;
+
+    public Volume globalVolume;
 
     //Is this a level? if so we should auto-join the players
     //based on their saved data.

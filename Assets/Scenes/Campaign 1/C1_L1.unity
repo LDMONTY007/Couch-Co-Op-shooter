@@ -7974,6 +7974,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 507cef7aab7f68845a09bb9745cb76eb, type: 3}
+--- !u!114 &1539445817415782212 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 312003779989897842, guid: 507cef7aab7f68845a09bb9745cb76eb, type: 3}
+  m_PrefabInstance: {fileID: 1539445817415782211}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1836289048872177859
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8185,6 +8196,10 @@ PrefabInstance:
       propertyPath: respawnRoom
       value: 
       objectReference: {fileID: 2039550026}
+    - target: {fileID: 7260960954246116497, guid: 6229dc0736b4e9647beda978603afc3c, type: 3}
+      propertyPath: globalVolume
+      value: 
+      objectReference: {fileID: 1539445817415782212}
     - target: {fileID: 7260960954246116497, guid: 6229dc0736b4e9647beda978603afc3c, type: 3}
       propertyPath: 'playerSpawnPoints.Array.data[0]'
       value: 

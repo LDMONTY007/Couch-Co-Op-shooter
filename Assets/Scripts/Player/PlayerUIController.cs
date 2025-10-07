@@ -208,6 +208,12 @@ public class PlayerUIController : MonoBehaviour
     public void UpdateLowResFilter(bool value)
     {
         GameManager.Instance.isLowRes = value;
+        PlayerManager.instance.globalVolume.profile.TryGet<CustomVolumeComponent>(out CustomVolumeComponent volumeComponent);
+        if (volumeComponent != null)
+        {
+            //Set the low res render pass settings in the volume to match our settings in the UI.
+            volumeComponent.isActive.value = value;
+        }
     }
 
     //Called when GameManager.isLowRes is changed.
