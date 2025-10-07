@@ -595,6 +595,21 @@ public class Vampire : MonoBehaviour, IDamageable
         {
             IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
 
+
+            PlayerController p = hitInfo.transform.gameObject.GetComponent<PlayerController>();
+
+            //if the player was hit and isn't
+            //null make sure to instantly "knock" them
+            //so the vampire can start sucking their blood.
+            if (p != null)
+            {
+                //if the player isn't knocked
+                //yet make sure to knock them
+                //so we can begin sucking their blood.
+                if (p.knocked == false)
+                p.BecomeKnocked();
+            }
+
             //We ignore when an enemy gets a score.
             //if we actually hit a damageable.
             if (damageable != null)

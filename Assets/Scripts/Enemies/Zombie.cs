@@ -597,7 +597,23 @@ public class Zombie : MonoBehaviour, IDamageable
             //We ignore when an enemy gets a score.
             //if we actually hit a damageable.
             if (damageable != null)
+            {
                 damageable.TakeDamage(new DamageData() { damage = attackDamage, stunTime = 0.3f, other = gameObject, point = hitInfo.point, normal = hitInfo.normal });
+                
+                //Call the code to do the attack animation
+                if (Random.Range(0, 2) == 0)
+                {
+                    animator.SetTrigger("Attack0");
+                }
+                else
+                {
+                    animator.SetTrigger("Attack1");
+                }
+
+               
+                
+            }
+
         }
 
         //Start the cooldown.

@@ -328,7 +328,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     private bool _knocked = false;
 
     //used after being hit to prevent the player from attacking immediately.
-    private bool knocked
+    public bool knocked
     {
         get
         {
@@ -340,6 +340,23 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             //Update the UI for the stunned popup.
             //UIManager.Instance.playerUIManager.UpdateStunnedPopup(value);
             _knocked = value;
+        }
+    }
+
+    private bool _bitten = false;
+
+    //When we're bitten by a vampire
+    //another player must shoot the vampire off
+    //before it drains our blood and we become knocked.
+    public bool bitten
+    {
+        get
+        {
+            return _bitten;
+        }
+        set
+        {
+            _bitten = value;
         }
     }
 
@@ -2235,7 +2252,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private Coroutine knockedCoroutine = null;
 
-    private void BecomeKnocked()
+    public void BecomeKnocked()
     {
         if (knockedCoroutine != null)
         {

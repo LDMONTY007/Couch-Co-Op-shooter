@@ -1,0 +1,123 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Zombie Body Mask
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Ankle.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Ankle.L/Foot.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Ankle.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Ankle.R/Foot.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/ArmIKTarget.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/ArmIKTarget.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/LegIKTarget.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/LegIKTarget.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Groin.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Groin.L/Thigh.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Groin.L/Thigh.L/Calf.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Groin.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Groin.R/Thigh.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Groin.R/Thigh.R/Calf.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Shoulder.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Shoulder.L/Bicep.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Shoulder.L/Bicep.L/Forearm.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Shoulder.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Shoulder.R/Bicep.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Shoulder.R/Bicep.R/Forearm.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Spine
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Spine/Neck
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Root/Torso/Spine/Neck/Head
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.L/Knuckle.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.L/Knuckle.L/Finger.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.L/Knuckle.L/Finger.L/FingerTip.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.L/Thumb.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.L/Thumb.L/ThumbTip.L
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.R/Knuckle.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.R/Knuckle.R/Finger.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.R/Knuckle.R/Finger.R/FingerTip.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.R/Thumb.R
+    m_Weight: 1
+  - m_Path: BaseHumanoid.003/Wrist.R/Thumb.R/ThumbTip.R
+    m_Weight: 1
+  - m_Path: Calf.L.003
+    m_Weight: 1
+  - m_Path: Calf.R.003
+    m_Weight: 1
+  - m_Path: Foot.L.004
+    m_Weight: 1
+  - m_Path: Foot.R.003
+    m_Weight: 1
+  - m_Path: Forearm.L.003
+    m_Weight: 1
+  - m_Path: Forearm.R.003
+    m_Weight: 1
+  - m_Path: Hair.001
+    m_Weight: 1
+  - m_Path: Hand.L.003
+    m_Weight: 1
+  - m_Path: Hand.R.003
+    m_Weight: 1
+  - m_Path: Head.004
+    m_Weight: 1
+  - m_Path: Neck.003
+    m_Weight: 1
+  - m_Path: Pelvis.004
+    m_Weight: 1
+  - m_Path: ShoulderSleeve.L.003
+    m_Weight: 1
+  - m_Path: ShoulderSleeve.R.003
+    m_Weight: 1
+  - m_Path: Thigh.L.003
+    m_Weight: 1
+  - m_Path: Thigh.R.003
+    m_Weight: 1
+  - m_Path: Torso.005
+    m_Weight: 1
