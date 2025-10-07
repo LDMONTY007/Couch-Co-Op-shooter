@@ -11,6 +11,7 @@ public class PlayerUIController : MonoBehaviour
     public PlayerController playerController;
     public PlayerInput playerInput;
     public RectTransform canvasRect;
+    private Canvas canvas;
     public GameObject scorePrefab;
     public RectTransform scoreTarget;
     public ScoreUIController scoreUIController;
@@ -30,6 +31,8 @@ public class PlayerUIController : MonoBehaviour
 
     public TMP_Text zombieKillsLabel;
     public TMP_Text idLabel;
+
+    public Toggle lowResToggle;
 
     public RectTransform slotSelectionTransform;
     //These are assigned in the inspector.
@@ -77,6 +80,12 @@ public class PlayerUIController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        canvas = canvasRect.GetComponent<Canvas>();
+        Vector2 playerScreenResolution = new Vector2(canvas.worldCamera.pixelWidth, canvas.worldCamera.pixelHeight);
+
+        //Set the reference resolution so that the UI will scale correctly with 4 player split screen.
+        canvasRect.GetComponent<CanvasScaler>().referenceResolution = playerScreenResolution;
+
         paused = false;
         pauseUI.SetActive(paused);
 
@@ -94,6 +103,20 @@ public class PlayerUIController : MonoBehaviour
         ShowRevivePanel(false);
         //Don't show the use slider on start
         ShowUseSlider(false);
+
+        
+    }
+
+    private void OnEnable()
+    {
+        //Subscribe to the lowRes changed event 
+        GameManager.Instance.isLowResChanged.AddListener(SetUILowResToggle);
+    }
+
+    private void OnDisable()
+    {
+        //Remove the listener to the lowRes changed event 
+        GameManager.Instance.isLowResChanged.RemoveListener(SetUILowResToggle);
     }
 
     // Update is called once per frame
@@ -179,6 +202,20 @@ public class PlayerUIController : MonoBehaviour
             //otherwise set the value to zero so that
             //it doesn't clip the normal health at all.
             degradingHealthBarSlider.value = 0;
+    }
+
+    //called by the toggle itself in it's OnChanged event in the inspector.
+    public void UpdateLowResFilter(bool value)
+    {
+        GameManager.Instance.isLowRes = value;
+    }
+
+    //Called when GameManager.isLowRes is changed.
+    public void SetUILowResToggle(bool value)
+    {
+        //Set the value of the toggle without notifying
+        //changes so we don't get stuck in a callback loop.
+        lowResToggle.SetIsOnWithoutNotify(value);
     }
 
     private string GetCorrespondingControlScheme(InputDevice device)

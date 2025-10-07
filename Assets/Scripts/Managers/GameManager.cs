@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -65,8 +66,15 @@ public class GameManager : IDataPersistence
     //If the game is currently paused
     public bool isPaused = false;
 
+    private bool _isLowRes = true;
+
     //If we're using the lowResolution render pass.
-    public bool isLowRes = true;
+    public bool isLowRes { get  { return _isLowRes; } set { _isLowRes = value; 
+            //Say that low res was changed globally.
+            isLowResChanged?.Invoke(value); } }
+
+    //subscribed to by UIControllers on start.
+    public UnityEvent<bool> isLowResChanged = new();
 
 
     public void LoadData(GameData gameData)

@@ -93,8 +93,8 @@ MonoBehaviour:
     m_Reference: {fileID: 0}
   m_PlayerPrefab: {fileID: 5336900089535494830, guid: fd7dad73634d1f9429b4b92e10335de0, type: 3}
   m_SplitScreen: 1
-  m_MaintainAspectRatioInSplitScreen: 0
-  m_FixedNumberOfSplitScreens: -1
+  m_MaintainAspectRatioInSplitScreen: 1
+  m_FixedNumberOfSplitScreens: 4
   m_SplitScreenRect:
     serializedVersion: 2
     x: 0
@@ -115,8 +115,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 5336900089535494830, guid: fd7dad73634d1f9429b4b92e10335de0, type: 3}
   inputManager: {fileID: 437520207170746988}
+  isLevel: 0
+  isCharacterSelectScene: 0
   materials:
   - {fileID: 2100000, guid: 7e103b65e9152e740a6f41f87255e1af, type: 2}
   - {fileID: 2100000, guid: 6071dd19fcbaa2a499ef8157edbddfdc, type: 2}
   - {fileID: 2100000, guid: e4518210c1a4c004aabbdc051ee88b9b, type: 2}
   - {fileID: 2100000, guid: f92636990523a9a448033e53c85fdeea, type: 2}
+  playerList: []
+  respawnRoom: {fileID: 0}
+  playerSpawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
