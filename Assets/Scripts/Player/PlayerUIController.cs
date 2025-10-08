@@ -20,6 +20,7 @@ public class PlayerUIController : MonoBehaviour
     public bool paused { get { return _paused; } set { _paused = value; GameManager.Instance.isPaused = value; OnPauseStateSwitched(); } }
 
     public GameObject pauseUI;
+    public GameObject cameraUI;
 
     public Slider healthBarSlider;
     public Slider degradingHealthBarSlider;
@@ -72,6 +73,11 @@ public class PlayerUIController : MonoBehaviour
 
     }
 
+    public void ShowCameraUI(bool value)
+    {
+        cameraUI.gameObject.SetActive(value);
+    }
+
     public void ShowDeadPanel(bool value)
     {
         deadPanel.gameObject.SetActive(value);
@@ -103,8 +109,8 @@ public class PlayerUIController : MonoBehaviour
         ShowRevivePanel(false);
         //Don't show the use slider on start
         ShowUseSlider(false);
-
-        
+        //Don't show the cameraUI.
+        ShowCameraUI(false);
     }
 
     private void OnEnable()
