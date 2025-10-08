@@ -47,4 +47,14 @@ public class Consumable : Usable
     {
         throw new System.NotImplementedException();
     }
+
+    public override void OnEquip(PlayerController p)
+    {
+        
+    }
+
+    public override void OnUnequip(PlayerController p)
+    {
+        
+    }
 }

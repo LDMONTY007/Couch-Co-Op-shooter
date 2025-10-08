@@ -19,6 +19,11 @@ public class ScoreData
     //If the player shot an explosive,
     //the entire score will double.
     public bool wasIndirectDamage = false;
+    //Used if a weapon will give bonuses for targeting
+    //a specific weakpoint, for example the stake
+    //will reveal vampire hearts and will give 150% bonus
+    //for hitting them in the heart.
+    public bool didHitWeakPoint = false;
     public EnemyType enemyType = EnemyType.None;
     public DamageType damageType = DamageType.None; 
     public float baseScore = 0f;
@@ -46,7 +51,7 @@ public class ScoreData
                 }
                 break;
             case EnemyType.Vampire:
-                if (damageType == DamageType.Stake)
+                if (damageType == DamageType.Stake && didHitWeakPoint)
                 {
                     //150% bonus for getting a stake in the heart kill.
                     return baseScore * 1.5f;

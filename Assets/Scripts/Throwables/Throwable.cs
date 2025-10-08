@@ -77,4 +77,13 @@ public class Throwable : Usable
         //Override this in your child class.
     }
 
+    public override void OnEquip(PlayerController p)
+    {
+        
+    }
+
+    public override void OnUnequip(PlayerController p)
+    {
+        
+    }
 }

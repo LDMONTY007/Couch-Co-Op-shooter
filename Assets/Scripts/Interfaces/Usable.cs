@@ -23,4 +23,8 @@ public abstract class Usable : MonoBehaviour
     public abstract void CancelUse();
 
     public abstract void ReleaseUse();
+
+    public abstract void OnEquip(PlayerController p);
+
+    public abstract void OnUnequip(PlayerController p);
 }

@@ -621,8 +621,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             //Set to the unequipped rotation.
             (curUseable as Component).transform.localRotation = Quaternion.Euler(curUseable.rotationWhenUnequipped);
 
-            
-
             //if our previous slot was the throwable slot,
             //cancel throwing if we were about to throw,
             //before switching to the next item slot.
@@ -631,11 +629,20 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
                 curUseable.CancelUse();
             }
         }
+
+        if (curUseable != null)
+        //Tell the old useable it's been unequipped.
+        curUseable.OnUnequip(this);
+
         //Put the new useable in the player's hand.
         useable.transform.SetParent(handTransform, false);
         useable.transform.localRotation = Quaternion.Euler(useable.rotationWhenEquipped);
+        
         //set current useable.
         curUseable = useable;
+        //Say this useable was equipped
+        curUseable.OnEquip(this);
+
     }
 
     public void SwapCurrentUseableIgnoreLastUseable(Usable useable)

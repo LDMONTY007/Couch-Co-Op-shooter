@@ -7,6 +7,7 @@ public class Stake : PrimaryWeapon
     //base damage, no damage type bonus applied here.
     int damage = 5;
     int mask;
+    int weakMask;
     float attackDist = 50f;
 
     float stunTime = 0.5f;
@@ -14,12 +15,16 @@ public class Stake : PrimaryWeapon
     private void Awake()
     {
         //Get everything except player and ignore raycast.
-        mask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
+        mask = ~LayerMask.GetMask("Player", "IgnoreRaycast", "WeakPoint");
+        weakMask = LayerMask.GetMask("WeakPoint");
     }
 
     public override void Attack(Camera c, PlayerController player)
     {
-        if (Physics.Raycast(c.transform.position, c.transform.forward, out var hitInfo, attackDist, mask))
+        RaycastHit hitInfo;
+
+        //first raycast only weakpoints then raycast for any other type of collider if no weakpoints are hit.
+        if (Physics.Raycast(c.transform.position, c.transform.forward, out hitInfo, attackDist, weakMask) || Physics.Raycast(c.transform.position, c.transform.forward, out hitInfo, attackDist, mask))
         {
             Debug.Log("HIT!!");
             IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
@@ -53,5 +58,19 @@ public class Stake : PrimaryWeapon
     public override void Use(float useSpeed = 1f)
     {
         Attack(parentPlayer.cam, parentPlayer);
+    }
+
+    public override void OnEquip(PlayerController p)
+    {
+        //Make the heart weak points on vampires visible.
+        //Add weak points to the culling mask
+        p.cam.cullingMask |= LayerMask.GetMask("WeakPoint");
+    }
+
+    public override void OnUnequip(PlayerController p)
+    {
+        //Make the heart weak points on vampires invisible.
+        //remove weak points from the culling mask.
+        p.cam.cullingMask &= ~(LayerMask.GetMask("WeakPoint"));
     }
 }

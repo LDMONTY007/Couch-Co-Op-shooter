@@ -37,4 +37,14 @@ public class Weapon : Usable
     {
         
     }
+
+    public override void OnEquip(PlayerController p)
+    {
+        
+    }
+
+    public override void OnUnequip(PlayerController p)
+    {
+        
+    }
 }
