@@ -328,7 +328,6 @@ public class PlayerUIController : MonoBehaviour
         Vector2 canvasPos = Vector2.zero;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, playerController.cam, out canvasPos))
         {
-            Debug.Log("Spawning score at " + canvasPos);
             //Spawn the score.
             GameObject temp = Instantiate(scorePrefab, canvasRect);
 

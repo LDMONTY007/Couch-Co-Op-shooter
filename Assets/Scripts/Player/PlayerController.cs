@@ -603,9 +603,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //make sure the curUseable wasn't destroyed before trying
         //to set it's position.
         if (curUseable != null && (curUseable as Component) != null)
-        {
-            Debug.Log(curUseable.ToString());
-            
+        {            
             //weapons and appliables go on the back transform
             if (curUseable is Weapon || curUseable is Appliable)
             //any weapon not currently held in the players

@@ -11,7 +11,7 @@ public class CameraWeapon : PrimaryWeapon
     //base damage, no damage type bonus applied here.
     float damage = 20f;
     int mask;
-    float attackDist = 50f;
+    float attackDist = 10f;
 
     bool onCooldown = true;
 
@@ -36,6 +36,9 @@ public class CameraWeapon : PrimaryWeapon
             return;
         }
 
+        //Play the camera flash
+        StartCoroutine(FlashCoroutine());
+
         //set the gun's animator trigger.
         //animator.SetTrigger("Fire");
 
@@ -45,8 +48,10 @@ public class CameraWeapon : PrimaryWeapon
         Vector3 camWorldExtents = LDUtil.PerspectiveCameraFrustumSize(c, attackDist / 2f);
 
         Vector3 halfExtents = new Vector3(camWorldExtents.x / 2f, camWorldExtents.y / 2f, attackDist);
+
+        Debug.Log(halfExtents.x + ", " + halfExtents.y + ", " + halfExtents.z);
         //Do the overlapbox so that it extends from the head's position to the camShootDist
-        Collider[] cols = Physics.OverlapBox(c.transform.position + c.transform.forward.normalized * attackDist / 2f, halfExtents, Quaternion.identity, mask);
+        Collider[] cols = Physics.OverlapBox(c.transform.position + c.transform.forward.normalized * attackDist / 2f, halfExtents, c.transform.rotation, mask);
 
         //Check all colliders that were in the box check
         //and see if any of them are in the current camera's view.
@@ -56,7 +61,6 @@ public class CameraWeapon : PrimaryWeapon
             //Check that the collider's parent gameobject is within the view of the camera.
             if (LDUtil.IsInView(c, c.transform.position, cols[i].transform.root.gameObject))
             {
-                Debug.Log("HIT!!");
                 IDamageable damageable = cols[i].gameObject.GetComponent<IDamageable>();
 
                 //create temp scoreData var
@@ -109,5 +113,38 @@ public class CameraWeapon : PrimaryWeapon
     public override void Use(float useSpeed = 1f)
     {
         Attack(parentPlayer.cam, parentPlayer);
+    }
+
+    public IEnumerator FlashCoroutine()
+    {
+        float curTime = 0f;
+        float totalTime = 0.3f;
+
+        Color startColor = cameraLight.color;
+        float startIntensity = cameraLight.intensity;
+
+        //Set the camera light to be on.
+        cameraLight.enabled = true;
+
+        while (curTime < totalTime)
+        {
+            curTime += Time.deltaTime;
+
+            //lerp from actual color to white.
+            cameraLight.color = Color.Lerp(startColor, Color.white, curTime / totalTime);
+            //Lerp from start intensity to no intensity
+            cameraLight.intensity = Mathf.Lerp(startIntensity, 0f, curTime / totalTime);
+
+            //wait until next frame before
+            //returning to the top of the loop.
+            yield return null;
+        }
+
+        //Set end values as lerp is over.
+        cameraLight.color = startColor;
+        cameraLight.intensity = startIntensity;
+
+        //Set the camera light to be off.
+        cameraLight.enabled = false;
     }
 }
