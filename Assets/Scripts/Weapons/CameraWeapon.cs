@@ -49,7 +49,6 @@ public class CameraWeapon : PrimaryWeapon
 
         Vector3 halfExtents = new Vector3(camWorldExtents.x / 2f, camWorldExtents.y / 2f, attackDist);
 
-        Debug.Log(halfExtents.x + ", " + halfExtents.y + ", " + halfExtents.z);
         //Do the overlapbox so that it extends from the head's position to the camShootDist
         Collider[] cols = Physics.OverlapBox(c.transform.position + c.transform.forward.normalized * attackDist / 2f, halfExtents, c.transform.rotation, mask);
 

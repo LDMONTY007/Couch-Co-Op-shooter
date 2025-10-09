@@ -500,6 +500,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             return;
         }
 
+        bool didSlotChange = false;
+
         if (slotUpAction.GetButtonDown())
         {
             curSelectedSlot++;
@@ -510,6 +512,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             {
                 curSelectedSlot++;
             }
+            didSlotChange = true;
         }
         
         if (slotDownAction.GetButtonDown())
@@ -522,27 +525,33 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             {
                 curSelectedSlot--;
             }
+
+            didSlotChange = true;
         }
 
-        switch (curSelectedSlot)
+        //only update when the slot changes.
+        if (didSlotChange)
         {
-            case 0:
-                SwapCurrentUseable(curPrimaryWeapon);
-                break;
-            case 1:
-                SwapCurrentUseable(curSecondaryWeapon);
-                break;
-            case 2:
-                SwapCurrentUseable(curThrowable);
-                break;
-            case 3:
-                SwapCurrentUseable(curAppliable);
-                break;
-            case 4:
-                SwapCurrentUseable(curConsumable);
-                break;
+            switch (curSelectedSlot)
+            {
+                case 0:
+                    SwapCurrentUseable(curPrimaryWeapon);
+                    break;
+                case 1:
+                    SwapCurrentUseable(curSecondaryWeapon);
+                    break;
+                case 2:
+                    SwapCurrentUseable(curThrowable);
+                    break;
+                case 3:
+                    SwapCurrentUseable(curAppliable);
+                    break;
+                case 4:
+                    SwapCurrentUseable(curConsumable);
+                    break;
 
 
+            }
         }
     }
 
@@ -603,12 +612,15 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //make sure the curUseable wasn't destroyed before trying
         //to set it's position.
         if (curUseable != null && (curUseable as Component) != null)
-        {            
+        {
             //weapons and appliables go on the back transform
             if (curUseable is Weapon || curUseable is Appliable)
-            //any weapon not currently held in the players
-            //hand is on their back.
-            (curUseable as Component).transform.SetParent(backTransform, false);
+            {
+                Debug.Log("Swapping: " + curUseable.gameObject);
+                //any weapon not currently held in the players
+                //hand is on their back.
+                (curUseable as Component).transform.SetParent(backTransform, false);
+            }
             //Consumables go on specific transform on player's hip.
             else if (curUseable is Consumable)
                 curUseable.transform.SetParent(unequippedConsumableTransform, false);
@@ -809,7 +821,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void OnLanded()
     {
-        Debug.Log("Landed");
         //TODO:
         //Play landing particles.
     }
@@ -1199,7 +1210,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //call when the interactAction is pressed down this frame (Not continuously held)
         if (interactAction.GetButtonDown())
         {
-            Debug.Log("INTERACT!!!");
             OnInteract();
         }
         //if we're holding down the interact button.
@@ -1727,12 +1737,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     public void OnInteractHeld()
     {
 
-        Debug.Log("HERE 1");
         //Don't execute this logic if we're already holding interact.
         if (isHoldingInteract)
             return;
 
-        Debug.Log("HERE 2");
 
 
 
@@ -1743,12 +1751,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         {
             lastHeldInteractible = hitInfo.transform.gameObject.GetComponent<IInteractible>();
 
-            Debug.Log(lastHeldInteractible);
+           
 
             //if we actually hit an interactible.
             if (lastHeldInteractible != null)
             {
-                Debug.Log("HOLD!");
                 //Pass useSpeed into interact hold
                 //so that it uses this player's use speed stats
                 //rather than the stats of player getting revived
@@ -1839,6 +1846,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
         else
         {
+            Debug.Log(w.gameObject);
             w.transform.SetParent(backTransform, false);
 
             w.transform.localRotation = Quaternion.Euler(w.rotationWhenUnequipped);
