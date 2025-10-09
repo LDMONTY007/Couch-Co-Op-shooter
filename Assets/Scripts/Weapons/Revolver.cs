@@ -50,7 +50,7 @@ public class Revolver : SecondaryWeapon
             //if we actually hit a damageable.
             //Also pass the player as the other gameobject rather than this weapon.
             if (damageable != null)
-            scoreData = damageable.TakeDamageScored(new DamageData() { damage = damage, stunTime = stunTime, other = player.gameObject, point = hitInfo.point, normal = hitInfo.normal }).ToList();
+            scoreData = damageable.TakeDamageScored(new DamageData() { damageType = damageType, damage = damage, stunTime = stunTime, other = player.gameObject, point = hitInfo.point, normal = hitInfo.normal }).ToList();
 
             //add all the score data's from the damaged object to the player list.
             //this is so if they hit multiple enemies with a weapon or even if an explosive

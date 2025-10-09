@@ -209,4 +209,60 @@ public class LDUtil : MonoBehaviour
         ColorUtility.TryParseHtmlString(s, out var color);
         return color;
     }
+
+    //Where I learned this:
+    //https://docs.unity3d.com/6000.2/Documentation/Manual/FrustumSizeAtDistance.html
+    public static Vector2 PerspectiveCameraFrustumSize(Camera c, float distance)
+    {
+        var frustumHeight = 2.0f * distance * Mathf.Tan(c.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        var frustumWidth = frustumHeight * c.aspect;
+
+        return new Vector2(frustumWidth, frustumHeight);
+    }
+
+    //Where I learned this:
+    //https://discussions.unity.com/t/how-can-i-know-if-a-gameobject-is-seen-by-a-particular-camera/248/9
+    //checks if an object is in view and not blocked by another object.
+    public static bool IsInView(Camera c, Vector3 origin, GameObject toCheck)
+    {
+        if (toCheck.GetComponentInChildren<Renderer>() == null)
+        {
+            Debug.LogError("HERE");
+        }
+
+        Vector3 pointOnScreen = c.WorldToScreenPoint(toCheck.GetComponentInChildren<Renderer>().bounds.center);
+
+        //Is in front
+        if (pointOnScreen.z < 0)
+        {
+            Debug.Log("Behind: " + toCheck.name);
+            return false;
+        }
+
+        //Is in FOV
+        if ((pointOnScreen.x < 0) || (pointOnScreen.x > Screen.width) ||
+                (pointOnScreen.y < 0) || (pointOnScreen.y > Screen.height))
+        {
+            Debug.Log("OutOfBounds: " + toCheck.name);
+            return false;
+        }
+
+        RaycastHit hit;
+        Vector3 heading = toCheck.transform.position - origin;
+        Vector3 direction = heading.normalized;// / heading.magnitude;
+
+        if (Physics.Linecast(c.transform.position, toCheck.GetComponentInChildren<Renderer>().bounds.center, out hit))
+        {
+            if (hit.transform.name != toCheck.name)
+            {
+                /* -->
+                Debug.DrawLine(cam.transform.position, toCheck.GetComponentInChildren<Renderer>().bounds.center, Color.red);
+                Debug.LogError(toCheck.name + " occluded by " + hit.transform.name);
+                */
+                Debug.Log(toCheck.name + " occluded by " + hit.transform.name);
+                return false;
+            }
+        }
+        return true;
+    }
 }
