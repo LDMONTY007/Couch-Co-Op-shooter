@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eef511eb12da58d4a81d5d1f05831f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageType: 0
   rotationWhenEquipped: {x: 0, y: 0, z: 0}
   rotationWhenUnequipped: {x: 0, y: 0, z: 0}
   prefabData: {fileID: 11400000, guid: 52866d654e8d5d1488be764fee3ddb51, type: 2}
@@ -97,7 +98,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0

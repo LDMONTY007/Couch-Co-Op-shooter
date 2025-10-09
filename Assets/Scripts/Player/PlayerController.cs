@@ -1883,6 +1883,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
             //Enable the collider.
             curPrimaryWeapon.col.enabled = true;
+
+            //Call unequip on the curPrimaryWeapon 
+            curPrimaryWeapon.OnUnequip(this);
         }
     }
 
@@ -1944,6 +1947,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curSecondaryWeapon.rb.excludeLayers = LayerMask.GetMask("Player");
             //Set the parent player to null for this weapon.
             curSecondaryWeapon.parentPlayer = null;
+
+            //Call unequip on the curSecondaryWeapon 
+            curSecondaryWeapon.OnUnequip(this);
         }
     }
 
@@ -2027,6 +2033,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curThrowable.rb.excludeLayers = LayerMask.GetMask("Player");
             //Enable the collider.
             curThrowable.col.enabled = true;
+
+            //Call unequip on the curThrowable 
+            curThrowable.OnUnequip(this);
         }
     }
 
@@ -2108,6 +2117,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
             //Remove the onUseableDestroyed listener for the curAppliable
             curAppliable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
+
+            //Call unequip on the curAppliable 
+            curAppliable.OnUnequip(this);
         }
     }
 
@@ -2188,6 +2200,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             curConsumable.onBeforeDestroy.RemoveListener(OnUseableDestroyed);
             //Enable the collider.
             curConsumable.col.enabled = true;
+
+            //Call unequip on the curConsumable 
+            curConsumable.OnUnequip(this);
         }
     }
 

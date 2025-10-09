@@ -102,12 +102,18 @@ public class CameraWeapon : PrimaryWeapon
         //Make vampires invisible to the player while using
         //the camera.
         p.cam.cullingMask |= LayerMask.GetMask("Vampire");
+
+        //turn on the camera UI for the player
+        p.uiController.ShowCameraUI(true);
     }
 
     public override void OnUnequip(PlayerController p)
     {
         //Make vampires visible to the player --+
         p.cam.cullingMask &= ~(LayerMask.GetMask("Vampire"));
+
+        //turn off the camera UI for the player
+        p.uiController.ShowCameraUI(false);
     }
 
     public override void Use(float useSpeed = 1f)

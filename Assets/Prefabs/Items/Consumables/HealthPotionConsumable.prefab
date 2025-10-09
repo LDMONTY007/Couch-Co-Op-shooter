@@ -222,6 +222,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb2fd1013abd68e43b99dc654c95f685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageType: 0
+  rotationWhenEquipped: {x: 0, y: 0, z: 0}
+  rotationWhenUnequipped: {x: 0, y: 0, z: 0}
   prefabData: {fileID: 11400000, guid: b5b237b74e5497d47ba07aeca2dcae11, type: 2}
   rb: {fileID: 0}
   col: {fileID: 2143610609193386363}
@@ -270,7 +273,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
