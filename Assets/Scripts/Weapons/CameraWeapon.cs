@@ -19,8 +19,15 @@ public class CameraWeapon : PrimaryWeapon
 
     float stunTime = 1.5f;
 
+    public GameObject cameraWeapon;
+    public GameObject cameraTrigger;
+
+    Vector3 cameraTriggerStartLocalPos = Vector3.zero;
+
     private void Awake()
     {
+        cameraTriggerStartLocalPos = cameraTrigger.transform.localPosition;
+
         //Turn off the camera flash light.
         cameraLight.enabled = false;
         //Get only the enemy and vampire mask, ignore all other layers.
@@ -104,6 +111,16 @@ public class CameraWeapon : PrimaryWeapon
 
         //turn on the camera UI for the player
         p.uiController.ShowCameraUI(true);
+
+        //Set the camera weapon to be parented to the head
+        cameraWeapon.transform.parent = p.headTransform;
+        //Set the camera weapon to be zeroed out so it aligns with the head position
+        cameraWeapon.transform.localPosition = Vector3.zero;
+
+        //Set the camera trigger to be at local zero so it lines up with the 
+        //transform where the player is currently holding this weapon, whether it's on the back
+        //or in their hand.
+        cameraTrigger.transform.localPosition = Vector3.zero;
     }
 
     public override void OnUnequip(PlayerController p)
@@ -113,6 +130,17 @@ public class CameraWeapon : PrimaryWeapon
 
         //turn off the camera UI for the player
         p.uiController.ShowCameraUI(false);
+
+        //Set the camera weapon back to being parented
+        //to this object so it's no longer on the player's head
+        //and will instead appear on the unequipped transform like it's supposed to.
+        cameraWeapon.transform.parent = transform;
+        //Set the camera weapon to be zeroed out so it aligns with the current position.
+        cameraWeapon.transform.localPosition = Vector3.zero;
+
+        //Set back to the original position for the trigger object
+        //so it isn't clipping into the camera weapon.
+        cameraTrigger.transform.localPosition = cameraTriggerStartLocalPos;
     }
 
     public override void Use(float useSpeed = 1f)

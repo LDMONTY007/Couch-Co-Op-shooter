@@ -83,8 +83,7 @@ public class PlayerUIController : MonoBehaviour
         deadPanel.gameObject.SetActive(value);
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
         canvas = canvasRect.GetComponent<Canvas>();
         Vector2 playerScreenResolution = new Vector2(canvas.worldCamera.pixelWidth, canvas.worldCamera.pixelHeight);
@@ -111,6 +110,12 @@ public class PlayerUIController : MonoBehaviour
         ShowUseSlider(false);
         //Don't show the cameraUI.
         ShowCameraUI(false);
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+
     }
 
     private void OnEnable()

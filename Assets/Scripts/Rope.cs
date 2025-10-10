@@ -66,6 +66,12 @@ public class Rope : MonoBehaviour
             Rigidbody rb = temp.AddComponent<Rigidbody>();
             //Disable collisions
             rb.detectCollisions = false;
+
+            //add some damping so the 
+            //rigidbodies don't move too fast.
+            rb.linearDamping = 5f;
+            rb.angularDamping = 5f;
+
             //create the joint.
             Joint joint = temp.AddComponent<ConfigurableJoint>();
 

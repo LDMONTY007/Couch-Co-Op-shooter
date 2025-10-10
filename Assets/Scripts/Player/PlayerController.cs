@@ -187,6 +187,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     public Appliable curAppliable;
     public Consumable curConsumable;
 
+    public Transform headTransform;
     public Transform handTransform;
     public Transform backTransform;
     public Transform unequippedConsumableTransform;
@@ -1797,6 +1798,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         useables[0] = curPrimaryWeapon;
         //Set the slot icon.
         uiController.OnUpdateSlotIcon(curPrimaryWeapon.icon, 0);
+
+        curPrimaryWeapon.OnEquip(this);
     }
 
     public void CreateNewSecondaryWeapon(GameObject g)
@@ -1824,6 +1827,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         useables[1] = curSecondaryWeapon;
         //Set the slot icon.
         uiController.OnUpdateSlotIcon(curSecondaryWeapon.icon, 1);
+
+        curSecondaryWeapon.OnEquip(this);
     }
 
 
@@ -2020,6 +2025,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //slot as our current throwable.
         useables[2] = curThrowable;
 
+        curThrowable.OnEquip(this);
+
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();
     }
@@ -2098,6 +2105,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //make sure to also set the correct
         //slot as our current appliable.
         useables[3] = curAppliable;
+
+        curAppliable.OnEquip(this);
 
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();
@@ -2182,6 +2191,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //make sure to also set the correct
         //slot as our current consumable.
         useables[4] = curConsumable;
+
+        curConsumable.OnEquip(this);
 
         //invoke OnPickup if methods are subscribed to it.
         //OnPickup?.Invoke();

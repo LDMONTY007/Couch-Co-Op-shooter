@@ -27,10 +27,11 @@ Transform:
   m_GameObject: {fileID: 1084044197250805713}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.38, y: -0.82, z: -0.00000011920929}
+  m_LocalPosition: {x: -1.69, y: -0.82, z: 1.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6174847627932574911}
   m_Father: {fileID: 4226992143689955455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2244656696929923277
@@ -119,7 +120,6 @@ Transform:
   m_Children:
   - {fileID: 2237808915656565402}
   - {fileID: 8522503348998050436}
-  - {fileID: 6174847627932574911}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6612371072196436737
@@ -144,6 +144,8 @@ MonoBehaviour:
   icon: {fileID: 0}
   animator: {fileID: 0}
   cameraLight: {fileID: 5350995876541532651}
+  cameraWeapon: {fileID: 1460745137940936736}
+  cameraTrigger: {fileID: 1084044197250805713}
 --- !u!65 &2438810507224740664
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -312,12 +314,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8665713353535764604}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.3799934, y: -0.2900002, z: -0.00000011920929}
-  m_LocalScale: {x: 0.8, y: 0.66, z: 0.8}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.52999985, z: 0}
+  m_LocalScale: {x: 0.8000001, y: 0.6600001, z: 0.8000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4226992143689955455}
+  m_Father: {fileID: 8522503348998050436}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4889313496003321063
 MeshFilter:
@@ -568,7 +570,7 @@ MonoBehaviour:
   startTransform: {fileID: 2237808915656565402}
   endTransform: {fileID: 8522503348998050436}
   segments: 20
-  ropeLength: 3
+  ropeLength: 2
 --- !u!4 &2237808915656565402 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d301800ea7ad3474687c95c30983f8bb, type: 3}
