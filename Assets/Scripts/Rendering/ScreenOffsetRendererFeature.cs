@@ -2,12 +2,12 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CamShakeRendererFeature : ScriptableRendererFeature
+public class ScreenOffsetRendererFeature : ScriptableRendererFeature
 {
-    [SerializeField] private CamShakeSettings settings;
+    [SerializeField] private ScreenOffsetSettings settings;
     [SerializeField] private Shader shader;
     private Material material;
-    private CamShakeRenderPass shakeRenderPass;
+    private ScreenOffsetRenderPass shakeRenderPass;
 
     public override void Create()
     {
@@ -16,7 +16,7 @@ public class CamShakeRendererFeature : ScriptableRendererFeature
             return;
         }
         material = new Material(shader);
-        shakeRenderPass = new CamShakeRenderPass(material, settings);
+        shakeRenderPass = new ScreenOffsetRenderPass(material, settings);
 
         shakeRenderPass.renderPassEvent = RenderPassEvent.AfterRenderingSkybox;
     }
@@ -49,8 +49,8 @@ public class CamShakeRendererFeature : ScriptableRendererFeature
 }
 
 [Serializable]
-public class CamShakeSettings
+public class ScreenOffsetSettings
 {
     [Range(-1f, 1f)] public float horizontalOffset;
-    [Range(-1, 1f)] public float verticalOffset;
+    [Range(-1f, 1f)] public float verticalOffset;
 }

@@ -4,19 +4,19 @@ using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 
-public class CamShakeRenderPass : ScriptableRenderPass
+public class ScreenOffsetRenderPass : ScriptableRenderPass
 {
-    private CamShakeSettings defaultSettings;
+    private ScreenOffsetSettings defaultSettings;
     private Material material;
 
-    private TextureDesc CamShakeTextureDescriptor;
+    private TextureDesc ScreenOffsetTextureDescriptor;
 
-    private static readonly int horizontalCamShakeId = Shader.PropertyToID("_HorizontalOffset");
-    private static readonly int verticalCamShakeId = Shader.PropertyToID("_VerticalOffset");
-    private const string k_CamShakeTextureName = "_CamShakeTexture";
-    private const string k_OffsetPassName = "VerticalCamShakeRenderPass";
+    private static readonly int horizontalScreenOffsetId = Shader.PropertyToID("_HorizontalOffset");
+    private static readonly int verticalScreenOffsetId = Shader.PropertyToID("_VerticalOffset");
+    private const string k_ScreenOffsetTextureName = "_ScreenOffsetTexture";
+    private const string k_OffsetPassName = "VerticalScreenOffsetRenderPass";
 
-    public CamShakeRenderPass(Material material, CamShakeSettings defaultSettings)
+    public ScreenOffsetRenderPass(Material material, ScreenOffsetSettings defaultSettings)
     {
         this.material = material;
         this.defaultSettings = defaultSettings;
@@ -30,10 +30,10 @@ public class CamShakeRenderPass : ScriptableRenderPass
 
         //The destination texture is based on the camera color texture, so you can use the descriptor of the camera color texture as a starting point to define the destination texture. Using the same descriptor as the camera color texture ensures the source and destination textures will have the same size and color format (unless you choose to change the descriptor).
         TextureHandle srcCamColor = resourceData.activeColorTexture;
-        CamShakeTextureDescriptor = srcCamColor.GetDescriptor(renderGraph);
-        CamShakeTextureDescriptor.name = k_CamShakeTextureName;
-        CamShakeTextureDescriptor.depthBufferBits = 0;
-        var dst = renderGraph.CreateTexture(CamShakeTextureDescriptor);
+        ScreenOffsetTextureDescriptor = srcCamColor.GetDescriptor(renderGraph);
+        ScreenOffsetTextureDescriptor.name = k_ScreenOffsetTextureName;
+        ScreenOffsetTextureDescriptor.depthBufferBits = 0;
+        var dst = renderGraph.CreateTexture(ScreenOffsetTextureDescriptor);
 
         UniversalCameraData cameraData = frameData.Get<UniversalCameraData>();
 
@@ -46,14 +46,14 @@ public class CamShakeRenderPass : ScriptableRenderPass
         if (resourceData.isActiveTargetBackBuffer)
             return;
 
-        // Update the CamShake settings in the material
-        UpdateCamShakeSettings();
+        // Update the ScreenOffset settings in the material
+        UpdateScreenOffsetSettings();
 
         // This check is to avoid an error from the material preview in the scene
         if (!srcCamColor.IsValid() || !dst.IsValid())
             return;
 
-        // The AddBlitPass method adds a vertical CamShake render graph pass that blits from the source texture (camera color in this case) to the destination texture using the first shader pass (the shader pass is defined in the last parameter).
+        // The AddBlitPass method adds a vertical ScreenOffset render graph pass that blits from the source texture (camera color in this case) to the destination texture using the first shader pass (the shader pass is defined in the last parameter).
         RenderGraphUtils.BlitMaterialParameters paraVertical = new(srcCamColor, dst, material, 0);
         renderGraph.AddBlitPass(paraVertical, k_OffsetPassName);
 
@@ -62,11 +62,11 @@ public class CamShakeRenderPass : ScriptableRenderPass
     }
 
     //update shader values
-    private void UpdateCamShakeSettings()
+    private void UpdateScreenOffsetSettings()
     {
         if (material == null) return;
 
-        material.SetFloat(horizontalCamShakeId, defaultSettings.horizontalOffset);
-        material.SetFloat(verticalCamShakeId, defaultSettings.verticalOffset);
+        material.SetFloat(horizontalScreenOffsetId, defaultSettings.horizontalOffset);
+        material.SetFloat(verticalScreenOffsetId, defaultSettings.verticalOffset);
     }
 }
