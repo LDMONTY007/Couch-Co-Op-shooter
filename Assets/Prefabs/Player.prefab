@@ -636,6 +636,7 @@ GameObject:
   - component: {fileID: 7832447003881909035}
   - component: {fileID: 5867944608992814333}
   - component: {fileID: 116879150689111571}
+  - component: {fileID: 9125361911375527611}
   m_Layer: 3
   m_Name: 'Camera '
   m_TagString: Untagged
@@ -771,6 +772,19 @@ MonoBehaviour:
   lookTarget: {fileID: 5815552285190691696}
   maxLookDistance: 30
   playerController: {fileID: 5107730192156573712}
+--- !u!114 &9125361911375527611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4316735050678712577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb7c15ff641c4c54cbecf21f27e3bfb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerIndex: -1
 --- !u!1 &4549197118118058637
 GameObject:
   m_ObjectHideFlags: 0
@@ -1916,6 +1930,10 @@ PrefabInstance:
       propertyPath: playerObject
       value: 
       objectReference: {fileID: 5336900089535494830}
+    - target: {fileID: 8370379260062690977, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
+      propertyPath: screenShakeController
+      value: 
+      objectReference: {fileID: 9125361911375527611}
     - target: {fileID: 8578282350130901058, guid: f93a9bda1419a4946b80071d55960a8d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

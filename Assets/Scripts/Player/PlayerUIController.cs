@@ -15,6 +15,7 @@ public class PlayerUIController : MonoBehaviour
     public GameObject scorePrefab;
     public RectTransform scoreTarget;
     public ScoreUIController scoreUIController;
+    public ScreenShakeController screenShakeController;
 
     private bool _paused;
     public bool paused { get { return _paused; } set { _paused = value; GameManager.Instance.isPaused = value; OnPauseStateSwitched(); } }

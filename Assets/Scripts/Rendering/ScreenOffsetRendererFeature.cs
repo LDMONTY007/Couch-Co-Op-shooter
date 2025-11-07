@@ -31,7 +31,14 @@ public class ScreenOffsetRendererFeature : ScriptableRendererFeature
         }
         if (renderingData.cameraData.cameraType == CameraType.Game)
         {
-            renderer.EnqueuePass(shakeRenderPass);
+            //only enqueue the rendering pass if this camera is owned by the same player that owns
+            //this render feature.
+            ScreenShakeController shakeController = renderingData.cameraData.camera.GetComponent<ScreenShakeController>();
+            if (shakeController != null && renderingData.cameraData.camera.GetComponent<ScreenShakeController>().playerIndex == settings.player_index)
+            {
+                renderer.EnqueuePass(shakeRenderPass);
+            }
+            
         }
     }
 
@@ -53,4 +60,8 @@ public class ScreenOffsetSettings
 {
     [Range(-1f, 1f)] public float horizontalOffset;
     [Range(-1f, 1f)] public float verticalOffset;
+    //0-3 for all 4 players,
+    //this is how we know which screen offset to use
+    //so each player has an individual pass.
+    [Range(0, 3)] public int player_index = 0;
 }

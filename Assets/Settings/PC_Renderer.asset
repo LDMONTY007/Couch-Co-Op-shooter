@@ -18,6 +18,24 @@ MonoBehaviour:
     verticalOffset: 0
   shader: {fileID: 4800000, guid: 3463eb62c3beeb24699826001721f118, type: 3}
   material: {fileID: 0}
+--- !u!114 &-1736316719070092099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9cfdfd3601dbb48bedd77d9982097c, type: 3}
+  m_Name: ScreenOffsetRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    horizontalOffset: 0
+    verticalOffset: 0
+    player_index: 1
+  shader: {fileID: 4800000, guid: 3463eb62c3beeb24699826001721f118, type: 3}
 --- !u!114 &-1438969159859948142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34,6 +52,7 @@ MonoBehaviour:
   settings:
     horizontalOffset: 0
     verticalOffset: 0
+    player_index: 0
   shader: {fileID: 4800000, guid: 3463eb62c3beeb24699826001721f118, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -65,7 +84,10 @@ MonoBehaviour:
   - {fileID: 6482253012236420940}
   - {fileID: 1829977192317312542}
   - {fileID: -1438969159859948142}
-  m_RendererFeatureMap: ad6b866f10d7b46c88b40c111b8ab1414cc78e2ac596f5591ede238f8f6265199235ce4f2cc107ec
+  - {fileID: -1736316719070092099}
+  - {fileID: 2213782853799312010}
+  - {fileID: 8071075408762345066}
+  m_RendererFeatureMap: ad6b866f10d7b46c88b40c111b8ab1414cc78e2ac596f5591ede238f8f6265199235ce4f2cc107ecbd6441b6245de7e78afa8ec2c6efb81e6a96ab6652380270
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -107,6 +129,24 @@ MonoBehaviour:
   settings:
     pixelSize: {x: 320, y: 240}
   material: {fileID: 2100000, guid: c9bfb0579fd076f4aae39d98b794ba19, type: 2}
+--- !u!114 &2213782853799312010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9cfdfd3601dbb48bedd77d9982097c, type: 3}
+  m_Name: ScreenOffsetRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    horizontalOffset: 0
+    verticalOffset: 0
+    player_index: 2
+  shader: {fileID: 4800000, guid: 3463eb62c3beeb24699826001721f118, type: 3}
 --- !u!114 &4733716532197897352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,3 +220,21 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 3302065f671a8450b82c9ddf07426f3a, type: 3}
   - {fileID: 2800000, guid: 56a77a3e8d64f47b6afe9e3c95cb57d5, type: 3}
   m_Shader: {fileID: 4800000, guid: 0849e84e3d62649e8882e9d6f056a017, type: 3}
+--- !u!114 &8071075408762345066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9cfdfd3601dbb48bedd77d9982097c, type: 3}
+  m_Name: ScreenOffsetRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    horizontalOffset: 0
+    verticalOffset: 0
+    player_index: 3
+  shader: {fileID: 4800000, guid: 3463eb62c3beeb24699826001721f118, type: 3}

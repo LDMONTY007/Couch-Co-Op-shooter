@@ -476,7 +476,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     private void Awake()
     {
-       
+        
 
         playerMask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
 
@@ -489,6 +489,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         interactAction = playerInput.actions["Interact"];
         slotUpAction = playerInput.actions["SlotUp"];
         slotDownAction = playerInput.actions["SlotDown"];
+
+        //Set the screen shake controller player index.
+        uiController.screenShakeController.playerIndex = playerInput.playerIndex;
     }
 
 
