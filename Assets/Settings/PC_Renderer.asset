@@ -1,5 +1,22 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-3472087152211904272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eed5f1a6df062ce42a4699813069ace2, type: 3}
+  m_Name: CamShakeRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    horizontalOffset: 0
+    verticalOffset: 0
+  shader: {fileID: 4800000, guid: 3463eb62c3beeb24699826001721f118, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29,7 +46,8 @@ MonoBehaviour:
   - {fileID: 4733716532197897352}
   - {fileID: 6482253012236420940}
   - {fileID: 1829977192317312542}
-  m_RendererFeatureMap: ad6b866f10d7b46c88b40c111b8ab1414cc78e2ac596f5591ede238f8f626519
+  - {fileID: -3472087152211904272}
+  m_RendererFeatureMap: ad6b866f10d7b46c88b40c111b8ab1414cc78e2ac596f5591ede238f8f626519f038368721abd0cf
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
