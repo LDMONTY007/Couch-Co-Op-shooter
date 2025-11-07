@@ -85,11 +85,7 @@ public class PlayerUIController : MonoBehaviour
 
     private void Awake()
     {
-        canvas = canvasRect.GetComponent<Canvas>();
-        Vector2 playerScreenResolution = new Vector2(canvas.worldCamera.pixelWidth, canvas.worldCamera.pixelHeight);
-
-        //Set the reference resolution so that the UI will scale correctly with 4 player split screen.
-        canvasRect.GetComponent<CanvasScaler>().referenceResolution = playerScreenResolution;
+        
 
         paused = false;
         pauseUI.SetActive(paused);
