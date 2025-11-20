@@ -637,6 +637,7 @@ GameObject:
   - component: {fileID: 5867944608992814333}
   - component: {fileID: 116879150689111571}
   - component: {fileID: 9125361911375527611}
+  - component: {fileID: 4048935327329962767}
   m_Layer: 3
   m_Name: 'Camera '
   m_TagString: Untagged
@@ -785,6 +786,82 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: -1
+  verticalShakeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.25
+      value: 0.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5
+      value: 0.25
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.75
+      value: 0.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  screenOffsetVolumeComponent: {fileID: 0}
+  playerVolumeProfiles:
+  - {fileID: 11400000, guid: 341f236040f21b445bc221290b818838, type: 2}
+  - {fileID: 11400000, guid: 51471c09453acdd45a373111cdefbce8, type: 2}
+  - {fileID: 11400000, guid: c79b197f3b37e964db73dfc1b11770f1, type: 2}
+  - {fileID: 11400000, guid: 9745f5eabbcf342429f2f62d804aebbb, type: 2}
+  volume: {fileID: 4048935327329962767}
+  rendererData: {fileID: 11400000, guid: f288ae1f4751b564a96ac7587541f7a2, type: 2}
+--- !u!114 &4048935327329962767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4316735050678712577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 341f236040f21b445bc221290b818838, type: 2}
 --- !u!1 &4549197118118058637
 GameObject:
   m_ObjectHideFlags: 0

@@ -66,7 +66,19 @@ public class ScreenOffsetRenderPass : ScriptableRenderPass
     {
         if (material == null) return;
 
-        material.SetFloat(horizontalScreenOffsetId, defaultSettings.horizontalOffset);
-        material.SetFloat(verticalScreenOffsetId, defaultSettings.verticalOffset);
+        // Use the Volume settings or the default settings if no Volume is set.
+        //var volumeComponent = VolumeManager.instance.stack.GetComponent<ScreenOffsetVolumeComponent>();
+        
+
+        //Get the volume component from our default settings.
+        //because we have one specifically assigned for each
+        //player.
+        var volumeComponent = defaultSettings.volumeComponent;
+
+        if (volumeComponent == null)
+            return;
+
+        material.SetFloat(horizontalScreenOffsetId, volumeComponent.horizontalOffset.overrideState ? volumeComponent.horizontalOffset.value : defaultSettings.horizontalOffset);
+        material.SetFloat(verticalScreenOffsetId, volumeComponent.verticalOffset.overrideState ? volumeComponent.verticalOffset.value : defaultSettings.verticalOffset);
     }
 }

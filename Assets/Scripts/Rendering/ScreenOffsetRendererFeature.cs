@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 public class ScreenOffsetRendererFeature : ScriptableRendererFeature
 {
-    [SerializeField] private ScreenOffsetSettings settings;
+    [SerializeField] public ScreenOffsetSettings settings;
     [SerializeField] private Shader shader;
     private Material material;
     private ScreenOffsetRenderPass shakeRenderPass;
@@ -64,4 +65,5 @@ public class ScreenOffsetSettings
     //this is how we know which screen offset to use
     //so each player has an individual pass.
     [Range(0, 3)] public int player_index = 0;
+    public ScreenOffsetVolumeComponent volumeComponent;
 }

@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    horizontalOffset: 0
+    horizontalOffset: -0
     verticalOffset: 0
     player_index: 0
   shader: {fileID: 4800000, guid: 3463eb62c3beeb24699826001721f118, type: 3}
