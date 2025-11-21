@@ -492,6 +492,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         //Set the screen shake controller player index.
         uiController.screenShakeController.playerIndex = playerInput.playerIndex;
+        uiController.screenShakeController.currentGamepad = playerInput.GetDevice<Gamepad>();
     }
 
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using static UnityEngine.UI.Image;
@@ -22,6 +23,9 @@ public class ScreenShakeController : MonoBehaviour
     public Volume volume;
 
     List<ShakeInstance> shakes = new List<ShakeInstance>();
+
+    public Gamepad currentGamepad;
+    float rumbleDecaySpeed = 6f;
 
     public void AddShake(ShakeInstance inst)
     {
@@ -97,7 +101,7 @@ public class ScreenShakeController : MonoBehaviour
         //debug stuff.
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            AddDirectionalBounce(new Vector2(1, 1), strength: 0.4f, duration: 0.45f);
+            AddDirectionalBounce(new Vector2(1, 1), strength: 0.4f, duration: 0.45f, rumble:0.9f);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -119,27 +123,51 @@ public class ScreenShakeController : MonoBehaviour
     public void HandleShakeAnimation()
     {
         float dt = Time.deltaTime;
-
         Vector2 totalOffset = Vector2.zero;
+        float totalRumble = 0f;
 
         for (int i = shakes.Count - 1; i >= 0; i--)
         {
             var s = shakes[i];
-            totalOffset += s.Evaluate(dt);
-            s.UpdateAge(dt);
 
+            totalOffset += s.Evaluate(dt);
+            totalRumble = Mathf.Max(totalRumble, s.EvaluateRumble());
+
+            s.UpdateAge(dt);
             if (s.IsDone)
                 shakes.RemoveAt(i);
         }
 
         screenOffsetVolumeComponent.horizontalOffset.value = totalOffset.x;
         screenOffsetVolumeComponent.verticalOffset.value = totalOffset.y;
+
+        ApplyRumble(totalRumble);
     }
 
-    public void AddDirectionalBounce(Vector2 dir, float strength, float duration)
+    void ApplyRumble(float intensity)
     {
-        AddShake(new DirectionalBounceShake(dir, strength, duration));
+        //if the player doesn't
+        //have a gamepad, then 
+        //don't apply rumble.
+        if (currentGamepad == null)
+        {    
+            return;
+        }
+
+        // Map shake intensity to motor power
+        float low = intensity * 0.6f;
+        float high = intensity;
+
+        currentGamepad.SetMotorSpeeds(low, high);
     }
+
+
+
+    public void AddDirectionalBounce(Vector2 dir, float strength, float duration, float rumble = 0.5f)
+    {
+        AddShake(new DirectionalBounceShake(dir, strength, rumble, duration));
+    }
+
 
     public void AddVerticalShake(float strength, float frequency, float duration)
     {
@@ -212,6 +240,9 @@ public abstract class ShakeInstance
 
     public bool IsDone => age >= lifetime;
 
+    // Returns a 0–1 rumble intensity
+    public virtual float EvaluateRumble() => 0f;
+
     public abstract Vector2 Evaluate(float dt);
 
     public virtual void UpdateAge(float dt) => age += dt;
@@ -222,25 +253,31 @@ public class DirectionalBounceShake : ShakeInstance
 {
     Vector2 dir;
     float strength;
+    float rumbleStrength;
 
-    public DirectionalBounceShake(Vector2 direction, float strength, float duration)
+    public DirectionalBounceShake(Vector2 direction, float strength, float rumble, float duration)
     {
         dir = direction.normalized;
         this.strength = strength;
-        this.lifetime = duration;
+        this.rumbleStrength = rumble;
+        lifetime = duration;
     }
 
     public override Vector2 Evaluate(float dt)
     {
         float t = age / lifetime;
-
-        // Fast hit --> slow return (spring-like)
-        float falloff = 1f - t;                        // linear falloff
-        float damper = Mathf.Exp(-6f * t);            // exponential spring damping
-
-        float mag = strength * falloff * damper;
-
+        float mag = strength * (1f - t) * Mathf.Exp(-6f * t);
         return dir * mag;
+    }
+
+    public override float EvaluateRumble()
+    {
+        float t = age / lifetime;
+
+        // Same exponential falloff as the screen bounce
+        float falloff = Mathf.Exp(-6f * t);
+
+        return rumbleStrength * falloff;
     }
 }
 
@@ -265,6 +302,16 @@ public class VerticalShake : ShakeInstance
 
         return new Vector2(0, mag);
     }
+
+    public override float EvaluateRumble()
+    {
+        float normalizedAge = age / lifetime;
+
+        float sin = Mathf.Sin(age * frequency * Mathf.PI * 2f);
+        float mag = Mathf.Abs(sin) * strength * (1f - normalizedAge);
+
+        return Mathf.Clamp01(mag * 2f); // boost slightly for feel
+    }
 }
 
 //Dead cells style trauma shake
@@ -287,6 +334,16 @@ public class TraumaShake : ShakeInstance
             (Random.value * 2f - 1f) * amount,
             (Random.value * 2f - 1f) * amount
         );
+    }
+
+    public override float EvaluateRumble()
+    {
+        float normalizedAge = age / lifetime;
+
+        float amount = power * (1f - normalizedAge);
+
+        // Random burst rumble each frame
+        return Random.Range(0f, amount);
     }
 }
 
