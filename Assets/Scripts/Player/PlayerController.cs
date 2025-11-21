@@ -1500,10 +1500,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
             }
         }
 
-            
+
 
         //TODO:
         //Add some screen shake
+        uiController.screenShakeController.AddVerticalShake(strength: 0.15f, frequency: 1f, duration: 0.2f);
 
         //Add some knockback to the player from the hit.
     }
