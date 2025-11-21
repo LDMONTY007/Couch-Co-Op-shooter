@@ -179,6 +179,21 @@ public class ScreenShakeController : MonoBehaviour
         AddShake(new TraumaShake(amount, duration: 0.2f));
     }
 
+    public void AddGunshotRumble(float strength = 1f, float duration = 0.12f)
+    {
+        AddShake(new GunshotRumbleShake(strength, duration));
+    }
+
+    public void AddThrownImpactRumble(float strength = 1f, float duration = 0.35f)
+    {
+        AddShake(new ThrownImpactRumbleShake(strength, duration));
+    }
+
+    public void AddRumbleOnly(float strength, float duration)
+    {
+        AddShake(new RumbleOnlyShake(strength, duration));
+    }
+
 
     /* public void ShakeVertically()
      {
@@ -345,6 +360,60 @@ public class TraumaShake : ShakeInstance
         // Random burst rumble each frame
         return Random.Range(0f, amount);
     }
+}
+
+public class RumbleOnlyShake : ShakeInstance
+{
+    float rumbleStrength;
+    AnimationCurve rumbleCurve;
+
+    public RumbleOnlyShake(float strength, float duration, AnimationCurve curve = null)
+    {
+        rumbleStrength = strength;
+        lifetime = duration;
+
+        // If no curve is provided, use a simple fade-out curve
+        rumbleCurve = curve != null ? curve : AnimationCurve.EaseInOut(0, 1, 1, 0);
+    }
+
+    public override Vector2 Evaluate(float dt)
+    {
+        // No camera movement
+        return Vector2.zero;
+    }
+
+    public override float EvaluateRumble()
+    {
+        float t = Mathf.Clamp01(age / lifetime);
+        return rumbleStrength * rumbleCurve.Evaluate(t);
+    }
+}
+
+public class GunshotRumbleShake : RumbleOnlyShake
+{
+    static AnimationCurve gunCurve = new AnimationCurve(
+        new Keyframe(0f, 1f),
+        new Keyframe(0.1f, 0.8f),
+        new Keyframe(1f, 0f)
+    );
+
+    public GunshotRumbleShake(float strength, float duration = 0.12f)
+        : base(strength, duration, gunCurve)
+    { }
+}
+
+public class ThrownImpactRumbleShake : RumbleOnlyShake
+{
+    static AnimationCurve impactCurve = new AnimationCurve(
+        new Keyframe(0f, 0f),
+        new Keyframe(0.4f, 0.8f),
+        new Keyframe(0.55f, 1f),
+        new Keyframe(1f, 0f)
+    );
+
+    public ThrownImpactRumbleShake(float strength, float duration = 0.35f)
+        : base(strength, duration, impactCurve)
+    { }
 }
 
 

@@ -39,6 +39,9 @@ public class Revolver : SecondaryWeapon
         //Play the muzzleFlashParticles
         //muzzleFlashParticles.Play();
 
+        player.uiController.screenShakeController.AddGunshotRumble(0.9f);
+
+
         if (Physics.Raycast(c.transform.position, c.transform.forward, out var hitInfo, attackDist, mask))
         {
             Debug.Log("HIT!!");

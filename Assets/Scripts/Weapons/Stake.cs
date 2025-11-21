@@ -21,6 +21,9 @@ public class Stake : PrimaryWeapon
 
     public override void Attack(Camera c, PlayerController player)
     {
+        //add rumble for throwing.
+        player.uiController.screenShakeController.AddThrownImpactRumble(0.7f);
+
         RaycastHit hitInfo;
 
         //first raycast only weakpoints then raycast for any other type of collider if no weakpoints are hit.
