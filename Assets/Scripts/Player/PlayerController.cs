@@ -827,6 +827,19 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     {
         //TODO:
         //Play landing particles.
+
+
+        //Replace this with a check to see if we fell from a certain height.
+        if (false)
+        {
+            //Add a shake to the current screen shake
+            //so it's a nice vertical bump that resembles
+            //when characters land from a large height in cartoons
+            //and they shiver upwards
+            uiController.screenShakeController.AddVerticalShake(strength: 0.15f, frequency: 12f, duration: 0.8f);
+        }
+
+       
     }
 
     private void HandleCameraPosition()
