@@ -274,6 +274,9 @@ public class Ghost : MonoBehaviour, IDamageable
     // Update is called once per frame
     void Update()
     {
+        //do ghost bobbing up and down.
+        HandleBobbing();
+
         //Handle the animations.
         HandleAnimations();
 
@@ -729,4 +732,37 @@ public class Ghost : MonoBehaviour, IDamageable
             StopCoroutine(curStunCoroutine);
     }
 
+
+
+    float startY = 1f;
+
+    bool reverse = false;
+
+    float curTime = 0f;
+
+    float totalTime = 1f;
+
+    float topOffset = 0.5f;
+
+    float bottomOffset = -0.5f;
+
+    public void HandleBobbing()
+    {
+        curTime += Time.deltaTime;
+
+
+        if (curTime < totalTime)
+        {
+            if (!reverse)
+                transform.position = new Vector3(transform.position.x, startY + Mathf.SmoothStep(bottomOffset, topOffset, curTime / totalTime), transform.position.z);
+            else
+                transform.position = new Vector3(transform.position.x, startY + Mathf.SmoothStep(topOffset, bottomOffset, curTime / totalTime), transform.position.z);
+        }
+        else
+        {
+            reverse = !reverse;
+            curTime = 0;
+        }
+
+    }
 }
