@@ -3881,7 +3881,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 944536120}
-  m_Layer: 0
+  - component: {fileID: 944536121}
+  - component: {fileID: 944536122}
+  m_Layer: 6
   m_Name: Ghost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3897,13 +3899,66 @@ Transform:
   m_GameObject: {fileID: 944536117}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 467.5}
+  m_LocalPosition: {x: 46, y: 0.6, z: 432.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1191122022}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &944536121
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944536117}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &944536122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944536117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b16a826844ca4de4a9d1accd7db5f701, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chaseSpeed: 5
+  walkSpeed: 3
+  currentState: 3
+  enemyType: 3
+  baseScore: 50
+  attackDistance: 3
+  patrolRange: 50
+  aggroRadius: 25
+  playerObj: {fileID: 0}
+  animator: {fileID: 0}
+  bloodParticlesPrefab: {fileID: 0}
+  audioSource: {fileID: 0}
+  invincible: 0
+  canAttack: 1
+  attackCooldownTime: 0.67
+  rotationSpeed: 5
+  didArrive: 0
+  currentSpeed: 0
 --- !u!43 &962749592
 Mesh:
   m_ObjectHideFlags: 0
@@ -4524,8 +4579,7 @@ GameObject:
   - component: {fileID: 1191122022}
   - component: {fileID: 1191122025}
   - component: {fileID: 1191122024}
-  - component: {fileID: 1191122023}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GhostSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4547,28 +4601,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 944536120}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &1191122023
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1191122021}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1191122024
 MeshRenderer:
   m_ObjectHideFlags: 0

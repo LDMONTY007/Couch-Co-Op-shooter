@@ -2,6 +2,8 @@ using UnityEngine;
 using static ScoreData;
 using UnityEngine.AI;
 using System.Collections;
+using static UnityEngine.GraphicsBuffer;
+using NUnit.Framework.Interfaces;
 
 public class Ghost : MonoBehaviour
 {
@@ -19,11 +21,9 @@ public class Ghost : MonoBehaviour
 
     public EnemyState currentState = EnemyState.Patrol;
 
-    public EnemyType enemyType = EnemyType.Undead;
+    public EnemyType enemyType = EnemyType.Ghost;
 
-    public float baseScore = 25;
-
-    public Transform aimIKTransform;
+    public float baseScore = 50;
 
     //Distance from player
     //to start fleeing.
@@ -34,8 +34,6 @@ public class Ghost : MonoBehaviour
     //The radius to become aggro on a player
     //when standing idle.
     public float aggroRadius = 25f;
-
-    private NavMeshAgent _agent;
 
     public GameObject playerObj;
 
@@ -117,7 +115,7 @@ public class Ghost : MonoBehaviour
         {
             //Increment the last attacker's 
             //zombie kill count.
-            lastAttacker.zombieKillCount++;
+            //lastAttacker.zombieKillCount++;
             //For now we don't do it this way,
             //because we'll add score every time we take damage.
             /*//Tell the player they recieved a score from
@@ -190,7 +188,63 @@ public class Ghost : MonoBehaviour
 
     }
 
+    public struct KinematicSteeringOutput
+    {
+        public Vector3 velocity;
+    }
 
+    public float rotationSpeed = 5f;
+
+    //when didArrive = true,
+    //we are idle.
+    public bool didArrive = true;
+
+    public float currentSpeed = 0f;
+
+    Vector3 targetPos = Vector3.zero;
+
+    KinematicSteeringOutput lastOutput = new KinematicSteeringOutput();
+
+    public KinematicSteeringOutput GetSteering()
+    {
+        //Create structure for output
+        KinematicSteeringOutput steering = new KinematicSteeringOutput();
+
+        //get direction to the target
+        steering.velocity = targetPos - transform.position;
+
+        /*//Check if we're within radius of satisfaction
+        if (steering.velocity.magnitude < attackDistance)
+        {
+            //Say we arrived
+            didArrive = true;
+
+            //Return empty steering
+            return new KinematicSteeringOutput();
+        }*/
+
+        //We need to move our target,
+        //we want to get there in timeToTarget seconds
+        //so divide total velocity required to reach target
+        //by the time.
+        steering.velocity = steering.velocity.normalized * currentSpeed;
+
+        //Clamp to max speed
+        //steering.velocity = Vector3.ClampMagnitude(steering.velocity, maxSpeed);
+
+        //Set y velocity to zero as we don't
+        //want to move vertically.
+        steering.velocity.y = 0;
+
+        //This isn't the intended use of lerp, 
+        //but creates a simple way for us to
+        //smoothly rotate while moving
+        //without creating a more complex system.
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(steering.velocity), rotationSpeed * Time.deltaTime);
+
+        //output the steering
+        return steering;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -215,8 +269,6 @@ public class Ghost : MonoBehaviour
 
         civilianScreamingAudioClips = civilianClipHolder.clips;
         birdScreamingAudioClips = birdClipHolder.clips;*/
-
-        _agent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
@@ -246,6 +298,8 @@ public class Ghost : MonoBehaviour
             return;
         }
 
+       
+        
 
         float distance = Vector3.Distance(transform.position, playerObj.transform.position);
 
@@ -253,21 +307,21 @@ public class Ghost : MonoBehaviour
         //then use the chase speed.
         if (currentState == EnemyState.Chase && distance > attackDistance * 1.5f)
         {
-            _agent.speed = chaseSpeed;
+            currentSpeed = chaseSpeed;
         }
         //use walk speed otherwise. 
         else if (currentState == EnemyState.Chase && distance < attackDistance * 1.5f)
         {
-            _agent.speed = walkSpeed;
+            currentSpeed = walkSpeed;
         }
         else if (currentState != EnemyState.Chase)
         {
-            _agent.speed = walkSpeed;
+            currentSpeed = walkSpeed;
         }
 
 
 
-        //Chase
+        //Chase check
         if (distance > attackDistance/* && ((currentState == EnemyState.Chase && curTimeSinceLastFlee >= timeBetweenFleeChecks) || (currentState != EnemyState.Chase))*/)
         {
 
@@ -285,7 +339,7 @@ public class Ghost : MonoBehaviour
             //Vector from player to us
             Vector3 dirAwayPlayer = transform.position - playerObj.transform.position;
 
-            Vector3 target = playerObj.transform.position + (dirAwayPlayer.normalized * attackDistance / 2f);
+            targetPos = playerObj.transform.position + (dirAwayPlayer.normalized * attackDistance / 2f);
 
 
             /*            float radius = 1f;
@@ -307,21 +361,24 @@ public class Ghost : MonoBehaviour
                             newTarget.y = 0;
                         }*/
 
-            _agent.SetDestination(target);
+            
 
-            //set to fleeing so we don't
-            //patrol
+            //set to chase
             currentState = EnemyState.Chase;
+            //say we haven't arrived yet
+            didArrive = false;
         }
 
         //if we reached our destination and we are chasing,
         //or we are close enough to the player and we are chasing,
         //say we are now attacking.
-        if (currentState == EnemyState.Chase && DestinationReached(_agent, transform.position) || currentState == EnemyState.Chase && distance < attackDistance)
+        if (currentState == EnemyState.Chase && didArrive || currentState == EnemyState.Chase && distance < attackDistance)
         {
             curTimeSinceLastFlee = 0f;
-            //for now just go back to patrolling.
+            //go to attack state
             currentState = EnemyState.Attack;
+            //say we arrived
+            didArrive = true;
         }
         /* //start fleeing again
          //if we are still to close to the 
@@ -367,14 +424,19 @@ public class Ghost : MonoBehaviour
         //only patrol
         //if our state is patrolling
         //and we've already reached our destination.
-        if (currentState == EnemyState.Patrol && DestinationReached(_agent, transform.position))
+        if (currentState == EnemyState.Patrol && didArrive)
         {
             HandlePatrol();
         }
 
-        //Handle head look.
-        HandleRigLook();
 
+        //if we haven't arrived yet.
+        if (!didArrive)
+        {
+            lastOutput = GetSteering();
+            //Add velocity to the player's position * Time.DeltaTime so it scales with framerate
+            transform.position += lastOutput.velocity * Time.deltaTime;
+        }
 
     }
 
@@ -404,25 +466,22 @@ public class Ghost : MonoBehaviour
         {
             Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
 
-            _agent.SetDestination(point);
+            targetPos = point;
         }
-    }
-
-    public void HandleRigLook()
-    {
-        //Handle where the head is looking
-        //by setting it's target look position.
-        if (playerObj != null)
-            aimIKTransform.position = playerObj.transform.position;
     }
 
     public void HandleAnimations()
     {
+        if (animator == null)
+        {
+            return;
+        }
+
         switch (currentState)
         {
             case EnemyState.Chase:
                 //if moving play chase animation.
-                if (_agent.velocity.sqrMagnitude > 0)
+                if (!didArrive)
                 {
                     animator.SetBool("Chase", true);
                 }
@@ -506,8 +565,9 @@ public class Ghost : MonoBehaviour
         //Stun this zombie using the given weapon's stun time.
         curStunCoroutine = StartCoroutine(StunCoroutine(damageData.stunTime));
 
-        if (damageData.stunTime > 0)
+        if (damageData.stunTime > 0 && animator != null)
         {
+            
             //Make the zombie react to being hit,
             //then say they are stunned.
             animator.SetTrigger("HitReact");
@@ -600,15 +660,21 @@ public class Ghost : MonoBehaviour
             {
                 damageable.TakeDamage(new DamageData() { damage = attackDamage, stunTime = 0.3f, other = gameObject, point = hitInfo.point, normal = hitInfo.normal });
 
-                //Call the code to do the attack animation
-                if (Random.Range(0, 2) == 0)
+                
+
+                if (animator != null)
                 {
-                    animator.SetTrigger("Attack0");
+                    //Call the code to do the attack animation
+                    if (Random.Range(0, 2) == 0)
+                    {
+                        animator.SetTrigger("Attack0");
+                    }
+                    else
+                    {
+                        animator.SetTrigger("Attack1");
+                    }
                 }
-                else
-                {
-                    animator.SetTrigger("Attack1");
-                }
+                
 
 
 
@@ -634,16 +700,18 @@ public class Ghost : MonoBehaviour
         stunned = true;
 
         //make sure the agent is on a nav mesh and enabled.
-        if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
-            //Stop the agent's movement.
-            _agent.isStopped = true;
+        if (!didArrive)
+        {
+            didArrive = true;
+        }
 
 
         yield return new WaitForSeconds(stunTime);
         stunned = false;
         currentState = EnemyState.Patrol;
-        //Reset the agent's path so it can move again.
-        _agent.ResetPath();
+        //Say we haven't arrived so we start
+        //the movement state machine again.
+        didArrive = false;
 
         //Set current stun coroutine back to null.
         curStunCoroutine = null;
