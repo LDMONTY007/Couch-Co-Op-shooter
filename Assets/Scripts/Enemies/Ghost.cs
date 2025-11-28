@@ -742,9 +742,9 @@ public class Ghost : MonoBehaviour, IDamageable
 
     float totalTime = 1f;
 
-    float topOffset = 0.5f;
+    float topOffset = 0.25f;
 
-    float bottomOffset = -0.5f;
+    float bottomOffset = -0.25f;
 
     public void HandleBobbing()
     {
