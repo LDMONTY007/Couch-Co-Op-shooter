@@ -3899,7 +3899,7 @@ Transform:
   m_GameObject: {fileID: 944536117}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 46, y: 0.6, z: 432.3}
+  m_LocalPosition: {x: 25.4, y: 0.6, z: 463.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3951,7 +3951,7 @@ MonoBehaviour:
   aggroRadius: 25
   playerObj: {fileID: 0}
   animator: {fileID: 0}
-  bloodParticlesPrefab: {fileID: 0}
+  bloodParticlesPrefab: {fileID: 6673894894113231363, guid: 591fa157ce5f5fe4485c8d626eaadeb0, type: 3}
   audioSource: {fileID: 0}
   invincible: 0
   canAttack: 1

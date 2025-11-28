@@ -5,7 +5,7 @@ using System.Collections;
 using static UnityEngine.GraphicsBuffer;
 using NUnit.Framework.Interfaces;
 
-public class Ghost : MonoBehaviour
+public class Ghost : MonoBehaviour, IDamageable
 {
     public float chaseSpeed = 5f;
     public float walkSpeed = 3f;
@@ -575,6 +575,7 @@ public class Ghost : MonoBehaviour
 
         }
 
+        Debug.LogWarning("TOOK DAMAGE");
 
         //Spawn the particle system here with it's orientation
         //matching the damageData hit normal at the damageData hit point.
@@ -613,7 +614,7 @@ public class Ghost : MonoBehaviour
         //Stun this zombie using the given weapon's stun time.
         curStunCoroutine = StartCoroutine(StunCoroutine(damageData.stunTime));
 
-        if (damageData.stunTime > 0)
+        if (damageData.stunTime > 0 && animator != null)
         {
             //Make the zombie react to being hit,
             //then say they are stunned.
