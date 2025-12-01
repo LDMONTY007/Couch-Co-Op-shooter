@@ -11,7 +11,7 @@ public class Menu : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        //StartCoroutine(SetFirstSelected(firstSelected));
+        StartCoroutine(SetFirstSelected(firstSelected));
     }
 
     public IEnumerator SetFirstSelected(GameObject firstSelectedObject)
