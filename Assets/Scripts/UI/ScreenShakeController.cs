@@ -132,6 +132,7 @@ public class ScreenShakeController : MonoBehaviour
 
             totalOffset += s.Evaluate(dt);
             totalRumble = Mathf.Max(totalRumble, s.EvaluateRumble());
+            ApplyRumble(totalRumble, s);
 
             s.UpdateAge(dt);
             if (s.IsDone)
@@ -141,10 +142,10 @@ public class ScreenShakeController : MonoBehaviour
         screenOffsetVolumeComponent.horizontalOffset.value = totalOffset.x;
         screenOffsetVolumeComponent.verticalOffset.value = totalOffset.y;
 
-        ApplyRumble(totalRumble);
+        //ApplyRumble(totalRumble);
     }
 
-    void ApplyRumble(float intensity)
+    void ApplyRumble(float intensity, ShakeInstance s)
     {
         //if the player doesn't
         //have a gamepad, then 
@@ -157,6 +158,13 @@ public class ScreenShakeController : MonoBehaviour
         // Map shake intensity to motor power
         float low = intensity * 0.6f;
         float high = intensity;
+
+        // If this is a HeavyCatchRumbleShake, use left/right variation
+        if (s is HeavyCatchRumbleShake heavy)
+        {
+            low = heavy.EvaluateLeftMotor();
+            high = heavy.EvaluateRightMotor();
+        }
 
         currentGamepad.SetMotorSpeeds(low, high);
     }
@@ -193,6 +201,15 @@ public class ScreenShakeController : MonoBehaviour
     {
         AddShake(new RumbleOnlyShake(strength, duration));
     }
+
+    //Used to simulate the feeling that luigi's mansion arcade has
+    //when you collect an item and it feels like you really caught something
+    //in your hand.
+    public void AddHeavyCatchRumble(float strength = 1f, float duration = 0.25f)
+    {
+        AddShake(new HeavyCatchRumbleShake(strength, duration));
+    }
+
 
 
     /* public void ShakeVertically()
@@ -364,7 +381,7 @@ public class TraumaShake : ShakeInstance
 
 public class RumbleOnlyShake : ShakeInstance
 {
-    float rumbleStrength;
+    public float rumbleStrength;
     AnimationCurve rumbleCurve;
 
     public RumbleOnlyShake(float strength, float duration, AnimationCurve curve = null)
@@ -416,4 +433,40 @@ public class ThrownImpactRumbleShake : RumbleOnlyShake
     { }
 }
 
+public class HeavyCatchRumbleShake : RumbleOnlyShake
+{
+    // Custom curve for clench + quick shake
+    static AnimationCurve heavyCatchCurve = new AnimationCurve(
+        new Keyframe(0f, 0f),
+        new Keyframe(0.05f, 1f),   // quick spike
+        new Keyframe(0.12f, 0.7f), // quick drop
+        new Keyframe(0.18f, 0.9f), // subtle second peak
+        new Keyframe(0.25f, 0f)    // decay
+    );
+
+    public HeavyCatchRumbleShake(float strength = 1f, float duration = 0.25f)
+        : base(strength, duration, heavyCatchCurve)
+    {
+    }
+
+    // Override ApplyRumble to alternate motors slightly for “hands clench”
+    public override float EvaluateRumble()
+    {
+        float t = Mathf.Clamp01(age / lifetime);
+        return base.rumbleStrength * heavyCatchCurve.Evaluate(t);
+    }
+
+    // Optional: add small per-motor variation
+    public float EvaluateLeftMotor()
+    {
+        float baseVal = EvaluateRumble();
+        return Mathf.Clamp01(baseVal * Random.Range(0.85f, 1f));
+    }
+
+    public float EvaluateRightMotor()
+    {
+        float baseVal = EvaluateRumble();
+        return Mathf.Clamp01(baseVal * Random.Range(0.85f, 1f));
+    }
+}
 

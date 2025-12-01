@@ -6,6 +6,8 @@ public class ScoreUIController : MonoBehaviour
 {
     public TMP_Text scoreText;
 
+    public ScreenShakeController shakeController;
+
     private int _score = 0;
     public int score { get { return _score; } set { _score = value; scoreText.text = value.ToString(); } }
 
@@ -26,7 +28,11 @@ public class ScoreUIController : MonoBehaviour
 
     public void AddScore(int s)
     {
+        
+
         score += s;
+
+        shakeController.AddHeavyCatchRumble(0.9f, 0.25f);
 
         StartCoroutine(AddScoreAnimation());
     }

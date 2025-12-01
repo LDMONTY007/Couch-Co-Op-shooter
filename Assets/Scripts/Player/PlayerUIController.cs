@@ -96,6 +96,8 @@ public class PlayerUIController : MonoBehaviour
         //assign UI controller.
         playerController.uiController = this;
 
+        scoreUIController.shakeController = screenShakeController;
+
         OnPauseStateSwitched();
 
         healthBarSlider.maxValue = PlayerController.maxHealth;
