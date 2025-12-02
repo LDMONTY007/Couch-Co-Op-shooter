@@ -140,7 +140,7 @@ public class PlayerUIController : MonoBehaviour
         //playerObject.GetComponent<PlayerInput>().
         //Destroy(playerObject);
         //Exit back to the title screen.
-        DataPersistenceManager.instance.LoadSceneAsync("Title Screen");
+        DataPersistenceManager.instance.LoadSceneAsync("Title Scene");
     }
 
     public void OnPauseStateSwitched()
