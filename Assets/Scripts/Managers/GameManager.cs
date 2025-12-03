@@ -76,6 +76,8 @@ public class GameManager : IDataPersistence
     //subscribed to by UIControllers on start.
     public UnityEvent<bool> isLowResChanged = new();
 
+    //used to store all damageables in the current scene.
+    public List<IDamageable> damageables = new List<IDamageable>();
 
     public void LoadData(GameData gameData)
     {

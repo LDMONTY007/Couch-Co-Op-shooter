@@ -169,8 +169,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     Vector2 moveInput;
 
     float mouseLookSpeed = 10f;
-    float controllerLookSpeed = 100f;
+    float controllerLookSpeed = 200f;
     Vector2 curLook;
+
+    //beyond this camera starts rotating.
+    float cameraDeadZone = 0.25f;
 
     public float interactDist = 7.5f;
 
@@ -201,6 +204,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     private InputAction interactAction;
     private InputAction slotUpAction;
     private InputAction slotDownAction;
+    private InputAction aimToggleAction;
 
     float yVel = 0f;
 
@@ -489,6 +493,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         interactAction = playerInput.actions["Interact"];
         slotUpAction = playerInput.actions["SlotUp"];
         slotDownAction = playerInput.actions["SlotDown"];
+        aimToggleAction = playerInput.actions["AimToggle"];
 
         //Set the screen shake controller player index.
         uiController.screenShakeController.playerIndex = playerInput.playerIndex;
@@ -855,19 +860,34 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
+    Vector2 mouseInput = Vector2.zero;
+
+    bool isAiming = false;
+
     private void HandleLook()
     {
+        isAiming = aimToggleAction.GetButton();
+
         //don't execute this code when paused.
         if (GameManager.Instance.isPaused)
         {
             return;
         }
 
-        var mouseInput = lookAction.ReadValue<Vector2>();
+        mouseInput = lookAction.ReadValue<Vector2>();
+
+        uiController.aimTargetController.input = mouseInput;
+
+        if (isAiming)
+        {
+            return;
+        }
 
         //apply mouse input to our current look vector using deltaTime and look speed.
         curLook.y -= mouseInput.y * GetCorrespondingLookSensitivity(playerInput.GetDevice<InputDevice>()) * Time.deltaTime;
         curLook.x += mouseInput.x * GetCorrespondingLookSensitivity(playerInput.GetDevice<InputDevice>()) * Time.deltaTime;
+
+        
 
         //clamp to max and min look angle.
         curLook.y = Mathf.Clamp(curLook.y, -80f, 80f);
@@ -876,7 +896,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         cam.transform.localRotation = Quaternion.Euler(curLook.y, 0f, 0f);
 
         //set rotation for the body.
-        //transform.localRotation = Quaternion.Euler(0f, curLook.x, 0f);
+        transform.localRotation = Quaternion.Euler(0f, curLook.x, 0f);
     }
 
     public void HandleAttack()
@@ -1362,9 +1382,14 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         
         HandleJumping();
 
-        //set rotation for the body.
-        if (rb.rotation.eulerAngles.y != curLook.x)
-        rb.MoveRotation(Quaternion.Euler(0f, curLook.x, 0f));
+        /*if (isAiming)
+        {
+
+
+            //set rotation for the body.
+            if (rb.rotation.eulerAngles.y != curLook.x)
+                rb.MoveRotation(Quaternion.Euler(0f, curLook.x, 0f));
+        }*/
 
         ApplyFinalMovements();
     }
@@ -2447,6 +2472,22 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     public void OnFocusLeave()
     {
         throw new NotImplementedException();
+    }
+
+ 
+
+    public void OnDamageableDisabled()
+    {
+        //We don't do anything in here as we don't
+        //want players getting targeted.
+        //GameManager.Instance.damageables.Remove(this);
+    }
+
+    public void OnDamageableEnabled()
+    {
+        //We don't do anything in here as we don't
+        //want players getting targeted.
+        //GameManager.Instance.damageables.Add(this);
     }
 
 }

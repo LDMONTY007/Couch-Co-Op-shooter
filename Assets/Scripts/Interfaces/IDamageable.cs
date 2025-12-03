@@ -8,6 +8,10 @@ public interface IDamageable
     public void TakeDamage(DamageData damageData);
 
     public ScoreData[] TakeDamageScored(DamageData damageData);
+
+    public void OnDamageableDisabled();
+
+    public void OnDamageableEnabled();
 }
 
 public struct DamageData

@@ -16,6 +16,7 @@ public class PlayerUIController : MonoBehaviour
     public RectTransform scoreTarget;
     public ScoreUIController scoreUIController;
     public ScreenShakeController screenShakeController;
+    public AimTargetController aimTargetController;
 
     private bool _paused;
     public bool paused { get { return _paused; } set { _paused = value; GameManager.Instance.isPaused = value; OnPauseStateSwitched(); } }
@@ -97,6 +98,11 @@ public class PlayerUIController : MonoBehaviour
         playerController.uiController = this;
 
         scoreUIController.shakeController = screenShakeController;
+
+        //set aim target references.
+        aimTargetController.cam = playerController.cam;
+        aimTargetController.canvasRect = canvasRect;
+
 
         OnPauseStateSwitched();
 

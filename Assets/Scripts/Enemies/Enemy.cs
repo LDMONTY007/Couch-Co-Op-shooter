@@ -140,6 +140,8 @@ public class Enemy : MonoBehaviour, IDamageable
     // Start is called before the first frame update
     void Start()
     {
+        
+
         layerMask = ~LayerMask.GetMask("Enemy", "Ground");
 
         /*//Get the audio clip holders.
@@ -612,4 +614,25 @@ public class Enemy : MonoBehaviour, IDamageable
     }
 
     #endregion
+
+
+    private void OnEnable()
+    {
+        OnDamageableEnabled();
+    }
+
+    private void OnDisable()
+    {
+        OnDamageableDisabled();
+    }
+
+    public void OnDamageableDisabled()
+    {
+        GameManager.Instance.damageables.Remove(this);
+    }
+
+    public void OnDamageableEnabled()
+    {
+        GameManager.Instance.damageables.Add(this);
+    }
 }

@@ -41,8 +41,34 @@ public class Revolver : SecondaryWeapon
 
         player.uiController.screenShakeController.AddGunshotRumble(0.9f);
 
+        IDamageable bestTarget = parentPlayer.uiController.aimTargetController.GetBestTarget();
 
-        if (Physics.Raycast(c.transform.position, c.transform.forward, out var hitInfo, attackDist, mask))
+        if (bestTarget != null)
+        {
+            GameObject targetObject = (bestTarget as Component).gameObject;
+
+            Debug.Log("HIT!!");
+            //IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
+
+            //create temp scoreData var
+            List<ScoreData> scoreData = new();
+
+            //if we actually hit a damageable.
+            //Also pass the player as the other gameobject rather than this weapon.
+            if (bestTarget != null)
+                scoreData = bestTarget.TakeDamageScored(new DamageData() { damageType = damageType, damage = damage, stunTime = stunTime, other = player.gameObject, point = targetObject.transform.position, normal = (targetObject.transform.position - player.transform.position).normalized }).ToList();
+
+            //add all the score data's from the damaged object to the player list.
+            //this is so if they hit multiple enemies with a weapon or even if an explosive
+            //hits multiple enemies.
+            foreach (ScoreData sd in scoreData)
+            {
+                //Add the score data to the player.
+                player.AddScoreData(sd);
+            }
+        }
+
+        /*if (Physics.Raycast(c.transform.position, c.transform.forward, out var hitInfo, attackDist, mask))
         {
             Debug.Log("HIT!!");
             IDamageable damageable = hitInfo.transform.gameObject.GetComponent<IDamageable>();
@@ -63,7 +89,7 @@ public class Revolver : SecondaryWeapon
                 //Add the score data to the player.
                 player.AddScoreData(sd);
             }
-        }
+        }*/
 
         //Start the cooldown.
         StartCoroutine(CooldownCoroutine());

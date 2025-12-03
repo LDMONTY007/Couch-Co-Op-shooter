@@ -659,4 +659,24 @@ public class Vampire : MonoBehaviour, IDamageable
         if (curStunCoroutine != null)
             StopCoroutine(curStunCoroutine);
     }
+
+    private void OnEnable()
+    {
+        OnDamageableEnabled();
+    }
+
+    private void OnDisable()
+    {
+        OnDamageableDisabled();
+    }
+
+    public void OnDamageableDisabled()
+    {
+        GameManager.Instance.damageables.Remove(this);
+    }
+
+    public void OnDamageableEnabled()
+    {
+        GameManager.Instance.damageables.Add(this);
+    }
 }
