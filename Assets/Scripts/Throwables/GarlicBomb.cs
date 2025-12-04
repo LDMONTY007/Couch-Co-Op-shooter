@@ -11,6 +11,7 @@ public class GarlicBomb : Throwable
 
     public float baseDamage = 50f;
 
+    public GameObject garlicParticles;
 
     public override void OnThrown()
     {
@@ -19,14 +20,23 @@ public class GarlicBomb : Throwable
 
     private void OnCollisionEnter(Collision collision)
     {
+        //ignore if it hits a player.
+        if (collision.collider.CompareTag("Player"))
+        {
+            return;
+        }
+
         if (explodeOnCollisionEnter)
         {
             Detonate();
+            
         }
     }
 
     public void Detonate()
     {
+        
+
         Collider[] cols = Physics.OverlapSphere(transform.position, explosionRadius);
 
         //Deal damage to all damageables within radius of blast.
@@ -49,10 +59,24 @@ public class GarlicBomb : Throwable
                 //But for now just say the point we hit is the position of the collider object
                 Vector3 point = cols[i].transform.position;
 
-                //Deal damage.
-                scores.AddRange(damageable.TakeDamageScored(new DamageData() { damageType = DamageType.Garlic, damage = falloffDamage, stunTime = 1f, other = gameObject, point = point, normal = normal }).ToList());
+                //deal damage to player
+                if (damageable is PlayerController)
+                {
+                    damageable.TakeDamage(new DamageData() { damageType = DamageType.Garlic, damage = falloffDamage, stunTime = 1f, other = gameObject, point = point, normal = normal });
+                }
+                //deal scored damage
+                else
+                {
+                    //Deal damage.
+                    scores.AddRange(damageable.TakeDamageScored(new DamageData() { damageType = DamageType.Garlic, damage = falloffDamage, stunTime = 1f, other = gameObject, point = point, normal = normal }).ToList());
+                }
+
+                
             }
         }
+
+        //create garlic particles
+        Instantiate(garlicParticles, transform.position, Quaternion.identity);
 
         //Destroy after exploding
         Destroy(gameObject);
