@@ -19,7 +19,7 @@ public class AimTargetController : MonoBehaviour
 
     public Vector2 input;
 
-    public float sensitivity = 0.25f;
+    public float sensitivity = 1f;
 
     public List<IDamageable> damageables = new();
 

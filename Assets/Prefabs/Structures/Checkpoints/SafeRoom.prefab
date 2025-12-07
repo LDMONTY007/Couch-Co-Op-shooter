@@ -2385,7 +2385,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4945141379587587464, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
       propertyPath: m_VersionIndex
-      value: 454
+      value: 487
       objectReference: {fileID: 0}
     - target: {fileID: 6534335035825628053, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
       propertyPath: OnDoorOpen.m_PersistentCalls.m_Calls.Array.size
@@ -2549,7 +2549,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7478512638738250365, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
       propertyPath: m_VersionIndex
-      value: 5263
+      value: 5296
       objectReference: {fileID: 0}
     - target: {fileID: 7478512638738250365, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
       propertyPath: m_SelectedEdges.Array.size

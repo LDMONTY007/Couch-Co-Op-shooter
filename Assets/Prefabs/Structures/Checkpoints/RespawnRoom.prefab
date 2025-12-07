@@ -242,7 +242,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 87
+  m_VersionIndex: 141
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2108,6 +2108,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9023768076679370079}
     m_Modifications:
+    - target: {fileID: 904174691594318195, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
+      propertyPath: m_SelectedEditorRenderState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4945141379587587464, guid: 7a9962958a6704a44bd1d91dfe03d457, type: 3}
       propertyPath: m_VersionIndex
       value: 250

@@ -466,6 +466,7 @@ MonoBehaviour:
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
   - {fileID: 3117405454180556445}
+  - {fileID: 3002675593195776605}
 --- !u!114 &853819529557874667
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -776,6 +777,28 @@ MonoBehaviour:
   contribution:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &3002675593195776605
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebac3a38afdfed347a142d588909ab65, type: 3}
+  m_Name: ScreenOffsetVolumeComponent
+  m_EditorClassIdentifier: 
+  active: 1
+  horizontalOffset:
+    m_OverrideState: 1
+    m_Value: 0
+  verticalOffset:
+    m_OverrideState: 1
+    m_Value: 0
+  playerIndex:
+    m_OverrideState: 1
+    m_Value: -1
 --- !u!114 &3117405454180556445
 MonoBehaviour:
   m_ObjectHideFlags: 3
