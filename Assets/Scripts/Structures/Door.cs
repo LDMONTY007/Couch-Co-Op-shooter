@@ -53,14 +53,14 @@ public class Door : MonoBehaviour, IInteractible
         float totalTime = 1f;
         float curTime = 0f;
 
-        Quaternion startRotation = doorTransform.rotation;
+        Quaternion startRotation = doorTransform.localRotation;
 
         while (curTime < totalTime)
         {
             curTime += Time.deltaTime;
 
             //Lerp using smoothstep
-            doorTransform.rotation = Quaternion.Lerp(startRotation, Quaternion.AngleAxis(90f, doorTransform.up), Mathf.SmoothStep(0, 1, curTime / totalTime));
+            doorTransform.localRotation = Quaternion.Lerp(startRotation, Quaternion.AngleAxis(90f, doorTransform.up), Mathf.SmoothStep(0, 1, curTime / totalTime));
 
             yield return null;
         }
@@ -78,14 +78,14 @@ public class Door : MonoBehaviour, IInteractible
         float totalTime = 1f;
         float curTime = 0f;
 
-        Quaternion startRotation = doorTransform.rotation;
+        Quaternion startRotation = doorTransform.localRotation;
 
         while (curTime < totalTime)
         {
             curTime += Time.deltaTime;
 
             //Lerp using smoothstep
-            doorTransform.rotation = Quaternion.Lerp(startRotation, Quaternion.AngleAxis(-90f, doorTransform.up), Mathf.SmoothStep(0, 1, curTime / totalTime));
+            doorTransform.localRotation = Quaternion.Lerp(startRotation, Quaternion.AngleAxis(-90f, doorTransform.up), Mathf.SmoothStep(0, 1, curTime / totalTime));
 
             yield return null;
         }
@@ -101,14 +101,14 @@ public class Door : MonoBehaviour, IInteractible
         float totalTime = 1f;
         float curTime = 0f;
 
-        Quaternion startRotation = doorTransform.rotation;
+        Quaternion startRotation = doorTransform.localRotation;
 
         while (curTime < totalTime)
         {
             curTime += Time.deltaTime;
 
             //Lerp using smoothstep
-            doorTransform.rotation = Quaternion.Lerp(startRotation, Quaternion.AngleAxis(0f, doorTransform.up), Mathf.SmoothStep(0, 1, curTime / totalTime));
+            doorTransform.localRotation = Quaternion.Lerp(startRotation, Quaternion.AngleAxis(0f, doorTransform.up), Mathf.SmoothStep(0, 1, curTime / totalTime));
 
             yield return null;
         }
@@ -120,19 +120,19 @@ public class Door : MonoBehaviour, IInteractible
 
     public void CloseDoorInstant()
     {
-        doorTransform.rotation = Quaternion.AngleAxis(0f, doorTransform.up);
+        doorTransform.localRotation = Quaternion.AngleAxis(0f, doorTransform.up);
         isDoorOpen = false;
     }
 
     public void OpenDoorForwardInstant()
     {
-        doorTransform.rotation = Quaternion.AngleAxis(90f, doorTransform.up);
+        doorTransform.localRotation = Quaternion.AngleAxis(90f, doorTransform.up);
         isDoorOpen = true;
     }
 
     public void OpenDoorBackwardInstant()
     {
-        doorTransform.rotation = Quaternion.AngleAxis(-90f, doorTransform.up);
+        doorTransform.localRotation = Quaternion.AngleAxis(-90f, doorTransform.up);
         isDoorOpen = true;
     }
 
