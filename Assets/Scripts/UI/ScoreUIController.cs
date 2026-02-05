@@ -45,6 +45,9 @@ public class ScoreUIController : MonoBehaviour
         float startFontSize = scoreText.fontSize;
         float MidFontSize = scoreText.fontSize + 16;
 
+        float startScale = 1f;
+        float midScale = 1.5f;
+
         float startRotation = 0f;
         float endRotation = -45f;
 
@@ -59,13 +62,17 @@ public class ScoreUIController : MonoBehaviour
             //Rotate up and then down.
             if (!decreasing)
             {
-                scoreText.fontSize = Mathf.LerpUnclamped(startFontSize, MidFontSize, LDUtil.EaseOutBack(curTime / totalTime));
+                //scoreText.fontSize = Mathf.LerpUnclamped(startFontSize, MidFontSize, LDUtil.EaseOutBack(curTime / totalTime));
+                float s = Mathf.LerpUnclamped(startScale, midScale, LDUtil.EaseOutBack(curTime / totalTime));
+                scoreText.rectTransform.localScale = new Vector3(s, s, s);
                 scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, Mathf.LerpUnclamped(startRotation, endRotation, LDUtil.EaseOutBack(curTime / totalTime)));
                 scoreText.color = Color.Lerp(neonCyan, neonLime, curTime / totalTime);
             }
             else
             {
-                scoreText.fontSize = Mathf.LerpUnclamped(MidFontSize, startFontSize, LDUtil.EaseOutBack(curTime / totalTime));
+                //scoreText.fontSize = Mathf.LerpUnclamped(MidFontSize, startFontSize, LDUtil.EaseOutBack(curTime / totalTime));
+                float s = Mathf.LerpUnclamped(midScale, startScale, LDUtil.EaseOutBack(curTime / totalTime));
+                scoreText.rectTransform.localScale = new Vector3(s, s, s);
                 scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, Mathf.LerpUnclamped(endRotation, startRotation, LDUtil.EaseOutBack(curTime / totalTime)));
                 scoreText.color = Color.Lerp(neonLime, neonCyan, curTime / totalTime);
             }
@@ -78,7 +85,9 @@ public class ScoreUIController : MonoBehaviour
                 if (decreasing == false)
                 {
                     //Set values so the values don't get messed up when interrupted.
-                    scoreText.fontSize = MidFontSize;
+                    //scoreText.fontSize = MidFontSize;
+                    
+                    scoreText.rectTransform.localScale = new Vector3(midScale, midScale, midScale);
                     scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0,0,endRotation);
                     scoreText.color = neonLime;
 
@@ -89,7 +98,8 @@ public class ScoreUIController : MonoBehaviour
                 else
                 {
                     //Revert back to OG values
-                    scoreText.fontSize = startFontSize;
+                    //scoreText.fontSize = startFontSize;
+                    scoreText.rectTransform.localScale = new Vector3(startScale, startScale, startScale);
                     scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, startRotation);
                     scoreText.color = neonCyan;
 
@@ -102,7 +112,8 @@ public class ScoreUIController : MonoBehaviour
         }
 
         //set back to start font size.
-        scoreText.fontSize = startFontSize;
+        //scoreText.fontSize = startFontSize;
+        scoreText.rectTransform.localScale = new Vector3(startScale, startScale, startScale);
         //set back to start rotation.
         scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0f, 0f, startRotation);
         //set back to default color.

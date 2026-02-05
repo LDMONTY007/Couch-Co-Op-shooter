@@ -735,12 +735,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
+  m_fontSize: 44.75
   m_fontSizeBase: 64
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 42
+  m_fontSizeMax: 64
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -1802,9 +1802,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc33c87cf00c384cb30651058c51e8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  canvasRect: {fileID: 0}
   aimBoundsRect: {fileID: 6951717927247853504}
   targetBox: {fileID: 6285062627802623488}
   input: {x: 0, y: 0}
+  mouseSensitivity: 0.01
+  controllerSensitivity: 1
+  useControllerSensitivity: 0
 --- !u!1 &3387925632765449387
 GameObject:
   m_ObjectHideFlags: 0

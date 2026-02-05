@@ -465,6 +465,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     {
         //Update UI label.
         uiController.UpdateIDLabel(index);
+        //Setup the control sensitivity for aiming box
+        uiController.aimTargetController.useControllerSensitivity = isUsingController(playerInput.GetDevice<InputDevice>());
 
         guid = id;
         playerModel.material = mat;
@@ -866,6 +868,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         }
     }
 
+    public bool isUsingController(InputDevice device)
+    {
+        if (device is Gamepad)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
     Vector2 mouseInput = Vector2.zero;
 
     bool isAiming = false;
@@ -882,6 +894,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         mouseInput = lookAction.ReadValue<Vector2>();
 
+        
         uiController.aimTargetController.input = mouseInput;
 
         if (isAiming)

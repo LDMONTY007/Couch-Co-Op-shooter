@@ -104,6 +104,7 @@ public class PlayerUIController : MonoBehaviour
         aimTargetController.canvasRect = canvasRect;
 
 
+
         OnPauseStateSwitched();
 
         healthBarSlider.maxValue = PlayerController.maxHealth;

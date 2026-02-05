@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static UnityEngine.GraphicsBuffer;
 
 
@@ -19,11 +20,26 @@ public class AimTargetController : MonoBehaviour
 
     public Vector2 input;
 
-    public float sensitivity = 1f;
+    public float mouseSensitivity = 0.01f;
+    public float controllerSensitivity = 1f;
 
     public List<IDamageable> damageables = new();
 
-    
+    PlayerController player;
+
+    public bool useControllerSensitivity = false;
+
+    private float GetCorrespondingLookSensitivity()
+    {
+        if (useControllerSensitivity)
+        {
+            return controllerSensitivity;
+        }
+        else 
+        {
+            return mouseSensitivity;
+        }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,7 +51,7 @@ public class AimTargetController : MonoBehaviour
     void Update()
     {
         // Apply sensitivity
-        Vector2 clampedInput = Vector2.ClampMagnitude(input * sensitivity, 1f);
+        Vector2 clampedInput = Vector2.ClampMagnitude(input * GetCorrespondingLookSensitivity(), 1f);
 
         //map from -1,1 to 0,1
         float tx = (clampedInput.x + 1f) * 0.5f;
