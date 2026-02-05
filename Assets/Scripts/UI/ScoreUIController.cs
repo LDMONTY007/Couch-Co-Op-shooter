@@ -77,12 +77,22 @@ public class ScoreUIController : MonoBehaviour
             {
                 if (decreasing == false)
                 {
+                    //Set values so the values don't get messed up when interrupted.
+                    scoreText.fontSize = MidFontSize;
+                    scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0,0,endRotation);
+                    scoreText.color = neonLime;
+
                     //start decreasing.
                     decreasing = true;
                     curTime = 0f;
                 }
                 else
                 {
+                    //Revert back to OG values
+                    scoreText.fontSize = startFontSize;
+                    scoreText.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, startRotation);
+                    scoreText.color = neonCyan;
+
                     //stop the loop.
                     sentinel = false;
                 }
