@@ -85,6 +85,7 @@ public class ScoreBarManager : MonoBehaviour
             //assign player index to the score bar.
             scoreBars[scoreBars.Count - 1].playerIndex = p.playerIndex;
 
+            Debug.Log(p.scoreDatas);
             //Score is calculated here, based on the different kills
             //and kill types the player got.
             int score = gameData.GetScore(p);

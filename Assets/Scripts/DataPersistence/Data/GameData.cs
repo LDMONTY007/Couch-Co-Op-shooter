@@ -16,7 +16,6 @@ public class GameData
     public int slotIndex;
     public int deathCount;
     public Vector3 playerPos;
-    public bool shouldLoadInAsVillain;
     public string sceneToLoadOnStart = "Character Select Scene";
     public CharacterType currentCharacter;
     public List<CharacterType> unlockedCharacters = new List<CharacterType>();
@@ -114,7 +113,13 @@ public class GameData
 
     public int GetScore(PlayerInfo p)
     {
-        return p.zombieKillCount * 5;
+        float score = 0;
+        Debug.Log(p.scoreDatas);
+        foreach (ScoreData sd in p.scoreDatas)
+        {
+            score += sd.GetTotalScore();
+        }
+        return (int)score;
     }
 
     public void UpdatePlayerInfo(PlayerInfo playerInfo)
@@ -134,8 +139,9 @@ public enum CharacterType
 public struct PlayerInfo
 {
     public string guid;
-    //Store the number of zombies killed by this player.
-    public int zombieKillCount;
+
+    
+    public ScoreData[] scoreDatas;
 
     public int deviceID;
 

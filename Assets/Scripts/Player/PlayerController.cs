@@ -87,6 +87,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void AddScoreData(ScoreData scoreData)
     {
+        Debug.Log(scoreDatas);
         //Add the score data.
         scoreDatas.Add(scoreData);
         //Do the UI popup for the score data.
@@ -468,8 +469,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         guid = id;
         playerModel.material = mat;
 
-
-        zombieKillCount = p.zombieKillCount;
+        //load scores.
+        if (p.scoreDatas != null)
+        scoreDatas = p.scoreDatas.ToList();
+        else
+        {
+            scoreDatas = new List<ScoreData>();
+        }
 
         //Set the curLook to match our set euler angles from our spawn point.
         Debug.LogWarning(transform.rotation.eulerAngles);
@@ -2319,8 +2325,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
     public void SaveDataManually(ref GameData gameData)
     {
         Debug.LogWarning("SAVE PLAYER DATA!");
+        Debug.Log(scoreDatas);
+
+        List<ScoreData> deepClonedScoreDatas = new List<ScoreData>();
+
+        //deep clone the score data
+        scoreDatas.ForEach(sd =>
+            deepClonedScoreDatas.Add(new ScoreData(sd)));
+
         //Update the player's individual data in the game. 
-        gameData.UpdatePlayerInfo(new PlayerInfo() { guid = guid.ToString(), zombieKillCount = zombieKillCount, controlScheme = playerInput.currentControlScheme, deviceID=playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true, 
+        gameData.UpdatePlayerInfo(new PlayerInfo() { guid = guid.ToString(), scoreDatas = deepClonedScoreDatas.ToArray(), controlScheme = playerInput.currentControlScheme, deviceID=playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true, 
             //For weapons/items leave key as string.Empty if we don't have one when saving,
             //otherwise save their prefab data key.
             primaryWeaponKey = curPrimaryWeapon == null ? string.Empty : curPrimaryWeapon.prefabData.key ,

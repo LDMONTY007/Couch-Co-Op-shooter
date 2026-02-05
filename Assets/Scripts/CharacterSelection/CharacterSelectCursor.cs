@@ -193,7 +193,7 @@ public class CharacterSelectCursor : MonoBehaviour
                         //Assign the input device to it's new slot.
                         GameManager.Instance.inputDevices[display.index] = playerInput.GetDevice<InputDevice>();
                        
-                        gameData.playerInfos[display.index] = (new PlayerInfo() { guid = Guid.NewGuid().ToString(), zombieKillCount = 0, controlScheme = playerInput.currentControlScheme, deviceID = playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
+                        gameData.playerInfos[display.index] = (new PlayerInfo() { guid = Guid.NewGuid().ToString(), controlScheme = playerInput.currentControlScheme, deviceID = playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
 
                         //set which display we selected.
                         curSelectedDisplay = display.index;
@@ -220,7 +220,7 @@ public class CharacterSelectCursor : MonoBehaviour
 
                         //Assign the input device to it's new slot.
                         GameData gameData = DataPersistenceManager.instance.GetGameData();
-                        gameData.playerInfos[display.index] = (new PlayerInfo() { guid = Guid.NewGuid().ToString(), zombieKillCount = 0, controlScheme = playerInput.currentControlScheme, deviceID = playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
+                        gameData.playerInfos[display.index] = (new PlayerInfo() { guid = Guid.NewGuid().ToString(), controlScheme = playerInput.currentControlScheme, deviceID = playerInput.GetDevice<InputDevice>().deviceId, playerIndex = playerInput.playerIndex, splitScreenIndex = playerInput.splitScreenIndex, hasDevice = true });
 
 
 

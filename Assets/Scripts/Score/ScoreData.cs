@@ -1,6 +1,9 @@
+using System;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using static Usable;
 
+[Serializable]
 public class ScoreData
 {
     //used for determining rules
@@ -136,5 +139,13 @@ public class ScoreData
         this.damageType = damageType;
         baseScore = score;
         this.spawnPos = spawnPos;
+    }
+
+    public ScoreData(ScoreData sd)
+    {
+        this.enemyType = sd.enemyType;
+        this.damageType = sd.damageType;
+        baseScore = sd.baseScore;
+        this.spawnPos = sd.spawnPos;
     }
 }
