@@ -201,7 +201,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void SaveGame()
     {
-        Debug.Log("Save step 1");
+        //Debug.Log("Save step 1");
 
         //Return right away if data persistence is disabled
         if (disableDataPersistence)
@@ -209,7 +209,7 @@ public class DataPersistenceManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Save step 2");
+        //Debug.Log("Save step 2");
 
         //If we don't have any data to save, Log a warning here.
         if (this.gameData == null)
@@ -218,7 +218,7 @@ public class DataPersistenceManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Save step 3");
+        //Debug.Log("Save step 3");
 
         // pass the data to other scripts so they can update it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
@@ -226,12 +226,12 @@ public class DataPersistenceManager : MonoBehaviour
             dataPersistenceObj.SaveData(ref gameData);
         }
 
-        Debug.Log("Save step 4");
+        //Debug.Log("Save step 4");
 
         //timestamp the data so we know when it was last saved
         gameData.lastUpdated = System.DateTime.Now.ToBinary();
 
-        Debug.Log("Save step 5");
+        //Debug.Log("Save step 5");
 
         // save that data to a file using the data handler
         dataHandler.Save(gameData, selectedProfileID);
@@ -286,6 +286,6 @@ public class DataPersistenceManager : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("FINISHED LOADING!!!");
+        //Debug.Log("FINISHED LOADING!!!");
     }
 }

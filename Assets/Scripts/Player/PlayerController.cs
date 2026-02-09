@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
     public void AddScoreData(ScoreData scoreData)
     {
-        Debug.Log(scoreDatas);
+        
         //Add the score data.
         scoreDatas.Add(scoreData);
         //Do the UI popup for the score data.

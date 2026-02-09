@@ -116,7 +116,7 @@ public class CharacterSelectManager : MonoBehaviour
                                 inputList[inputList.Count - 1].GetComponent<CharacterSelectCursor>().canvas = characterSelectCanvas;
 
 
-                                Debug.Log("PLAYER JOINED!!!");
+                                //Debug.Log("PLAYER JOINED!!!");
                                 break;
                             }
 

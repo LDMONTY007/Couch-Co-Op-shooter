@@ -91,7 +91,7 @@ public class CharacterSelectCursor : MonoBehaviour
     {
         if (selectAction.GetButtonDown())
         {
-            Debug.Log("HERE");
+            
             Select();
         }
 
@@ -155,7 +155,7 @@ public class CharacterSelectCursor : MonoBehaviour
                 {
                     //tell the button we clicked it with our cursor.
                     button.onClick.Invoke();
-                    Debug.Log("PRESS BUTTON");
+                    //Debug.Log("PRESS BUTTON");
                     break;
                 }
 

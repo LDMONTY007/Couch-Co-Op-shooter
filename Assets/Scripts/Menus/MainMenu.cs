@@ -32,7 +32,7 @@ public class MainMenu : Menu
         }
 
         Time.timeScale = 1.0f;
-        Debug.Log(Time.timeScale);
+        //Debug.Log(Time.timeScale);
     }
 
     public void DisableButtonsDependingOnData()
