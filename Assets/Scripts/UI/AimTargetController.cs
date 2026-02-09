@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
 
@@ -29,6 +30,10 @@ public class AimTargetController : MonoBehaviour
 
     public bool useControllerSensitivity = false;
 
+    int mask;
+
+    public float maxDist = 30f;
+
     private float GetCorrespondingLookSensitivity()
     {
         if (useControllerSensitivity)
@@ -39,6 +44,12 @@ public class AimTargetController : MonoBehaviour
         {
             return mouseSensitivity;
         }
+    }
+
+    private void Awake()
+    {
+        //Get everything except player and ignore raycast.
+        mask = ~LayerMask.GetMask("Player", "IgnoreRaycast");
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -148,6 +159,38 @@ public class AimTargetController : MonoBehaviour
 
     public bool EnemyInsideTargetBox(Transform enemy)
     {
+        //I tried checking the isVisible value to see if
+        //that would help reduce the need for doing raycasts,
+        //but it didn't work for making sure they weren't behind
+        //an object.
+        /* Renderer enemyRenderer = null;
+
+         //if the enemy isn't visible, they can't be shot.
+         if (enemy.TryGetComponent<Renderer>(out enemyRenderer))
+         {
+             if (enemyRenderer.isVisible == false)
+             {
+                 return false;
+             }
+         }
+         else
+         {
+             Debug.Log("Enemy Not Found");
+         }*/
+
+        //Check that the enemy isn't blocked by an object.
+        Vector3 startPos = CanvasToWorldPos(aimBoundsRect);
+
+
+        //if the enemy is too far, skip that enemy 
+        //so we don't do unnecessary raycast calculations
+        //that are costly.
+        if (Vector3.Distance(enemy.position, startPos) > maxDist)
+        {
+            return false;
+        }
+        
+
         //map enemy world pos to canvas local pos
         Vector2 enemyCanvasPos = WorldToCanvasPos(enemy.position);
 
@@ -155,7 +198,42 @@ public class AimTargetController : MonoBehaviour
         Rect rect = GetCanvasRect(targetBox);
 
         //Check if enemy point inside the rect
-        return rect.Contains(enemyCanvasPos);
+        if (rect.Contains(enemyCanvasPos))
+        {
+            //Check that there are no objects blocking
+            //the view to our target using a raycast.
+            //This can become quite costly so use it as
+            //our final check to reduce calls to it.
+            Vector3 dir = (enemy.position - CanvasToWorldPos(aimBoundsRect)).normalized;
+
+            if (Physics.Raycast(CanvasToWorldPos(aimBoundsRect), dir, out var hitInfo, maxDist, mask))
+            {
+                if (hitInfo.transform == enemy.transform)
+                {
+                    //We successfully found a path to the enemy that isn't blocked by objects.
+                    return true;
+                }
+                else
+                {
+                    //Say the enemy is blocked by an object so we can't shoot it.
+                    return false;
+                }
+            }
+            else
+            {
+                //We didn't hit anything.
+                //this may be due to the distance being too short,
+                //so we'll return false here.
+                return false;
+            }
+
+        }
+        else
+        {
+            return false;
+        }
+
+        
     }
 
     //Convert a UI RectTransform into a rect in canvas-local coordinates
