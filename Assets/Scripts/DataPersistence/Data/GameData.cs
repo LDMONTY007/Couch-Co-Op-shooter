@@ -21,6 +21,9 @@ public class GameData
     public List<CharacterType> unlockedCharacters = new List<CharacterType>();
     public bool shouldDisableNewGameButton = false;
     public bool souseDidPossessedDialogue = false;
+    
+    //Settings
+    public bool isLowRes = false;
 
     //Used to store each player's guid and 
     //other data about their stats. 

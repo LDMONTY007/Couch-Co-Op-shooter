@@ -66,7 +66,7 @@ public class GameManager : IDataPersistence
     //If the game is currently paused
     public bool isPaused = false;
 
-    private bool _isLowRes = true;
+    private bool _isLowRes = false;
 
     //If we're using the lowResolution render pass.
     public bool isLowRes { get  { return _isLowRes; } set { _isLowRes = value; 
@@ -84,6 +84,7 @@ public class GameManager : IDataPersistence
         sceneToLoadOnStart = gameData.sceneToLoadOnStart;
         shouldDisableNewGameAndLoadGameButtons = gameData.shouldDisableNewGameButton;
         playerInfos = gameData.playerInfos;
+        isLowRes = gameData.isLowRes;
 
         //If this scene has a player input manager spawn all players.
         if (PlayerInputManager.instance != null)
@@ -96,10 +97,12 @@ public class GameManager : IDataPersistence
     {
         //save the scene to load on start in case it 
         //has changed.
-        Debug.Log("Saving GameManager!");
+        //Debug.Log("Saving GameManager!");
         gameData.sceneToLoadOnStart = sceneToLoadOnStart;
         gameData.shouldDisableNewGameButton = shouldDisableNewGameAndLoadGameButtons;
         gameData.playerInfos = playerInfos;
+
+        gameData.isLowRes = isLowRes;
     }
 
 
