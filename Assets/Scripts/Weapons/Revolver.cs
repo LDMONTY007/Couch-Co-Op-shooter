@@ -43,6 +43,12 @@ public class Revolver : SecondaryWeapon
 
         IDamageable bestTarget = parentPlayer.uiController.aimTargetController.GetBestTarget();
 
+        //Added a check for the attack distance.
+        if (bestTarget != null && Vector3.Distance((bestTarget as Component).transform.position, transform.position) > attackDist)
+        {
+            bestTarget = null;
+        }
+
         if (bestTarget != null)
         {
             GameObject targetObject = (bestTarget as Component).gameObject;

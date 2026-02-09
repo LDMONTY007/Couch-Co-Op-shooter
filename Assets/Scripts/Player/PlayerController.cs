@@ -671,6 +671,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
         //Say this useable was equipped
         curUseable.OnEquip(this);
 
+        
     }
 
     public void SwapCurrentUseableIgnoreLastUseable(Usable useable)
@@ -1932,6 +1933,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IInteractible
 
         //assign the new current weapon.
         curPrimaryWeapon = w;
+
 
 
         //invoke OnPickup if methods are subscribed to it.

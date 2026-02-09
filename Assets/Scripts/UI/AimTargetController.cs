@@ -32,7 +32,10 @@ public class AimTargetController : MonoBehaviour
 
     int mask;
 
-    public float maxDist = 30f;
+    //This is a hard coded cap for the allowed attack distance,
+    //but for different weapons I should use their individual 
+    //distance as well.
+    public float maxDist = 100f;
 
     private float GetCorrespondingLookSensitivity()
     {
